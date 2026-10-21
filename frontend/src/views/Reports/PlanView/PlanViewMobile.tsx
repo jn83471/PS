@@ -25,7 +25,7 @@ export const PlanViewMobile = ({ machine, setMachine, machines, setMachines }: P
                     setMachine("")
                 }}
                     className="border">
-                    <FontAwesomeIcon icon={faClose} />
+                    <FontAwesomeIcon icon={faClose} />a
                 </button>
             </>
 
