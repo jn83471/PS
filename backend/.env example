@@ -1,0 +1,16 @@
+PORT=
+CONNECTION=
+
+key=
+iv=
+
+JWTSECRET=
+
+#Nomenclatura inicio|fin|dias de mas| inicia en dia siguente
+HOURSTA=
+HOURSTB=
+HOURSTC=
+
+FRONTEND=
+GAMBA=
+GAMBATEST=
