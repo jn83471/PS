@@ -1,0 +1,58 @@
+{
+    "Apps": {
+        "Name": "Aplicaciones",
+        "HXH": "HORA X HORA",
+        "HXHDesc": "Es una aplicación diseñada para el monitoreo, captura y análisis de datos de producción en tiempo real.",
+        "PTS": "PTS",
+        "PTSDesc": "Monitoreo de Producción y Cumplimiento de Metas en Tiempo Real",
+        "RINSP": "RINSP",
+        "RINSPDesc": "Sistema de control y seguimiento de reinspección diseñado para gestionar la validación de arneses, control de defectos, liberación de material y monitoreo de cumplimiento de calidad en tiempo real.",
+        "LM": "LineMonitor",
+        "LMDesc": "LineMonitor es una plataforma de monitoreo de producción diseñada para proporcionar visibilidad en tiempo real de las operaciones de manufactura. Permite supervisar piezas producidas, defectos, velocidad de producción, eficiencia por línea y tendencias operativas."
+    },
+    "Layout": {
+        "Home": "Inicio",
+        "Plants": "Plantas",
+        "Customers": "Clientes",
+        "Plan": "Plan",
+        "Code": "Código de planta",
+        "Line": "Línea",
+        "Reports": "Reportes"
+    },
+    "Gnr": {
+        "Name": "Nombre",
+        "Code": "Código",
+        "Edit": "Editar",
+        "Delete": "Eliminar",
+        "Actions": "Acciones"
+    },
+    "Urs": {
+        "Notes": {
+            "HightPriorityMaterial": "Material de alta prioridad",
+            "NewRequest":"Nueva solicitud de envío",
+            "NewRequestDesc":"Rastrear, priorizar y coordinar los envíos de materiales críticos."
+        },
+        "Btn": {
+            "CreateRequest": "Crear nueva solicitud"
+        },
+        "Gnr": {
+            "Reason": "Motivo",
+            "Method": "Método",
+            "Proposeddate": "Fecha propuesta",
+            "OpenRequest": "Solicitudes abiertas",
+            "ClocedRequest": "Solicitudes cerradas"
+        },
+        "SideBar": {
+            "CreateRequest": "Crear solicitud",
+            "Request": "Solicitudes",
+            "CPLocalVerifications": "Verificaciones CPLocal",
+            "Scanning": "Escaneo",
+            "ScanTracking": "Seguimiento de escaneo",
+            "ShipmentVerification": "Verificación Embarque",
+            "ReceiptVerification": "Verificación Recibo"
+        }
+    },
+    "Manufacture": "Manufactura",
+    "HarnessStorage": "Almacén",
+    "User": "Usuario"
+}

@@ -1,143 +1,186 @@
 import { useEffect, useState } from "react";
 import { SocketContext } from "../Context/SocketContext";
-import { io, Socket } from "socket.io-client";
+import { socket } from "../hook/Socket";
 import { useAuth } from "../hook/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
+import { registerClientListeners } from "../SocketListeners/registerClientListeners";
 
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [socket, setSocket] = useState<Socket | null>(null);
     const [messages, setMessages] = useState<string[]>([]);
 
     const { data, isError, isLoading } = useAuth()
     const queryClient = useQueryClient()
 
     useEffect(() => {
-        const newSocket = io("http://172.30.190.230:3000");
-        setSocket(newSocket);
 
-        newSocket.on("connect", () => {
-            console.log("Conectado:", newSocket.id);
+        socket.off("connect");
+        if (!socket.connected) {
+            socket.connect();
+        }
+
+        socket.on("connect", () => {
+            console.log("Conectado:", socket.id);
+
+            socket.emit("joinRoom", "Plants");
+            socket.emit("joinRoom", "Client")
+            socket.emit("joinRoom", "Machine")
+            socket.emit("joinRoom", "Codes");
+            socket.emit("joinRoom", "Urs");
         });
 
-        newSocket.emit("joinRoom", "Plants");
+        socket.io.off("reconnect");
+        socket.io.on("reconnect", (attempt) => {
+            console.log("Reconectado:", attempt);
+        });
 
+        socket.io.off("reconnect_attempt");
+        socket.io.on("reconnect_attempt", (attempt) => {
+            console.log("Intento:", attempt);
+        });
 
-        newSocket.on("newPlant", (socket) => {
-            console.log("new")
+        socket.off("disconnect");
+        socket.on("disconnect", () => {
+            console.log("Desconectado:",);
+        });
+
+        socket.off("newPlant")
+        socket.on("newPlant", (plant) => {
             queryClient.setQueryData(['Plant'], (old: any) => {
-                if (!old) return [socket];
-                return [...old, socket];
+                if (!old) return [plant];
+                return [...old, plant];
             })
         })
 
-        newSocket.on("deletePlant", (socket) => {
-            console.log("delete")
-            console.log(socket)
+        socket.off("deletePlant")
+        socket.on("deletePlant", (plant) => {
             queryClient.setQueryData(['Plant'], (old: any) => {
                 if (!old) return [];
-                return old.filter((p: any) => p.id != socket.id);
+                return old.filter((p: any) => p.id != plant.id);
             })
         })
 
-        newSocket.on("editPlant", (socket) => {
-            console.log("update")
-            console.log(socket)
+        socket.off("editPlant")
+        socket.on("editPlant", (plant) => {
             queryClient.setQueryData(["Plant"], (old: any) => {
                 if (!old) return [];
 
                 return old.map((p: any) =>
-                    p.id == socket.id
-                        ? { ...p, name: socket.name, parkings: socket.parkings, type: socket.type } // 👈 solo actualiza el campo "name"
+                    p.id == plant.id
+                        ? plant
                         : p
                 );
             });
-        })
-
-        newSocket.emit("joinRoom", "Client")
-
-        newSocket.on("deleteClient", (socket) => {
-            console.log("delete")
-            console.log(socket)
-            queryClient.setQueryData(['Client'], (old: any) => {
-                if (!old) return [];
-                return old.filter((p: any) => p.id != socket.id);
-            })
-        })
-
-        newSocket.on("newClient", (socket) => {
-            console.log("new")
-            queryClient.setQueryData(['Client'], (old: any) => {
-                if (!old) return [socket];
-                return [...old, socket];
-            })
-        })
-
-        newSocket.on("editClient", (socket) => {
-            console.log("update")
-            console.log(socket)
-            queryClient.setQueryData(["Client"], (old: any) => {
-                if (!old) return [];
-
-                return old.map((p: any) =>
-                    p.id == socket.id
-                        ? { ...p, name: socket.name } // 👈 solo actualiza el campo "name"
-                        : p
-                );
-            });
-        })
+        });
 
 
-        newSocket.emit("joinRoom", "Machine")
-        newSocket.on("newMachine", (socket) => {
-            console.log("new")
+        registerClientListeners(socket,queryClient)
+        
+
+        socket.off("newMachine")
+        socket.on("newMachine", (machine) => {
             queryClient.setQueryData(['Machine'], (old: any) => {
-                if (!old) return [socket];
-                return [...old, socket];
+                if (!old) return [machine];
+                return [...old, machine];
             })
         })
 
-        newSocket.on("deleteMachine", (socket) => {
-            console.log("delete")
-            console.log(socket)
+        socket.off("deleteMachine")
+        socket.on("deleteMachine", (machine) => {
             queryClient.setQueryData(['Machine'], (old: any) => {
                 if (!old) return [];
-                return old.filter((p: any) => p.id != socket.id);
+                return old.filter((p: any) => p.id != machine.id);
             })
         })
 
-        newSocket.on("editMachine", (socket) => {
-            console.log("update")
-            console.log(socket)
+        socket.off("editMachine")
+        socket.on("editMachine", (machine) => {
             queryClient.setQueryData(["Machine"], (old: any) => {
                 if (!old) return [];
 
                 return old.map((p: any) =>
-                    p.id == socket.id
-                        ? socket
+                    p.id == machine.id
+                        ? machine
                         : p
                 );
             });
         })
 
-        newSocket.emit("joinRoom", "Codes");
-        newSocket.on("newCode", (socket) => {
-            console.log("new")
+        socket.off("newCode")
+        socket.on("newCode", (code) => {
             queryClient.setQueryData(['Code'], (old: any) => {
-                if (!old) return [socket];
-                return [...old, socket];
+                if (!old) return [code];
+                return [...old, code];
             })
         })
 
-        newSocket.on("deleteCode", (socket) => {
-            console.log("delete")
-            console.log(socket)
+        socket.off("deleteCode")
+        socket.on("deleteCode", (code) => {
             queryClient.setQueryData(['Code'], (old: any) => {
                 if (!old) return [];
-                return old.filter((p: any) => p.id != socket.id);
+                return old.filter((p: any) => p.id != code.id);
             })
         })
 
-        
+        socket.off("newScann")
+        //join urs
+        socket.on("newScann", (code) => {
+            queryClient.setQueryData(['UrsRequests', code.UrsRequestsFolioId.toString()], (old: any) => {
+                if (!old) return [];
+
+                return old.map((p: any) =>
+                    p.id == code.id
+                        ? code
+                        : p
+                );
+            });
+            /*queryClient.setQueryData(
+                ['UrsRequests', socket.UrsRequestsFolioId.toString()],
+                (old: any) => {
+                    if (!old) return old;
+
+                    return {
+                        ...old,
+                        rows: old.filter(
+                            (p: any) => p.id !== socket.id
+                        )
+                    };
+                }
+            );*/
+        })
+
+        /*
+        const Requests = useQuery({
+                queryKey: ['UrsRequests', id],
+                queryFn: () => GetUrsRequestScann(id),
+                //enabled: !fecha,
+                retry: false
+            })
+         */
+        return () => {
+            console.log("Cerrando socket:", socket.id);
+
+            socket.off("connect");
+            socket.off("disconnect");
+
+            socket.off("newPlant");
+            socket.off("deletePlant");
+            socket.off("editPlant");
+
+            socket.off("newClient");
+            socket.off("deleteClient");
+            socket.off("editClient");
+
+            socket.off("newMachine");
+            socket.off("deleteMachine");
+            socket.off("editMachine");
+
+            socket.off("newCode");
+            socket.off("deleteCode");
+
+            socket.off("newScann");
+
+            socket.disconnect();
+        };
 
     }
         , []);

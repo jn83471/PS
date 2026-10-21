@@ -3,15 +3,20 @@ import { Link, Outlet } from 'react-router-dom'
 import { GetProduction } from '../../../api/ReportApi'
 import { useQuery } from '@tanstack/react-query'
 import type { Plant } from '../../../types/PlantForms'
+import type { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 
 export const Production = () => {
 
     const [dt, setDt] = useState([])
-    const { data, isError, isLoading, error } = useQuery({
+    const [fecha, setFecha] = useState<Dayjs | null>(dayjs());
+    const { data, isError, isLoading, error,refetch } = useQuery({
         queryKey: ['Production'],
-        queryFn: GetProduction,
+        queryFn: ()=>GetProduction(fecha?.format("YYYY-MM-DD")),
         retry: false
     })
+    console.log(fecha?.format("YYYY-MM-DD"))
+
     
     const separateData = (x, prod, machines, day) => {
         const result = {
@@ -28,11 +33,11 @@ export const Production = () => {
         if (data == null) return
         const plant: Plant[] = data?.plant
         const prod = data?.data
-        plant.sort((a, b) => a.name.localeCompare(b.name))
+        plant?.sort((a, b) => a.name.localeCompare(b.name))
 
 
         const info = []
-        plant.map(x => {
+        plant?.map(x => {
             console.log(prod.filter(y => y.DAY == 6 && y.SHIFT == 1 && y.line_c == 'MC04'))
 
             const machines = x.Machine.map(x => x.machineCode);
@@ -81,7 +86,7 @@ export const Production = () => {
     return (
         <>
             
-            <Outlet context={{ dt }}>
+            <Outlet context={{ dt,fecha,setFecha,refetch  }}>
 
             </Outlet>
         </>

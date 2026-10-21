@@ -1,0 +1,21 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const UserController_1 = require("../Controllers/UserController");
+const ValidateUserId_1 = require("../Middlewares/params/ValidateUserId");
+const auth_1 = require("../Middlewares/params/auth");
+const validation_1 = require("../Middlewares/params/validation");
+const express_validator_1 = require("express-validator");
+const ValidateBodyRol_1 = require("../Middlewares/body/ValidateBodyRol");
+const ValidateBodyDepartament_1 = require("../Middlewares/body/ValidateBodyDepartament");
+const router = (0, express_1.Router)();
+router.param('UsersId', ValidateUserId_1.ValidateUserExcist);
+router.get('/', UserController_1.UserController.Index);
+router.get('/User', auth_1.autenticate, UserController_1.UserController.ConfirmAccount);
+router.post('/Login', (0, express_validator_1.body)('Email').isEmail().withMessage('E-mail no valido'), (0, express_validator_1.body)('Password').notEmpty().withMessage("Necesita llenar el campo de password"), validation_1.handleInputErrors, UserController_1.UserController.Login);
+router.get('/:UsersId', UserController_1.UserController.Show);
+router.post('/', auth_1.autenticate, (0, express_validator_1.body)('Name').notEmpty().withMessage('El nombre no es valido'), (0, express_validator_1.body)('Email').isEmail().withMessage('E-mail no valido'), (0, express_validator_1.body)('Password').notEmpty().withMessage('La contraseña es requerida'), (0, express_validator_1.body)('RolId').isNumeric().withMessage("Necesita un rol valido el usuario"), (0, express_validator_1.body)('DepartmentId').isNumeric().withMessage("Necesita un departamento  valido"), validation_1.handleInputErrors, ValidateBodyRol_1.ValidateBodyRol, ValidateBodyDepartament_1.ValidateBodyDepartament, UserController_1.UserController.Create);
+router.put('/:UsersId', (0, express_validator_1.body)('Name').notEmpty().withMessage('El nombre no es valido'), (0, express_validator_1.body)('RolId').isNumeric().withMessage("Necesita un rol valido el usuario"), (0, express_validator_1.body)('DepartmentId').isNumeric().withMessage("Necesita un departamento  valido"), ValidateBodyRol_1.ValidateBodyRol, ValidateBodyDepartament_1.ValidateBodyDepartament, auth_1.autenticate, UserController_1.UserController.Update);
+router.delete('/:UsersId', auth_1.autenticate, UserController_1.UserController.Delete);
+exports.default = router;
+//# sourceMappingURL=AuthRoutes.js.map

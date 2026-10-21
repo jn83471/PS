@@ -7,6 +7,7 @@ export class Codes extends Model {
     declare name: string;
     declare key:string;
     declare cryServer:string;
+    declare fgsServer:string;
     declare status: boolean;
     declare type: number; //1 ighs 2 acs
 }
@@ -29,6 +30,11 @@ Codes.init(
         cryServer:{
             type: DataTypes.STRING,
             allowNull: true
+        },
+        fgsServer:{
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: ''
         },
         status: {
             type: DataTypes.BOOLEAN,

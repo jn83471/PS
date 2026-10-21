@@ -10,6 +10,10 @@ import {
     type ColumnDef
 } from "@tanstack/react-table";
 import { MauiTable } from '../../../components/Gnr/MauiTable';
+import type { GridColDef } from '@mui/x-data-grid';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
 const TdDay = ({ value }) => {
     return (
@@ -22,8 +26,10 @@ const TdDay = ({ value }) => {
 }
 
 export const GnrProduction = () => {
-    const { dt } = useOutletContext();
+    const { dt,fecha,setFecha,refetch  } = useOutletContext();
     console.log(dt)
+      
+
 
     const [expanded, setExpanded] = useState({})
 
@@ -35,27 +41,7 @@ export const GnrProduction = () => {
         };
     });
 
-    const columns: ColumnDef<any>[] = [
-        {
-            accessorKey: "name",
-            header: "Planta ",
-        },
-        {
-            accessorKey: "shift",
-            header: "Turno ",
-        },
-        ...dayColumns,
-    ];
 
-    const table = useReactTable({
-        data: dt,
-        columns,
-        state: { expanded },
-        onExpandedChange: setExpanded,
-        //getSubRows: row => row.subRows,
-        getCoreRowModel: getCoreRowModel(),
-        getExpandedRowModel: getExpandedRowModel()
-    });
 
     const column: GridColDef[] = [
         {
@@ -63,7 +49,7 @@ export const GnrProduction = () => {
             renderCell: (params) => (
                 <>
                     <div className="inline text-2xl">{params.row.planta}</div>
-                    <div className="text-[10px] inline px-2 bg-blue-600 mx-2 rounded-2xl p-1">{params.row.code}</div>
+                    <div className="text-[10px] inline px-2 bg-blue-600 mx-2 rounded-2xl p-1 text-white">{params.row.code}</div>
                 </>
             )
         },
@@ -125,12 +111,59 @@ export const GnrProduction = () => {
     });
     console.log(filteredRows)
     return (
-        <div className="flex-1 min-w-0 p-4">
+        <div className="flex-1 min-w-0 sm:p-4">
 
-            <div className='bg-[#1a1d25] rounded-xl py-5 px-2 w-full min-h-[75vh]'>
-                <div className='border-b border-gray-600 flex text-4xl py-3 '>
+            <div className='bg-white border border-gray-400 rounded-xl py-5 px-2 w-full min-h-[75vh]'>
+                <div className='border-b border-gray-600 flex text-2xl text-center sm:text-left sm:text-4xl font-bold py-3 text-black'>
                     Reporte de producción
                 </div>
+                <DatePicker
+                                label="Years in descending order"
+                                openTo="year"
+                                views={['year', 'month']}
+                                yearsOrder="desc"
+                                value={fecha}
+                                onChange={async (newValue) => {
+                                  await setFecha(dayjs(`${newValue?.toDate().getFullYear()}-${(newValue!.toDate().getMonth() + 1)}-${newValue?.toDate().getDay()}`))
+                                  refetch()
+                                }}
+                                sx={{
+                                  width: "190px",
+                                  '& .MuiInputBase-input': {
+                                    WebkitTextFillColor: 'black !important',
+                                    color: 'black',
+                                  },
+                                  '& .MuiInputLabel-root': {
+                                    color: 'black',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
+                                  '& .MuiSvgIcon-root': {
+                                    color: 'black',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
+                                  '& .MuiInputLabel-root.Mui-focused': {
+                                    color: '#fff',
+                                    WebkitTextFillColor: '#fff !important',
+                                  },
+                
+                                  '& .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: '#888',
+                                  },
+                                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: '#fff',
+                                  },
+                                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
+                                  {
+                                    borderColor: '#fff',
+                                  },
+                                  '& input::placeholder': {
+                                    color: '#ccc',
+                                    WebkitTextFillColor: '#fff !important',
+                                    opacity: 1,
+                                  },
+                                }}
+                
+                              />
                 <MauiTable rowspaning={false} setId={setId} title='' data={filteredRows} setModal={null} columns={column} text={"Nueva planta"} />
             </div>
         </div>)

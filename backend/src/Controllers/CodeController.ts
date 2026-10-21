@@ -27,11 +27,11 @@ export class CodeController {
     }
     static Create: any = async (req: Request, res: Response) => {
         try {
-            const { name, key, server, db } = req.body
+            const { name, key, server, db,fgsServer,fgsdb } = req.body
 
             const cr = encrypt(`${server}|${db}`)
-            //return res.send(cr)
-            const code = await Codes.create({ name, key, cryServer: cr })
+            const fgs = encrypt(`${fgsServer}|${fgsdb}`)
+            const code = await Codes.create({ name, key, cryServer: cr,fgsServer:fgs })
             io.to("Codes").emit("newCode", code)
             return res.send("Se ha generado el codigó")
         } catch (error) {

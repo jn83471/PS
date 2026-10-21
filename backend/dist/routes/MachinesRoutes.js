@@ -1,0 +1,20 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const MachinesController_1 = require("../Controllers/MachinesController");
+const auth_1 = require("../Middlewares/params/auth");
+const validation_1 = require("../Middlewares/params/validation");
+const express_validator_1 = require("express-validator");
+const ValidateMachineId_1 = require("../Middlewares/params/ValidateMachineId");
+const PlantsBodyExist_1 = require("../Middlewares/body/PlantsBodyExist");
+const CodesBodyExist_1 = require("../Middlewares/body/CodesBodyExist");
+const router = (0, express_1.Router)();
+router.use(auth_1.autenticate);
+router.param('MachineId', ValidateMachineId_1.validateMachineExcist);
+router.get('/', MachinesController_1.MachinesController.Index);
+router.get('/:MachineId', MachinesController_1.MachinesController.Show);
+router.post('/', PlantsBodyExist_1.PlantsBodyExist, CodesBodyExist_1.CodeBodyExist, (0, express_validator_1.body)('machineCode').notEmpty().withMessage("Necesita llenar el campo de nombre de maquina"), validation_1.handleInputErrors, MachinesController_1.MachinesController.Create);
+router.put('/:MachineId', PlantsBodyExist_1.PlantsBodyExist, CodesBodyExist_1.CodeBodyExist, (0, express_validator_1.body)('machineCode').notEmpty().withMessage("Necesita llenar el campo de nombre de maquina"), validation_1.handleInputErrors, auth_1.autenticate, MachinesController_1.MachinesController.Update);
+router.delete('/:MachineId', MachinesController_1.MachinesController.Delete);
+exports.default = router;
+//# sourceMappingURL=MachinesRoutes.js.map

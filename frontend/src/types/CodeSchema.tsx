@@ -10,8 +10,10 @@ export const CodeSchema = z.object({
   updatedAt: z.string().datetime(),
   server: z.string().nullable,
   db: z.string().nullable,
+  fgsServer: z.string().nullable,
+  fgsdb: z.string().nullable,
 });
 
 export type Code = z.infer<typeof CodeSchema>
 
-export type CodeForm = Pick<Code, 'name' | 'key' | 'server' |'db' >
+export type CodeForm = Pick<Code, 'name' | 'key' | 'server' | 'db' | 'fgsServer' | 'fgsdb' >

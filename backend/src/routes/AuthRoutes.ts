@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { UserController } from "../Controllers/UserController";
 import { ValidateUserExcist } from "../Middlewares/params/ValidateUserId";
-import { autenticate } from "../Middlewares/params/auth";
+import { autenticate, autenticateWithApps } from "../Middlewares/params/auth";
 import { handleInputErrors } from "../Middlewares/params/validation";
 import { body } from "express-validator";
 import { ValidateBodyRol } from "../Middlewares/body/ValidateBodyRol";
@@ -14,6 +14,10 @@ router.param('UsersId', ValidateUserExcist)
 router.get('/', UserController.Index)
 router.get('/User'
     ,autenticate
+    ,UserController.ConfirmAccount
+)
+router.get('/UserApps'
+    ,autenticateWithApps
     ,UserController.ConfirmAccount
 )
 

@@ -3,6 +3,7 @@ import { sequelize } from "../config/db";
 import { Plants } from "./Plants";
 import { Rols } from "./Rols";
 import { Departament } from "./Department";
+import { UserHasPermisions } from "./UserHasPermisions";
 
 export class Users extends Model {
     declare id: number;
@@ -15,6 +16,8 @@ export class Users extends Model {
     declare status: boolean;
     declare Plants?: Plants;
     declare Rols?: Rols;
+    declare UserHasPermisions?: UserHasPermisions[]|null;
+    declare TimeZone: number;
 }
 
 Users.init(
@@ -45,9 +48,23 @@ Users.init(
             type: DataTypes.INTEGER,
             allowNull: false
         },
+        UrsProcessId:{
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
         PlantId: {
             type: DataTypes.INTEGER,
             allowNull: true
+        },
+        Lang:{
+            type: DataTypes.TINYINT,
+            allowNull: false,
+            defaultValue:1
+        },
+        TimeZone:{
+            type: DataTypes.TINYINT,
+            allowNull: false,
+            defaultValue:1
         },
         status: {
             type: DataTypes.BOOLEAN,
@@ -62,7 +79,9 @@ Users.init(
     }
 );
 
-Users.belongsTo(Plants, { foreignKey: "PlantId", as: "Plants" });
-Users.belongsTo(Rols, { foreignKey: "RolId", as: "Rols" });
-Users.belongsTo(Departament, { foreignKey: "DepartmentId", as: "Departament" });
 
+/*Lang:{
+        type: Sequelize.TINYINT,
+        allowNull: false,
+        defaultValue: 1
+      },*/

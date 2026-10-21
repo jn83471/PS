@@ -2,6 +2,8 @@ import z from "zod"
 import { PlantSchema } from "./PlantForms";
 import { RolSchema } from "./RolSchema";
 import { DepartmentSchema } from "./DepartmentSchema";
+import { UserHasAppsSchema } from "./UserHasAppsSchema";
+import { AppsPermision } from "./AppsPermision";
 
 
 
@@ -21,6 +23,10 @@ const AuthSchema = z.object({
     Plants: PlantSchema.nullable(),
     Rols: RolSchema,
     Departament: DepartmentSchema,
+    UserHasApps: z.array(UserHasAppsSchema).default([]),
+    UrsProcessId: z.number().nullable(),
+    Lang: z.number(),
+    TimeZone:z.number()
 })
 
 export type Auth = z.infer<typeof AuthSchema>
@@ -38,7 +44,11 @@ export const userSchema = AuthSchema.pick({
     Rols: true,
     status: true,
     createdAt: true, // ISO string
-    updatedAt: true
+    updatedAt: true,
+    UserHasApps:true,
+    UrsProcessId:true,
+    Lang:true,
+    TimeZone:true
 }).extend({
     id: z.number()
 })

@@ -18,32 +18,33 @@ type MauiTableProp = {
     setModal?: React.Dispatch<React.SetStateAction<boolean>>;
     rowspaning:boolean,
     header: boolean,
+    size:number
 }
-export const MauiTable = ({ data, columns, text, title,setId, setModal ,rowspaning ,header}: MauiTableProp) => {
+export const MauiTable = ({ data, columns, text, title,setId, setModal ,rowspaning ,header,size}: MauiTableProp) => {
     const apiRef = useGridApiRef();
     return (
         <>
-            {header && (<div className=' px-2 flex py-3 flex-row justify-between items-center border-b border-b-[rgba(255,255,255,.2)]'>
-                <h1 className='font-bold text-2xl'>
+            {header && (<div className=' px-2 flex py-3 flex-col sm:flex-row sm:justify-between sm:items-center border-b border-b-[rgba(255,255,255,.2)]'>
+                <h1 className='font-bold text-3xl text-black text-center'>
                     {title}
                 </h1>
-                <div>
+                <div className='sm:pt-2 text-center'>
                     <button
                         onClick={() => {
                             setId(0)
                             setModal(true)
                         }}
-                        className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-semibold"
+                        className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-semibold text-white"
                     >
-                        <FontAwesomeIcon icon={faPlus} className='pr-2' />
-                        {text}
+                        <FontAwesomeIcon icon={faPlus} className='sm:pr-2 block sm:inline' />
+                        <p className='hidden sm:inline'>{text}</p>
                     </button>
                 </div>
             </div>)}
 
 
 
-            <DataGrid rowSpanning={rowspaning} apiRef={apiRef} showToolbar className='text-xl text-white font-semibold bg-[#1a1d25]! w-full' rows={data} columns={columns}
+            <DataGrid pageSizeOptions={[5,10,25,50,100]}  rowSpanning={rowspaning} apiRef={apiRef} showToolbar className='text-xl text-white font-semibold bg-white! w-full' rows={data} columns={columns}
 
 
                 initialState={{
@@ -53,12 +54,18 @@ export const MauiTable = ({ data, columns, text, title,setId, setModal ,rowspani
                             quickFilterValues: [],
                         },
                     },
+                    pagination:{
+                        paginationModel:{
+                            pageSize:25
+                        }
+                    }
                 }}
                 sx={{
-                    backgroundColor: "#1a1d25",
+                    backgroundColor: "white",
                     border: "none",
                     color: "#fff",
                     width: "98%",
+                    fontSize:size??14,
                     input: {
                         color: "#fff", // texto que escribes
                     },
@@ -67,7 +74,7 @@ export const MauiTable = ({ data, columns, text, title,setId, setModal ,rowspani
                         opacity: 1,
                     },
                     "& .MuiDataGrid-main": {
-                        backgroundColor: "#1a1d25"
+                        backgroundColor: "white"
                     },
 
                     "& .MuiDataGrid-toolbarContainer": {
@@ -76,55 +83,57 @@ export const MauiTable = ({ data, columns, text, title,setId, setModal ,rowspani
                     },
 
                     "& .MuiDataGrid-topContainer": {
-                        backgroundColor: "#1a1d25 !important"
+                        backgroundColor: "white !important"
                     },
 
                     // fallback general
                     "& .MuiDataGrid-root": {
-                        backgroundColor: "#1a1d25"
+                        backgroundColor: "white"
                     },
                     // 🔥 HEADER COMPLETO
                     "& .MuiDataGrid-columnHeaders": {
-                        backgroundColor: "#1a1d25 !important",
+                        backgroundColor: "white !important",
                     },
 
                     "& .MuiDataGrid-virtualScroller": {
-                        backgroundColor: "#1a1d25"
+                        backgroundColor: "white",
+                        color:"black"
                     },
 
                     // 🔥 CADA CELDA DEL HEADER (ESTE ES EL QUE TE FALTA)
                     "& .MuiDataGrid-columnHeader": {
-                        backgroundColor: "#1a1d25 !important",
-                        color: "#fff !important",
+                        backgroundColor: "#eef8f1  !important",
+                        color: "green !important",
+                        fontWeight:"bold !important"
                     },
 
 
                     // opcional: líneas
                     "& .MuiDataGrid-cell": {
-                        borderColor: "#2a2d35",
+                        borderColor: "white",
                     },
 
                     "& .MuiDataGrid-footerContainer": {
-                        backgroundColor: "#1a1d25",
-                        color: "#fff"
+                        backgroundColor: "white",
+                        color: "black"
                     },
 
                     "& .MuiTablePagination-root": {
-                        color: "#fff !important"
+                        color: "#113b2b !important"
                     },
 
                     // select dropdown
                     "& .MuiSelect-select": {
-                        color: "#fff"
+                        color: "black"
                     },
 
                     // íconos (flechas)
                     "& .MuiSvgIcon-root": {
-                        color: "#fff !important"
+                        color: "#113b2b !important"
                     },
 
                     "& .MuiDataGrid-iconButtonContainer": {
-                        color: "#1a1d25"
+                        color: "white"
                     },
 
                     "& .MuiDataGrid-filterIcon": {
@@ -142,16 +151,18 @@ export const MauiTable = ({ data, columns, text, title,setId, setModal ,rowspani
                     },
 
                     "& .MuiDataGrid-row:hover": {
-                        backgroundColor: "#252833 !important"
+                        backgroundColor: "#eef8f1 !important"
                     },
                     "& .MuiDataGrid-row.Mui-selected": {
-                        backgroundColor: "#2a2d35 !important",
-                        color: "#fff"
+                        backgroundColor: "#eef8f1 !important",
+                        color: "#113b2b",
+                        fontWeight:"bold",
+                        fontSize:"12px"
                     },
 
                     // ✅ hover mientras está seleccionada
                     "& .MuiDataGrid-row.Mui-selected:hover": {
-                        backgroundColor: "#252833 !important"
+                        backgroundColor: "white !important"
                     }
                 }} /></>
     )

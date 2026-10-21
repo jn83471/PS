@@ -107,8 +107,8 @@ export const CodeTable = () => {
   )
   return (
     <>
-      <div className="flex-1 min-w-0 p-4">
-        <div className='bg-[#1a1d25] rounded-xl py-5 px-2 w-full min-h-[75vh]'>
+      <div className="flex-1 min-w-0 sm:p-4">
+        <div className='bg-white border border-gray-400 rounded-xl py-5 px-2 w-full min-h-[75vh]'>
           <MauiTable header={true} setId={setId} title='Código' data={filteredRows} setModal={setModal} columns={columns} text={"Nueva Código"} />
         </div>
       </div>

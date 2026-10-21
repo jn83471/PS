@@ -9,6 +9,7 @@ export class Machine extends Model {
     declare name: string;
     declare machineCode: string;
     declare status: boolean;
+    declare Codes:Codes
 }
 
 Machine.init(

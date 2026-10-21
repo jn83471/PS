@@ -42,3 +42,25 @@ export async function getUser() {
         }
     }
 }
+
+export async function getUserApps() {
+    try{
+        //console.log(formData)
+        const url=`/auth/userApps`
+        const {data}=await api.get(url)
+        //console.log(data)
+        const resp=userSchema.safeParse(data)
+        if (!resp.success) {
+            throw new Error("Respuesta inválida");
+        }
+        if(resp.success){
+            return resp.data
+        }
+        
+    }
+    catch(error){
+        if(isAxiosError(error) && error.response){
+            throw new Error(error.response.data.error)
+        }
+    }
+}

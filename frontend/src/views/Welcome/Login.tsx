@@ -1,5 +1,4 @@
 
-import { FaGoogle, FaApple } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import type { UserLoginForm } from "../../types/UserForms";
 import { useMutation } from '@tanstack/react-query'
@@ -9,23 +8,28 @@ import { useForm } from 'react-hook-form'
 import { ErrorMessage } from "../../components/Gnr/ErrorMessage";
 
 import Logo from '../../assets/Logo.png'
-
+const initialValues: UserLoginForm = {
+  Email: '',
+  Password: ''
+}
 export default function Login() {
-  const Navigate = useNavigate()
-  const initialValues: UserLoginForm = {
-    Email: '',
-    Password: ''
-  }
+  const navigate = useNavigate()
 
-  const { mutate } = useMutation({
+
+  const { mutate, isPending } = useMutation({
     mutationFn: AuthLoginApi,
     onError: (error) => {
-      console.log(error.message)
+      if (import.meta.env.DEV) {
+        console.error(error);
+      }
       toast.error(error.message)
     },
     onSuccess: (data) => {
-      Navigate('/home')
-      //console.log(data)
+      if (import.meta.env.DEV) {
+        console.info(data);
+      }
+      navigate('/home')
+
     }
   })
 
@@ -33,7 +37,7 @@ export default function Login() {
     mutate(formData)
   }
 
-  const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: initialValues })
+  const { register, handleSubmit, formState: { errors } } = useForm<UserLoginForm>({ defaultValues: initialValues })
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-zinc-900 to-black text-white">
@@ -48,7 +52,7 @@ export default function Login() {
           <form onSubmit={handleSubmit(HandleSubmitLogin)}>
             <div className="flex items-center gap-2 mb-10">
               <div className="w-9 h-9 rounded-full" >
-                <img src={Logo} alt="Logo"  />
+                <img src={Logo} alt="Logo" />
               </div>
               <span className="text-lg font-semibold">TKE</span>
             </div>
@@ -84,7 +88,7 @@ export default function Login() {
                 <label className="text-sm text-gray-300">Email</label>
                 <input
                   type="email"
-                  placeholder="Your email address"
+                  placeholder="Escribe tu email"
                   className="w-full mt-1 bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   {...register("Email", {
                     required: "El Email es obligatorio",
@@ -108,7 +112,7 @@ export default function Login() {
                 </div>
                 <input
                   type="password"
-                  placeholder="Your password"
+                  placeholder="Escribe tu contraseña "
                   className="w-full mt-1 bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   {...register("Password", {
                     required: "El Password es obligatorio",
@@ -119,8 +123,13 @@ export default function Login() {
                 )}
               </div>
 
-              <button type="submit" className="w-full bg-purple-600 hover:bg-purple-500 transition rounded-lg py-2 font-semibold">
-                Iniciar sesion
+              <button type="submit" disabled={isPending} className="w-full bg-purple-600 hover:bg-purple-500 transition rounded-lg py-2 font-semibold
+              disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-purple-600">
+                {
+                  isPending
+                    ? "Iniciando sesión..."
+                    : "Iniciar sesión"
+                }
               </button>
             </div>
           </form>
@@ -138,8 +147,8 @@ export default function Login() {
         <div className="hidden md:flex relative items-center justify-center bg-gradient-to-br from-purple-900/40 to-black p-10">
           <div className="text-right max-w-sm">
             <h2 className="text-4xl font-bold leading-tight mb-4">
-              Divición Tepic<br />
-              4 Plantas de ensamble
+              División  Tepic<br />
+              4 plantas de ensamble
             </h2>
             <p className="text-gray-300 mb-6">
               Sistema escalable de planificación y generación de informes para entornos industriales.

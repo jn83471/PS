@@ -1,7 +1,6 @@
-import { faBusinessTime, faCancel, faClose, faPlus } from "@fortawesome/free-solid-svg-icons"
+import { faBusinessTime, faCancel, faClose, faSave } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { GetCode } from "../../api/CodeApi";
+import { useMutation } from "@tanstack/react-query";
 import type { Code } from "../../types/CodeSchema";
 import type { PlantForm } from "../../types/PlantForms";
 import { toast } from "react-toastify";
@@ -30,32 +29,41 @@ export const PlantModal = ({ setModal, code }: PlantModalProp) => {
       setModal(false)
     }
   })
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm({ defaultValues: initialValues })
+  const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: initialValues })
   const HandleSubmitCreatePlants = (formData: PlantForm) => {
     mutate(formData)
   }
   return (
-    <div id="page" className="w-screen h-screen bg-[rgba(0,0,0,.7)] transition-colors duration-500 p-2 md:p-10 absolute top-0 left-0
+    <div id="page" className="w-screen h-screen  bg-[rgba(0,0,0,.7)] transition-colors duration-500 p-2 md:p-10 fixed top-0 left-0
       ">
 
       <form onSubmit={handleSubmit(HandleSubmitCreatePlants)} id="wrapper" className="w-full h-full">
 
-        <div id="modal" className="w-[80%] max-w-[500px] rounded-xl bg-gray-800 shadow shadow-[rgba(255,255,255,.7)] text-center antialiased px-1 py-3 relative top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <div className='text-white border-b py-4 border-b-amber-50 flex justify-between px-5'>
-            <div className="text-2xl font-bold">
-              <FontAwesomeIcon icon={faBusinessTime} className="pr-2" />
-              Crear Planta
+        <div id="modal" className="w-[80%] bg-white max-w-[500px] rounded-xl shadow shadow-[rgba(255,255,255,.7)] text-center antialiased relative top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-t-2xl">
+          <div className='text-white border-b py-4 bg-blue-900 flex justify-between px-5 rounded-t-2xl'>
+            <div>
+              <div className="text-2xl font-bold">
+                <FontAwesomeIcon icon={faBusinessTime} className="pr-2" />
+                Planta
+              </div>
+              <div className="text-sm text-gray-300">
+                Crea la planta
+              </div>
             </div>
             <div className='relative'>
-              <button onClick={() => setModal(false)} className='bg-red-700 rounded-3xl w-[30px] h-[30px] hover:bg-red-800'>
+              <button onClick={() => setModal(false)} className=' rounded-3xl w-[30px] h-[30px] text-2xl'>
                 <FontAwesomeIcon icon={faClose} />
               </button>
             </div>
           </div>
           <div className='py-5 text-left px-4'>
             <div>
-              <label className="text-xl mb-2 text-gray-300 block">Codigo:</label>
-              <select className="w-full outline-none rounded bg-gray-900 p-2 mt-2 mb-3 border border-white focus:ring-3 focus:ring-blue-950"  {...register("defaultCode", {
+              <label className="text-xl mb-2 text-black block">Codigo:</label>
+              <select className="w-full outline-none rounded  p-2 mt-2 mb-3 border border-gray-200 in:border-blue-500
+                        focus:outline-none
+                    focus:border-blue-500
+                    hover:border-blue-500
+                    active:border-blue-500"  {...register("defaultCode", {
                 required: "El codigo de planta es obligatorio"
               })}>
                 {code?.map((m) => (
@@ -67,8 +75,14 @@ export const PlantModal = ({ setModal, code }: PlantModalProp) => {
               )}
             </div>
             <div>
-              <label className="text-xl mb-2 text-gray-300 block">Nombre:</label>
-              <input className="w-full outline-none rounded bg-gray-900 px-2 py-1 mt-2 mb-3 border border-white focus:ring-3 focus:ring-blue-950" {...register("name", {
+              <label className="text-xl mb-2 text-black block">Nombre:</label>
+              {/*focus:ring-3*/}
+              <input className="w-full outline-none rounded border-gray-200 px-2 py-2 mt-2 mb-3 border 
+                in:border-blue-500
+                        focus:outline-none
+                    focus:border-blue-500
+                    hover:border-blue-500
+                    active:border-blue-500" {...register("name", {
                 required: "El nombre es obligatorio"
               })} />
 
@@ -90,11 +104,11 @@ export const PlantModal = ({ setModal, code }: PlantModalProp) => {
     "type":1*/}
 
           <div className="px-4 py-3 text-right border-t">
-            <button onClick={() => setModal(false)} type="button" className="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700 mr-2">
+            <button onClick={() => setModal(false)} type="button" className="py-2 px-4 bg-gray-200 text-black rounded hover:bg-gray-700 mr-2">
               <FontAwesomeIcon icon={faCancel} /> Cancel
             </button>
             <button type="submit" className="py-2 px-4 bg-blue-500 text-white rounded font-medium hover:bg-blue-700 mr-2 transition duration-500">
-              <FontAwesomeIcon icon={faPlus} /> Crear
+              <FontAwesomeIcon icon={faSave} /> Crear
             </button>
           </div>
 

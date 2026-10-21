@@ -1,0 +1,59 @@
+{
+    "Apps": {
+        "Name": "Apps",
+        "HXH": "Hour X Hour",
+        "HXHDesc": "kIt is an application designed for the monitoring, capture, and analysis of real-time production data",
+        "PTS": "PTS",
+        "PTSDesc": "Real-Time Production Monitoring & Performance Analytics",
+        "RINSP": "RINSP",
+        "RINSPDesc": "Re-inspection control and tracking system designed to manage harness validation, defect control, material release, and real-time quality compliance monitoring.",
+        "LM": "LineMonitor",
+        "LMDesc": "LineMonitor is a production monitoring platform designed to provide real-time visibility into manufacturing operations. It enables users to track production output, defects, production speed, line efficiency, and operational trends."
+    },
+    "Layout": {
+        "Home": "Home",
+        "Plants": "Plants",
+        "Customers": "Customers",
+        "Plan": "Plan",
+        "Code": "Plant code",
+        "Line": "Line",
+        "Reports": "Reports"
+    },
+    "Gnr": {
+        "Name": "Name",
+        "Code": "Code",
+        "Edit": "Edit",
+        "Delete": "Delete",
+        "Actions": "Actions",
+        "Key": "Key"
+    },
+    "Urs": {
+        "Notes": {
+            "HightPriorityMaterial": "High Priority Material",
+            "NewRequest": "New Shipping Request",
+            "NewRequestDesc": "Track, prioritize, and coordinate critical material shipments."
+        },
+        "Btn": {
+            "CreateRequest": "Create New Request"
+        },
+        "Gnr": {
+            "Reason": "Reason",
+            "Method": "Method",
+            "Proposeddate": "Proposed Date",
+            "OpenRequest": "Open Requests",
+            "ClocedRequest": "Closed Requests"
+        },
+        "SideBar": {
+            "CreateRequest": "Create Request",
+            "Request": "Requests",
+            "CPLocalVerifications": "CP Local Verifications",
+            "Scanning": "Scanning",
+            "ScanTracking": "Scan Tracking",
+            "ShipmentVerification": "Shipment Verification",
+            "ReceiptVerification": "Receipt Verification"
+        }
+    },
+    "Manufacture": "Manufacture",
+    "HarnessStorage": "Harness Storage",
+    "User": "User"
+}

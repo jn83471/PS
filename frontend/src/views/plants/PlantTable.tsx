@@ -2,7 +2,6 @@
 import type { GridColDef } from '@mui/x-data-grid';
 import { DeletePlants, GetPlants } from '../../api/PlantsApi';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type { Plant } from '../../types/PlantForms';
 
 import { useState } from 'react';
 
@@ -16,20 +15,23 @@ import Button from '@mui/material/Button';
 import Swal from "sweetalert2";
 import { toast } from 'react-toastify';
 import { PlantEditModal } from '../../components/Plant/PlantEditModal';
+import { useTranslation } from 'react-i18next';
+import type { PlantForm } from '../../types/PlantForms';
 
 
 
 export const PlantTable = () => {
-  const { data, isError, isLoading, error } = useQuery({
+  const {t}=useTranslation()
+  const { data } = useQuery({
     queryKey: ['Plant'],
     queryFn: GetPlants,
     retry: false
   })
 
 
-  const [search, setSearch] = useState("");
+  const [search] = useState("");
   const [id,setId]=useState(0)
-  const [selected,setSelected]=useState(null)
+  const [selected,setSelected]=useState<PlantForm|null>(null)
 
   const [modal, setModal] = useState(false)
   const Code = useQuery({
@@ -71,11 +73,11 @@ export const PlantTable = () => {
 
 
   const columns: GridColDef[] = [
-    { field: 'name', headerName: 'Nombre', maxWidth: 300 },
-    { field: 'key', headerName: 'Codigo', flex: 1, valueGetter: (value, row) => row.Code.key },
+    { field: 'name', headerName: t("Gnr.Name"), maxWidth: 300 },
+    { field: 'key', headerName: t("Gnr.Code"), flex: 1, valueGetter: (value, row) => row.Code.key },
     {
       field: 'acciones',
-      headerName: 'Acciones',
+      headerName: t("Gnr.Actions"),
       width: 250,
       renderCell: (params) => (
         <>
@@ -91,7 +93,7 @@ export const PlantTable = () => {
             }}
           >
             <FontAwesomeIcon icon={faEdit} className='pr-1' />
-            Editar
+            {t("Gnr.Edit")}
           </Button>
 
           <Button
@@ -101,7 +103,7 @@ export const PlantTable = () => {
             onClick={() => handleDelete(params.row)}
           >
             <FontAwesomeIcon icon={faTrash} className='pr-1' />
-            Eliminar
+            {t("Gnr.Delete")}
           </Button>
         </>
       ),
@@ -114,9 +116,9 @@ export const PlantTable = () => {
   )
   return (
     <>
-      <div className="flex-1 min-w-0 p-4">
-        <div className='bg-[#1a1d25] rounded-xl py-5 px-2 w-full min-h-[75vh]'>
-          <MauiTable header={true} setId={setId} title='Plantas' data={filteredRows} setModal={setModal} columns={columns} text={"Nueva planta"} />
+      <div className="flex-1 min-w-0 sm:p-4">
+        <div className='rounded-xl py-5 px-2 w-full min-h-[75vh] border border-gray-400'>
+          <MauiTable key={"PlantTable"} rowspaning={false} size={14} header={true} setId={setId} title={t("Layout.Plants")} data={filteredRows} setModal={setModal} columns={columns} text={"Nueva planta"} />
         </div>
       </div>
       {(modal && id==0) && <PlantModal setModal={setModal} code={Code.data} />}

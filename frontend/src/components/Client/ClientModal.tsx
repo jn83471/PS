@@ -1,11 +1,8 @@
 import { faBusinessTime, faCancel, faClose, faPlus } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { GetCode } from "../../api/CodeApi";
+import { useMutation } from "@tanstack/react-query";
 import type { Code } from "../../types/CodeSchema";
-import type { PlantForm } from "../../types/PlantForms";
 import { toast } from "react-toastify";
-import { CreatePlant } from "../../api/PlantsApi";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "../Gnr/ErrorMessage";
 import type { ClientForm } from "../../types/ClientSchema";
@@ -31,12 +28,12 @@ export const ClientModal = ({ setModal, code }: ClientModalProp) => {
       setModal(false)
     }
   })
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm({ defaultValues: initialValues })
+  const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: initialValues })
   const HandleSubmitCreatePlants = (formData: ClientForm) => {
     mutate(formData)
   }
   return (
-    <div id="page" className="w-screen h-screen bg-[rgba(0,0,0,.7)] transition-colors duration-500 p-2 md:p-10 absolute top-0 left-0
+    <div id="page" className="w-screen h-screen bg-[rgba(0,0,0,.7)] transition-colors duration-500 p-2 md:p-10 fixed top-0 left-0
       ">
 
       <form onSubmit={handleSubmit(HandleSubmitCreatePlants)} id="wrapper" className="w-full h-full">

@@ -30,7 +30,7 @@ export const ClientEditModal = ({ setModal,data,id, code }: PlantModalProp) => {
       setModal(false)
     }
   })
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm({ defaultValues: initialValues })
+  const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: initialValues })
   const HandleSubmitCreateClient = (formData: ClientForm) => {
     const dt={
         id,

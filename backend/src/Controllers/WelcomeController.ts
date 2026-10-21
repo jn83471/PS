@@ -8,11 +8,13 @@ import { Machine } from "../Models/Machine";
 import { Clients } from "../Models/Client";
 import { Plans } from "../Models/Plan";
 import { Smhcas } from "../Models/SMHCAS";
+import { AgroupmentMachine } from "../Models/AgroupmentMachine";
+import { Apps } from "../Models/Apps";
 
 export class WelcomeController {
     static Index: any = async (req: Request, res: Response) => {
         try {
-            const plants = await Smhcas.findAll()
+            const plants = await Apps.findAll()
             return res.json(plants)
         } catch (error) {
 

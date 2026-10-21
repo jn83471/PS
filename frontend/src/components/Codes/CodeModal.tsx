@@ -32,7 +32,7 @@ export const CodeModal = ({ setModal }: CodeModalProp) => {
         mutate(formData)
     }
     return (
-        <div id="page" className="w-screen h-screen bg-[rgba(0,0,0,.7)] transition-colors duration-500 p-2 md:p-10 absolute top-0 left-0
+        <div id="page" className="w-screen h-screen bg-[rgba(0,0,0,.7)] transition-colors duration-500 p-2 md:p-10 fixed top-0 left-0
       ">
 
             <form onSubmit={handleSubmit(HandleSubmitCreatePlants)} id="wrapper" className="w-full h-full">
@@ -104,6 +104,36 @@ export const CodeModal = ({ setModal }: CodeModalProp) => {
 
                             {errors.db && (
                                 <ErrorMessage Text={errors.db.message!} />
+                            )}
+                        </div>
+
+                    </div>
+
+                    <div className='py text-left px-4'>
+
+                        <div>
+                            <label className="text-xl mb-2 text-gray-300 block">Servidor fgss:</label>
+                            <input className="w-full outline-none rounded bg-gray-900 px-2 py-1 mt-2 mb-3 border border-white focus:ring-3 focus:ring-blue-950" {...register("fgsServer", {
+                                required: "El nombre es obligatorio"
+                            })} />
+
+                            {errors.fgsServer && (
+                                <ErrorMessage Text={errors.fgsServer.message!} />
+                            )}
+                        </div>
+
+                    </div>
+
+                    <div className='py text-left px-4'>
+
+                        <div>
+                            <label className="text-xl mb-2 text-gray-300 block">Database fgss:</label>
+                            <input className="w-full outline-none rounded bg-gray-900 px-2 py-1 mt-2 mb-3 border border-white focus:ring-3 focus:ring-blue-950" {...register("fgsdb", {
+                                required: "El nombre es obligatorio"
+                            })} />
+
+                            {errors.fgsdb && (
+                                <ErrorMessage Text={errors.fgsdb.message!} />
                             )}
                         </div>
 

@@ -72,8 +72,9 @@ Plans.init(
             allowNull: false
         },
         Capacity: {
-            type: DataTypes.INTEGER,
-            allowNull: false
+            type: DataTypes.DECIMAL(18, 6),
+            allowNull: false,
+            defaultValue:0
         },
         Line: {
             type: DataTypes.STRING,

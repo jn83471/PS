@@ -13,6 +13,8 @@ import Button from "@mui/material/Button";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { GetClients } from "../../api/ClientApis";
 import { MachineEditModal } from "../../components/Machine/MachineEditModal";
+import { useTranslation } from "react-i18next";
+import type { GridColDef } from "@mui/x-data-grid";
 
 type Machine = {
     id: number;
@@ -22,6 +24,7 @@ type Machine = {
 
 
 export const MachinesTable = () => {
+    const {t}=useTranslation()
 
     const [search, setSearch] = useState("");
     const [id, setId] = useState(0)
@@ -82,13 +85,13 @@ export const MachinesTable = () => {
     };
 
     const columns: GridColDef[] = [
-        { field: 'plant.name', headerName: 'Planta', maxWidth: 300, valueGetter: (value, row) => row.plant.name },
-        { field: 'Clients.name', headerName: 'Cliente', maxWidth: 300, valueGetter: (value, row) => row.Clients.name },
-        { field: 'machineCode', headerName: 'Nombre', maxWidth: 300 },
-        { field: 'key', headerName: 'Codigo', flex: 1, minWidth: 100, valueGetter: (value, row) => row.Codes.key },
+        { field: 'plant.name', headerName:  t("Layout.Plants"), maxWidth: 300, valueGetter: (value, row) => row.plant.name },
+        { field: 'Clients.name', headerName: t("Layout.Customers"), maxWidth: 300, valueGetter: (value, row) => row.Clients.name },
+        { field: 'machineCode', headerName: t("Gnr.Name"), maxWidth: 300 },
+        { field: 'key', headerName: t("Gnr.Code"), flex: 1, minWidth: 100, valueGetter: (value, row) => row.Codes.key },
         {
             field: 'acciones',
-            headerName: 'Acciones',
+            headerName: t("Gnr.Actions"),
             width: 250,
             renderCell: (params) => (
                 <>
@@ -104,7 +107,7 @@ export const MachinesTable = () => {
                         }}
                     >
                         <FontAwesomeIcon icon={faEdit} className='pr-1' />
-                        Editar
+                        {t("Gnr.Edit")}
                     </Button>
 
                     <Button
@@ -114,7 +117,7 @@ export const MachinesTable = () => {
                         onClick={() => handleDelete(params.row)}
                     >
                         <FontAwesomeIcon icon={faTrash} className='pr-1' />
-                        Eliminar
+                        {t("Gnr.Delete")}
                     </Button>
                 </>
             ),
@@ -130,9 +133,9 @@ export const MachinesTable = () => {
 
     return (
         <>
-            <div className="flex-1 min-w-0 p-4">
-                <div className='bg-[#1a1d25] rounded-xl py-5 px-2 w-full min-h-[75vh]'>
-                    <MauiTable header={true} setId={setId} title='Lineas' data={filteredRows} setModal={setModal} columns={columns} text={"Nueva linea"} />
+            <div className="flex-1 min-w-0 sm:p-4">
+                <div className='bg-white border border-gray-400 rounded-xl py-5 px-2 w-full min-h-[75vh]'>
+                    <MauiTable header={true} setId={setId} title={t("Layout.Line")} data={filteredRows} setModal={setModal} columns={columns} text={"Nueva linea"} />
                 </div>
             </div>
             {(modal && id == 0) ? <MachineModal setModal={setModal} plant={Plant.data} code={Code.data} Client={Client.data} /> : <></>}
@@ -140,107 +143,3 @@ export const MachinesTable = () => {
         </>
     );
 };
-/**/
-{/*{(modal && id!=0) && <PlantEditModal setModal={setModal} data={selected} id={id} code={Code.data} />}
-    {
-                (modal && id == 0) && <ClientModal setModal={setModal} code={Code.data} />
-            }
-            {
-                (modal && id != 0) && <ClientEditModal setModal={setModal} data={selected} id={id} code={Code.data} />
-            } 
-    <div className="text-white">
-
-
-                <div className="mb-4">
-
-
-                    <input
-                        value={globalFilter ?? ""}
-                        onChange={(e) => setGlobalFilter(e.target.value)}
-                        placeholder="Buscar ..."
-                        className="border border-gray-300 px-3 py-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-
-
-                    <button
-                        onClick={() => setModal(true)}
-                        className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-semibold"
-                    >
-                        + Nueva Linea
-                    </button>
-                </div>
-
-
-                <div className="bg-[#1a1d25] rounded-xl p-5">
-                    <h2 className="text-xl mb-4 font-semibold">Linea</h2>
-
-                    <table className="w-full text-sm">
-                        <thead>
-
-                            {table.getHeaderGroups().map(headerGroup => (
-                                <tr className="text-gray-400 text-left border-b border-gray-700" key={headerGroup.id}>
-                                    {headerGroup.headers.map(header => (
-                                        <th key={header.id} className="">
-                                            {flexRender(header.column.columnDef.header, header.getContext())}
-                                        </th>
-                                    ))}
-                                </tr>
-                            ))}
-                        </thead>
-
-                        <tbody>
-
-                            {table?.getRowModel()?.rows?.map(row => (
-                                <>
-                                    <tr key={row.id} >
-                                        <td className="px-2">
-                                            {row.original?.plant?.name}
-                                        </td>
-                                        <td className="py-3">{row.original?.Codes?.name}</td>
-
-                                        <td className="py-3">{row.original?.machineCode}</td>
-
-
-                                        <td className="text-center">
-                                            <span
-                                                className={`px-2 py-1 rounded text-xs text-center ${row.original?.status
-                                                    ? "bg-green-600"
-                                                    : "bg-red-600"
-                                                    }`}
-                                            >
-                                                {row.original?.status ? "Activa" : "Inactiva"}
-                                            </span>
-                                        </td>
-                                        <td className="text-right space-x-2 p-2">
-
-
-                                            <button
-
-                                                className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded text-black text-sm"
-                                            >
-                                                Editar
-                                            </button>
-
-                                            <button
-
-                                                className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white text-sm"
-                                            >
-                                                Eliminar
-                                            </button>
-
-                                        </td>
-
-                                    </tr>
-                                </>
-                            ))}
-
-                        </tbody>
-                    </table>
-                    <div className="flex gap-2 mt-4">  <button onClick={() => table.setPageIndex(0)}>    {"<<"}  </button>
-                        <button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>    {"<"}  </button>
-                        <button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>    {">"}  </button>
-                        <button onClick={() => table.setPageIndex(table.getPageCount() - 1)}>    {">>"}  </button></div>
-                </div>
-            </div>
-            {modalView ? <MachineModal setModal={setModal} plant={Plant.data} code={Code.data} /> : <></>}*/ }
-/**/

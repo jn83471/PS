@@ -3,12 +3,13 @@ import { io } from "../server";
 import { Json } from "sequelize/lib/utils";
 import { Machine } from "../Models/Machine";
 import { Codes } from "../Models/Index";
-import { DATE, QueryTypes, Sequelize } from "sequelize";
+import { DATE, json, QueryTypes, Sequelize } from "sequelize";
 import { sequelize } from "../config/db";
 import { DBConfig, TenantConnection } from "../config/TenantConnection";
 import type { ProductionRow } from '../types/MachineProduction'
 import { decrypt } from "../Utils/crypto";
 import { Plants } from "../Models/Plants";
+import { formatDate, formatDateNow } from "../Utils/Gnr";
 
 export class ReportController {
     static Report: any = async (req: Request, res: Response) => {
@@ -16,6 +17,23 @@ export class ReportController {
         ];
         const tenantsIGHS: DBConfig[] = [
         ];
+
+        const fecha = req.params?.fecha || req.body?.fecha || req.query?.fecha;
+
+        console.error("fecha: " + fecha)
+        const dt = new Date((fecha ?? '2025-04-01').toString())
+        console.log(dt)
+        dt.setDate(0)
+        console.log(dt)
+
+        const inicioSiguienteMes = new Date(
+            dt.getFullYear(),
+            dt.getMonth() + 1,
+            1
+        );
+        console.log(inicioSiguienteMes)
+        
+
         let data: ProductionRow[] = [];
 
         const servers = await Codes.findAll({
@@ -27,6 +45,8 @@ export class ReportController {
                 attributes: [],
             }],
         })
+
+        
 
         for (let index = 0; index < servers.length; index++) {
             try {
@@ -61,20 +81,22 @@ export class ReportController {
                 console.log(error)
             }
         }
+
+        
         console.log(tenantsIGHS)
         //return res.json(tenantsIGHS)
 
 
-        const promises = tenantsGacs.map((t) => {
-            const conn = TenantConnection(t);
+        const promises = tenantsGacs.map(async (t) => {
+            const conn = await TenantConnection(t);
 
             return this.withTimeout(
-                this.getReportACS(conn),
+                this.getReportACS(conn, dt, inicioSiguienteMes),
                 10000 // 3 segundos max
             );
         });
-        const promisesIGHS = tenantsIGHS.map((t) => {
-            const conn = TenantConnection(t);
+        const promisesIGHS = tenantsIGHS.map(async (t) => {
+            const conn = await TenantConnection(t);
 
             return this.withTimeout(
                 this.getReportIGHS(conn),
@@ -82,9 +104,9 @@ export class ReportController {
             );
         });
         // return res.json(tenantsIGHS)
-
-
         const results = await Promise.allSettled(promises);
+        console.log("completo")
+        console.log(results)
 
         for (let index = 0; index < results.length; index++) {
             if (index == 0) {
@@ -205,16 +227,16 @@ export class ReportController {
                 console.log(error)
             }
         }
-        const promises = tenantsGacs.map((t) => {
-            const conn = TenantConnection(t);
+        const promises = tenantsGacs.map(async (t) => {
+            const conn = await TenantConnection(t);
 
             return this.withTimeout(
                 this.getReportAllACS(conn),
                 10000
             );
         });
-        const promisesIGHS = tenantsIGHS.map((t) => {
-            const conn = TenantConnection(t);
+        const promisesIGHS = tenantsIGHS.map(async (t) => {
+            const conn = await TenantConnection(t);
 
             return this.withTimeout(
                 this.getReportAllIGHS(conn),
@@ -367,16 +389,16 @@ export class ReportController {
                 console.log(error)
             }
         }
-        const promises = tenantsGacs.map((t) => {
-            const conn = TenantConnection(t);
+        const promises = tenantsGacs.map(async (t) => {
+            const conn = await TenantConnection(t);
 
             return this.withTimeout(
                 this.getReportAllByYearACS(conn),
                 10000
             );
         });
-        const promisesIGHS = tenantsIGHS.map((t) => {
-            const conn = TenantConnection(t);
+        const promisesIGHS = tenantsIGHS.map(async (t) => {
+            const conn = await TenantConnection(t);
 
             return this.withTimeout(
                 this.getReportAllByYearIGHS(conn),
@@ -434,7 +456,7 @@ export class ReportController {
         const plantMachines = await Plants.findAll({
             where: {
                 status: true,
-                id:Plantid
+                id: Plantid
             },
             include: [
                 {
@@ -454,12 +476,12 @@ export class ReportController {
         plantMachines.map(x => {
             const machines = x.Machine.map(y => y.machineCode);
             for (let index = 0; index <= new Date().getMonth(); index++) {
-                const prod = data.filter(x => x.MONTH==(index+1)).reduce((sum, x) => sum + x.PROD, 0)
-                const def = data.filter(x => x.MONTH==(index+1)).reduce((sum, x) => sum + x.Def, 0)
+                const prod = data.filter(x => x.MONTH == (index + 1)).reduce((sum, x) => sum + x.PROD, 0)
+                const def = data.filter(x => x.MONTH == (index + 1)).reduce((sum, x) => sum + x.Def, 0)
                 dt.push({
                     name: x.name,
-                    Prod: prod+def,
-                    MONTH: index+1,
+                    Prod: prod + def,
+                    MONTH: index + 1,
                     Def: def,
                     IPD: (def / (prod + def)) * 100
                 })
@@ -477,14 +499,28 @@ export class ReportController {
         return text.replace(/\\+/g, "\\");
     };
 
-    static getReportACS = async (sequelize: Sequelize) => {
+    static getReportACS = async (sequelize: Sequelize, fecha: Date, fin: Date) => {
+        const dt = {
+            START: "",
+            END: ""
+        }
+        
+        const data = process.env.HOURSTA.split('|')
+        dt.START = formatDate(new Date(fecha)) + " " + data[0] + ":00:00"
+        dt.END = formatDate(new Date(fin)) + " " + data[0] + ":00:00"
+
+        console.log({
+            fecha: dt.START,
+            fin: dt.END,
+        })
+
         const query = `
              SELECT line_c,DAY,SHIFT,COUNT(SHIFT) AS PROD  FROM(
                 select line_c,
                     CASE WHEN DATEPART(HH,insp_dt)<7 THEN DATEPART(DAY,DATEADD(DAY,-1,insp_dt)) else DATEPART(DAY,insp_dt) end AS DAY,
                     CASE WHEN DATEPART(HH,insp_dt)<2 OR DATEPART(HH,insp_dt)>=17 THEN 2 WHEN DATEPART(HH,insp_dt)>=7 THEN 1 ELSE 3 END AS SHIFT
                 from insp_res
-                where insp_dt>='2026-05-01 7:00:00' and wrkproc_c='p2'
+                where insp_dt>= :START and insp_dt< :ENDS and wrkproc_c='P2'
             ) TEMP1
             WHERE DAY>0
             GROUP BY line_c,DAY,SHIFT
@@ -497,6 +533,10 @@ export class ReportController {
             SHIFT: number;
             PROD: number;
         }>(query, {
+            replacements: {
+                START: dt.START,
+                ENDS: dt.END,
+            },
             type: QueryTypes.SELECT,
         });
 

@@ -19,5 +19,7 @@ export const upload = multer({
 });
 router.get("/",PlanController.Index)
 router.post("/", upload.single('Plan'),PlanController.Plan)
+router.get("/planview", upload.single('Plan'),PlanController.PlanView)
+router.get("/PartNumberMachine/:machineId", upload.single('Plan'),PlanController.PartNumberMachine)
 
 export default router

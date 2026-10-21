@@ -59,7 +59,7 @@ export class MachinesController {
             const ValidateName=await Machine.findOne({
                 where:[
                     {
-                        machineCode:machineCode,
+                        machineCode:machineCode.toUpperCase(),
                         status:true
                     }
                 ]
@@ -71,7 +71,7 @@ export class MachinesController {
             const plant = await Machine.create({
                 PlantId,
                 CodesId,
-                machineCode,
+                machineCode:machineCode.toUpperCase(),
                 ClientsId,
                 status: true
             })
@@ -112,7 +112,7 @@ export class MachinesController {
             const ValidateName=await Machine.findOne({
                 where:[
                     {
-                        machineCode:machineCode,
+                        machineCode:machineCode.toUpperCase(),
                         status:true,
                         id:{
                             [Op.ne]:MachineId

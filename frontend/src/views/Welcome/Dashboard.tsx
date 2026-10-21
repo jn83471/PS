@@ -1,23 +1,22 @@
 import { Link } from "react-router-dom";
-import { MenuItem } from "../../components/Gnr/MenuItem";
 
 export default function Dashboard() {
-  
+
   return (
     <>
       {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <KPI title="Plantas" value="6" />
-        <KPI title="Clientes" value="3" />
-        <KPI title="Cumplimiento" value="90.4%" positive />
-        <KPI title="Scrap" value="1.8%" warning />
+        <KPI title="Plantas" value="6" positive={false} warning={false} />
+        <KPI title="Clientes" value="3" positive={false} warning={false}/>
+        <KPI title="Cumplimiento" value="90.4%" warning={false} positive />
+        <KPI title="Scrap" value="1.8%" positive={false} warning />
       </div>
 
       {/* PRODUCTION STATUS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         {/* TABLE */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+        <div className="border border-gray-200 rounded-xl p-4">
           <h2 className="font-semibold mb-4">Estado de Líneas</h2>
 
           <table className="w-full text-sm">
@@ -30,15 +29,15 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              <LineRow line="L-01" plan={3000} real={2800} />
+              <LineRow line="L-01" plan={3000} real={2800} ok={false}/>
               <LineRow line="L-02" plan={3000} real={3100} ok />
-              <LineRow line="L-03" plan={3000} real={2500} />
+              <LineRow line="L-03" plan={3000} real={2500} ok={false}/>
             </tbody>
           </table>
         </div>
 
         {/* QUICK ACTIONS */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex flex-col justify-between">
+        <div className=" border border-gray-200 rounded-xl p-4 flex flex-col justify-between">
           <div>
             <h2 className="font-semibold mb-4">Acciones rápidas</h2>
             <p className="text-sm text-gray-400 mb-6">
@@ -48,11 +47,11 @@ export default function Dashboard() {
 
           <div className="grid grid-cols-2 gap-4">
             <ActionButton label="Capturar Producción" />
-            <Link className="bg-purple-600 hover:bg-purple-500 rounded-lg font-bold flex justify-center items-center" to={'/plan'} >
+            <Link className="bg-purple-600 hover:bg-purple-500 rounded-lg font-bold flex justify-center items-center text-white" to={'/plan'} >
               Editar Plan
             </Link>
             <ActionButton label="Registrar Paro" />
-             <Link className="bg-purple-600 hover:bg-purple-500 rounded-lg font-bold flex justify-center items-center" to={'/production'} >
+            <Link className="bg-purple-600 hover:bg-purple-500 rounded-lg font-bold flex justify-center items-center text-white" to={'/production'} >
               Plan de produccion
             </Link>
           </div>
@@ -64,22 +63,32 @@ export default function Dashboard() {
 
 /* ---------- COMPONENTS ---------- */
 
+type KPIProp={
+  title:string, 
+  value:string, 
+  positive:boolean, 
+  warning:boolean
+}
 
-
-function KPI({ title, value, positive, warning }) {
-  let color = "text-white";
+function KPI({ title, value, positive, warning }:KPIProp) {
+  let color = "text-black";
   if (positive) color = "text-green-400";
   if (warning) color = "text-yellow-400";
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-      <p className="text-sm text-gray-400">{title}</p>
+    <div className="border border-gray-200 rounded-xl p-4">
+      <p className="text-sm text-black">{title}</p>
       <p className={`text-2xl font-semibold ${color}`}>{value}</p>
     </div>
   );
 }
-
-function LineRow({ line, plan, real, ok }) {
+type LineRowProp = {
+  line: string,
+  plan: number,
+  real: number,
+  ok: boolean
+}
+function LineRow({ line, plan, real, ok }: LineRowProp) {
   const status = ok
     ? "bg-green-500"
     : real < plan
@@ -99,10 +108,12 @@ function LineRow({ line, plan, real, ok }) {
     </tr>
   );
 }
-
-function ActionButton({ label }) {
+type ActionButtonProp = {
+  label: string
+}
+function ActionButton({ label }: ActionButtonProp) {
   return (
-    <button className="bg-purple-600 hover:bg-purple-500 transition rounded-lg py-2 text-sm font-medium">
+    <button className="bg-purple-600 hover:bg-purple-500 transition rounded-lg py-2 text-sm font-medium text-white">
       {label}
     </button>
   );

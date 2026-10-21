@@ -1,36 +1,34 @@
 
 import type { GridColDef } from '@mui/x-data-grid';
-import { DeletePlants, GetPlants } from '../../api/PlantsApi';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type { Plant } from '../../types/PlantForms';
-
 import { useState } from 'react';
-
 import { MauiTable } from '../../components/Gnr/MauiTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { PlantModal } from '../../components/Plant/PlantModal';
 import { GetCode } from '../../api/CodeApi';
 import Button from '@mui/material/Button';
 
 import Swal from "sweetalert2";
 import { toast } from 'react-toastify';
-import { PlantEditModal } from '../../components/Plant/PlantEditModal';
 import { DeleteClient, GetClients } from '../../api/ClientApis';
 import { ClientModal } from '../../components/Client/ClientModal';
 import { ClientEditModal } from '../../components/Client/ClientEditModal';
+import { useTranslation } from 'react-i18next';
 
 
 
 export const ClientTable = () => {
-  const { data, isError, isLoading, error } = useQuery({
+  const {t}=useTranslation()
+  const { data, 
+    //isError, isLoading, error 
+  } = useQuery({
     queryKey: ['Client'],
     queryFn: GetClients,
     retry: false
   })
 
 
-  const [search, setSearch] = useState("");
+  const [search] = useState("");
   const [id, setId] = useState(0)
   const [selected, setSelected] = useState(null)
 
@@ -74,11 +72,11 @@ export const ClientTable = () => {
 
 
   const columns: GridColDef[] = [
-    { field: 'name', headerName: 'Nombre', maxWidth: 300 },
-    { field: 'key', headerName: 'Codigo', flex: 1, valueGetter: (value, row) => row.Codes.key },
+    { field: 'name', headerName: t("Gnr.Name"), maxWidth: 300 },
+    { field: 'key', headerName: t("Gnr.Code"), flex: 1, valueGetter: (value, row) => row.Codes.key },
     {
       field: 'acciones',
-      headerName: 'Acciones',
+      headerName: t("Gnr.Actions"),
       width: 250,
       renderCell: (params) => (
         <>
@@ -94,7 +92,7 @@ export const ClientTable = () => {
             }}
           >
             <FontAwesomeIcon icon={faEdit} className='pr-1' />
-            Editar
+            {t("Gnr.Edit")}
           </Button>
 
           <Button
@@ -104,7 +102,7 @@ export const ClientTable = () => {
             onClick={() => handleDelete(params.row)}
           >
             <FontAwesomeIcon icon={faTrash} className='pr-1' />
-            Eliminar
+            {t("Gnr.Delete")}
           </Button>
         </>
       ),
@@ -117,9 +115,9 @@ export const ClientTable = () => {
   )
   return (
     <>
-      <div className="flex-1 min-w-0 p-4">
-        <div className='bg-[#1a1d25] rounded-xl py-5 px-2 w-full min-h-[75vh]'>
-          <MauiTable header={true} setId={setId} title='Clientes' data={filteredRows} setModal={setModal} columns={columns} text={"Nueva cliente"} />
+      <div className="flex-1 min-w-0 sm:p-4">
+        <div className='bg-white border border-gray-400 rounded-xl py-5 px-2 w-full min-h-[75vh]'>
+          <MauiTable key={"Client table"} rowspaning={false} size={14} header={true} setId={setId} title={t("Layout.Customers")} data={filteredRows} setModal={setModal} columns={columns} text={"Nueva cliente"} />
         </div>
       </div>
       {

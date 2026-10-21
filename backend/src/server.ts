@@ -23,13 +23,28 @@ import ReportRoutes from './routes/ReportRoutes'
 import ClientRoutes from './routes/ClientRoutes'
 import DownloadRoutes from './routes/DownloadRoutes'
 import PlanRoutes from './routes/PlanRoutes'
+
+//HourByhOUR
+import HourByHourRoutes from './routes/Apps/HourXHour/HourByHourRoutes'
+import hourByHourTimeRoutes from './routes/Apps/HourXHour/hourByHourTimeRoutes'
+
+
+import LineMonitorRoutes from './routes/Apps/LineMonitor/LineMonitorRoutes'
+import FgssRoutes from './routes/PLataforms/FgssRoutes'
+//urs
+import UrsRequestFolioController from './routes/Apps/Urs/Folio/UrsRequestFolioController'
+import UrsPriority from './routes/Apps/Urs/Folio/UrsPriority'
+import UrsCatalog from './routes/Apps/Urs/Folio/UrsCatalog'
+import UrsRequest from './routes/Apps/Urs/Folio/UrsRequest'
+import UrsScannRoutes from './routes/Apps/Urs/Scann/UrsScannRoutes'
+
 dotenv.config()
 
 const app = express()
 const uploadsPath = path.join(__dirname, "../uploads");
 const httpServer = createServer(app);
 export const io = new Server(httpServer, {
-    cors: corsConfig
+  cors: corsConfig
 });
 
 
@@ -80,23 +95,48 @@ app.use(express.json())
 app.get('/', WelcomeController.Index)
 
 io.on("connection", (socket) => {
-    console.log("Client connected:", socket.id);
+  console.log("Client connected:", socket.id);
 
-    socket.on("joinRoom", (roomName) => {
-        socket.join(roomName);
-        console.log(`Socket ${socket.id} unido al room ${roomName}`);
-    });
+  socket.on("joinRoom", (roomName) => {
+    socket.join(roomName);
+    console.log(`Socket ${socket.id} unido al room ${roomName}`);
+  });
+
+  socket.on("disconnect", (reason) => {
+    console.log(
+      `Socket ${socket.id} desconectado. Razón: ${reason}`
+    );
+  });
 
 });
 
 /*app.use('/api/proyects',projectRouter)*/
-app.use('/api/auth',authRoutes)
-app.use('/api/machine',MachinesRoutes)
-app.use('/api/plant',PlantRoutes)
-app.use('/api/code',CodeRoutes)
-app.use('/api/report',ReportRoutes)
-app.use('/api/client',ClientRoutes)
-app.use('/api/download',DownloadRoutes)
-app.use('/api/plan',PlanRoutes)
+app.use('/api/auth', authRoutes)
+app.use('/api/machine', MachinesRoutes)
+app.use('/api/plant', PlantRoutes)
+app.use('/api/code', CodeRoutes)
+app.use('/api/report', ReportRoutes)
+app.use('/api/client', ClientRoutes)
+app.use('/api/download', DownloadRoutes)
+app.use('/api/plan', PlanRoutes)
+
+//Plataforms
+app.use("/api/fgss", FgssRoutes)
+
+/* Apps */
+//Line Monitor
+app.use('/api/apps/linemonitor', LineMonitorRoutes)
+
+//HOUR X HOUR
+app.use('/api/apps/HourByHour', HourByHourRoutes)
+app.use('/api/apps/HourByHour/Time', hourByHourTimeRoutes)
+
+//urs
+app.use('/api/apps/urs/folios', UrsRequestFolioController)
+app.use('/api/apps/urs/priority', UrsPriority)
+app.use('/api/apps/urs/catalog', UrsCatalog)
+app.use('/api/apps/urs/request', UrsRequest)
+app.use('/api/apps/urs/scann', UrsScannRoutes)
+
 
 export default httpServer
