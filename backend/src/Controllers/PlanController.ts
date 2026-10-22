@@ -166,19 +166,19 @@ export class PlanController {
                 continue
             }
 
-            if (pl.find(x => x.machine == resultado[i]["col0"] && x.Capacity == (resultado[i]["col1"] == "" || resultado[i]["col1"] == null ? 0 : parseFloat(resultado[i]["col1"])) &&
-                x.Program == resultado[i]["col3"] && x.Shift == resultado[i]["col4"] && x.PartNumber == resultado[i]["col5"] &&
+            if (pl.find(x => x.machine == resultado[i]["col0"] &&
+                x.Shift == resultado[i]["col4"][0] && x.PartNumber == resultado[i]["col5"] &&
                 x.Customer == resultado[i]["col6"] && x.LevenDesign == resultado[i]["col7"] && x.Shortpart == resultado[i]["col8"]) == null
                 &&
-                plan.find(x => x.machine == resultado[i]["col0"] && x.Capacity == (resultado[i]["col1"] == "" || resultado[i]["col10"] == null ? 0 : parseFloat(resultado[i]["col1"])) &&
-                    x.Program == resultado[i]["col3"] && x.Shift == resultado[i]["col4"] && x.PartNumber == resultado[i]["col5"] &&
+                plan.find(x => x.machine == resultado[i]["col0"] &&
+                    x.Shift == resultado[i]["col4"][0] && x.PartNumber == resultado[i]["col5"] &&
                     x.Customer == resultado[i]["col6"] && x.LevenDesign == resultado[i]["col7"] && x.Shortpart == resultado[i]["col8"]) == null) {
                 pl.push({
                     machine: resultado[i]["col0"],
                     Capacity: resultado[i]["col1"] == "" || resultado[i]["col1"] == null ? 0 : parseFloat(resultado[i]["col1"]),
                     Line: resultado[i]["col2"],
                     Program: resultado[i]["col3"],
-                    Shift: resultado[i]["col4"],
+                    Shift: resultado[i]["col4"][0],
                     PartNumber: resultado[i]["col5"],
                     Customer: resultado[i]["col6"],
                     LevenDesign: resultado[i]["col7"],
@@ -219,11 +219,11 @@ export class PlanController {
                 })
                 //break;
             }
-            else if (plan.find(x => x.machine == resultado[i]["col0"] && x.Capacity == (resultado[i]["col1"] == "" || resultado[i]["col10"] == null ? 0 : parseFloat(resultado[i]["col1"])) &&
-                x.Program == resultado[i]["col3"] && x.Shift == resultado[i]["col4"] && x.PartNumber == resultado[i]["col5"] &&
+            else if (plan.find(x => x.machine == resultado[i]["col0"] &&
+                x.Shift == resultado[i]["col4"][0] && x.PartNumber == resultado[i]["col5"] &&
                 x.Customer == resultado[i]["col6"] && x.LevenDesign == resultado[i]["col7"] && x.Shortpart == resultado[i]["col8"]) != null) {
-                const upd = plan.find(x => x.machine == resultado[i]["col0"] && x.Capacity == (resultado[i]["col1"] == "" || resultado[i]["col10"] == null ? 0 : parseFloat(resultado[i]["col1"])) &&
-                    x.Program == resultado[i]["col3"] && x.Shift == resultado[i]["col4"] && x.PartNumber == resultado[i]["col5"] &&
+                const upd = plan.find(x => x.machine == resultado[i]["col0"] &&
+                    x.Shift == resultado[i]["col4"][0] && x.PartNumber == resultado[i]["col5"] &&
                     x.Customer == resultado[i]["col6"] && x.LevenDesign == resultado[i]["col7"] && x.Shortpart == resultado[i]["col8"])
 
                 if (upd != null) {
@@ -321,6 +321,179 @@ export class PlanController {
             resultado,
             fecha
         });
+    }
+    static PlanManual: any = async (req: Request, res: Response) => {
+
+
+        let machines = []
+        const { fecha, Shortpart, Kmh, machine, Line, Program, Shift, PartNumber, Customer, LevenDesign,
+            d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18, d19, d20, d21, d22, d23, d24, d25, d26, d27, d28, d29, d30, d31
+        } = req.body
+        let [year, month, day] = fecha
+            .split("-")
+            .map(Number);
+        const dt = new Date(year, month - 1, 2);
+        const inicioSiguienteMes = new Date(
+            dt.getFullYear(),
+            dt.getMonth() + 1,
+            1
+        );
+        const insert = new Date(dt)
+        insert.setDate(insert.getDate() + 1)
+
+
+        const smhcas = await Smhcas.findOne({
+            where: [
+                {
+                    Shortpart: Shortpart
+                }
+            ]
+        })
+        if (smhcas) {
+            const update = await Smhcas.update({
+                Kmh: Kmh
+            }, {
+                where: {
+                    ShortPart: Shortpart
+                }
+            })
+            console.log("modificar")
+            console.log(update)
+        }
+        else {
+            const create = await Smhcas.create({
+                ShortPart: Shortpart,
+                Kmh: Kmh
+            })
+            console.log("crear")
+            console.log(create)
+        }
+
+
+
+        const plan = await Plans.findOne({
+            where: {
+                machine: machine,
+                Shift: Shift,
+                PartNumber: PartNumber,
+                Customer: Customer,
+                LevenDesign: LevenDesign,
+                Shortpart: Shortpart,
+                createdAt: {
+                    [Op.gte]: dt,
+                    [Op.lt]: inicioSiguienteMes
+                }
+            }
+        })
+
+        if (!plan) {
+            const create = await Plans.create({
+                machine: machine,
+                Line: Line,
+                Shift: Shift,
+                PartNumber: PartNumber,
+                Customer: Customer,
+                LevenDesign: LevenDesign,
+                Shortpart: Shortpart,
+                Program: Program,
+                Kmh: Kmh,
+                d1,
+                d2,
+                d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18,
+                d19, d20, d21, d22, d23, d24, d25, d26, d27, d28, d29, d30, d31,
+                createdAt: insert
+            })
+            console.log(create)
+        }
+        else {
+            const create = await Plans.update({
+                machine: machine,
+                Line: Line,
+                Shift: Shift,
+                PartNumber: PartNumber,
+                Customer: Customer,
+                LevenDesign: LevenDesign,
+                Shortpart: Shortpart,
+                Program: Program,
+                Kmh: Kmh,
+                d1,
+                d2,
+                d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18,
+                d19, d20, d21, d22, d23, d24, d25, d26, d27, d28, d29, d30, d31,
+            },{
+                where:{
+                    id:plan.id
+                }
+            })
+        }
+
+
+        res.send("Se ha generado el plan de manera manual");
+    }
+    static PlanEditManual: any = async (req: Request, res: Response) => {
+
+
+        let machines = []
+        const { fecha, Shortpart, Kmh, machine, Line, Program, Shift, PartNumber, Customer, LevenDesign,
+            d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18, d19, d20, d21, d22, d23, d24, d25, d26, d27, d28, d29, d30, d31
+        } = req.body
+        let [year, month, day] = fecha
+            .split("-")
+            .map(Number);
+        const dt = new Date(year, month - 1, 2);
+        const inicioSiguienteMes = new Date(
+            dt.getFullYear(),
+            dt.getMonth() + 1,
+            1
+        );
+        const insert = new Date(dt)
+        insert.setDate(insert.getDate() + 1)
+
+
+        const smhcas = await Smhcas.findOne({
+            where: [
+                {
+                    Shortpart: Shortpart
+                }
+            ]
+        })
+
+            const update = await Smhcas.update({
+                Kmh: Kmh
+            }, {
+                where: {
+                    ShortPart: Shortpart
+                }
+            })
+            console.log("modificar")
+            console.log(update)
+        
+
+
+        
+            const create = await Plans.update({
+                machine: machine,
+                Line: Line,
+                Shift: Shift,
+                PartNumber: PartNumber,
+                Customer: Customer,
+                LevenDesign: LevenDesign,
+                Shortpart: Shortpart,
+                Program: Program,
+                Kmh: Kmh,
+                d1,
+                d2,
+                d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18,
+                d19, d20, d21, d22, d23, d24, d25, d26, d27, d28, d29, d30, d31,
+            },{
+                where:{
+                    id:req.Plans.id
+                }
+            })
+
+
+
+        res.send("Se ha generado el plan de manera manual");
     }
 
     static PlanView = async (req: Request, res: Response) => {
@@ -769,11 +942,26 @@ export class PlanController {
             ENDS: dt.END,
             ST: dt.ST,
             EN: dt.EN,
-            FIN:"FIN"
+            FIN: "FIN"
         })
 
 
         //console.log(result)
         return result
+    }
+
+    static DeletePlan = async (req: Request, res: Response) => {
+        try {
+            const eliminar = await Plans.destroy({
+                where: {
+                    id: req.Plans.id
+                }
+            })
+            res.send("Se han eliminado ")
+        } catch (error) {
+            const errores = new Error('No se ha podido eliminar el plan debido a algun problema.')
+            return res.status(500).json({ error: errores.message })
+        }
+
     }
 }

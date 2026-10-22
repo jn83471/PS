@@ -9,9 +9,11 @@ import { CodeBodyExist } from "../Middlewares/body/CodesBodyExist";
 import { storage, fileFilter } from "../server";
 import multer from "multer";
 import { PlanController } from "../Controllers/PlanController";
+import { ValindatePlans } from "../Middlewares/params/ValidatePlan";
 
 const router=Router()
 router.use(autenticate)
+router.param('planId',ValindatePlans)
 export const upload = multer({
     storage,
     fileFilter,
@@ -19,6 +21,9 @@ export const upload = multer({
 });
 router.get("/",PlanController.Index)
 router.post("/", upload.single('Plan'),PlanController.Plan)
+router.post("/Create",PlanController.PlanManual)
+router.delete("/:planId",PlanController.DeletePlan)
+router.put("/Edit/:planId",PlanController.PlanEditManual)
 router.get("/planview", upload.single('Plan'),PlanController.PlanView)
 router.get("/PartNumberMachine/:machineId", upload.single('Plan'),PlanController.PartNumberMachine)
 

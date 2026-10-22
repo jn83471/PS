@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios"
 import api from "../lib/axios"
-import type { UploadPlanSchemaForm } from "../types/PlanForms"
+import type { PlanCreateForm, UploadPlanSchemaForm } from "../types/PlanForms"
 
 export async function GetPlans(fecha: string) {
     try {
@@ -69,6 +69,59 @@ export async function CreatePlan(formData: UploadPlanSchemaForm) {
         formDatas.append("fecha", formData.fecha);
         const url = `/plan`
         const { data } = await api.post(url, formDatas)
+        console.log(data)
+        return data
+    }
+    catch (error) {
+        console.log("paso")
+        if (isAxiosError(error) && error.response) {
+            throw new Error(error.response.data.error)
+        }
+    }
+}
+
+export async function DeletePlan(id: number) {
+    try {
+        //console.log(formData)
+        const url = `/plan/${id}`
+        const { data } = await api.delete(url)
+        console.log(data)
+        return data
+    }
+    catch (error) {
+        console.log("paso")
+        if (isAxiosError(error) && error.response) {
+            throw new Error(error.response.data.error)
+        }
+    }
+}
+
+export async function CreatePlanManual(formData: PlanCreateForm) {
+    try {
+        //console.log(formData)
+        const url = `/plan/Create`
+        const { data } = await api.post(url, formData)
+        console.log(data)
+        return data
+    }
+    catch (error) {
+        console.log("paso")
+        if (isAxiosError(error) && error.response) {
+            throw new Error(error.response.data.error)
+        }
+    }
+}
+
+type UpdateClientProp = {
+    formData: PlanCreateForm,
+    id: number
+}
+
+export async function UpdatePlanManual({ formData, id }: UpdateClientProp) {
+    try {
+        //console.log(formData)
+        const url = `/plan/Edit/${id}`
+        const { data } = await api.put(url, formData)
         console.log(data)
         return data
     }

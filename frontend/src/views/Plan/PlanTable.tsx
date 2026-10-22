@@ -2,17 +2,20 @@ import { DownloadPlan } from "../../api/DownloadApis"
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CreatePlan, GetPlans } from "../../api/PlanApi";
+import { CreatePlan, DeletePlan, GetPlans } from "../../api/PlanApi";
 import dayjs, { Dayjs } from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MauiTable } from "../../components/Gnr/MauiTable";
 import Button from "@mui/material/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faGear, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faEdit, faGear, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
 import ExcelPreview from "../../components/Gnr/ExcelPreview";
 import type { UploadPlanSchemaForm } from "../../types/PlanForms";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import { PlanModal } from "../../components/Plan/PlanModal";
+import { PlanEditModal } from "../../components/Plan/PlanEditModal";
 
 export const PlanTable = () => {
   const DownloadFile = () => {
@@ -20,6 +23,9 @@ export const PlanTable = () => {
   }
   const [fecha, setFecha] = useState<Dayjs | null>(dayjs());
   const [modal, setModal] = useState(false)
+  const [modalAddToEdit, setModalAddToEdit] = useState(false)
+  const [selectPlan,setSelectPlan]=useState(null)
+
   const { data, isError, isLoading, error, refetch } = useQuery({
     queryKey: ['Plans'],
     queryFn: () => GetPlans(fecha?.format("YYYY-MM-DD")),
@@ -49,9 +55,54 @@ export const PlanTable = () => {
     setError("");
     setFile(selected);
   };
+  const { mutate } = useMutation({
+    mutationFn: CreatePlan,
+    onError: (error) => {
+      console.log(error.message)
+      toast.error(error.message)
+    },
+    onSuccess: (data) => {
+      toast.success("Se ha guardado correctamente la información")
+      refetch()
+      setModal(false)
+    }
+  })
 
+  const DeletePlans = useMutation({
+    mutationFn: DeletePlan,
+    onError: (error) => {
+      console.log(error.message)
+      toast.error(error.message)
+    },
+    onSuccess: (data) => {
+      toast.success("Se ha eliminado el plan")
+      refetch()
+      setModal(false)
+    }
+  })
 
   const queryClient = useQueryClient()
+
+  const HandleDeletePlan = async (id) => {
+    const resp = await Swal.fire({
+      title: "Desea eliminar del plan de produccion?",
+      text: "",
+      icon: "error",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí",
+      cancelButtonText: "No"
+    })
+    if (resp.isConfirmed) {
+      DeletePlans.mutate(id)
+    }
+  }
+
+  const [machine, setMachine] = useState("")
+  const [machines, setMachines] = useState([])
+
+  
 
   const column: GridColDef[] = [
     { field: 'machine', headerName: 'Código', maxWidth: 300, pinnable: true },
@@ -105,7 +156,11 @@ export const PlanTable = () => {
             variant="contained"
             color="primary"
             size="small"
-            onClick={() => { }}
+            onClick={() => { 
+              setModalAddToEdit(true)
+              setSelectPlan(params.row)
+              console.log(params.row)
+             }}
             style={{
               marginRight: 8,
               paddingLeft: 5,
@@ -120,7 +175,7 @@ export const PlanTable = () => {
             variant="contained"
             color="error"
             size="small"
-            onClick={() => { }}
+            onClick={() => HandleDeletePlan(params.row.id)}
           >
             <FontAwesomeIcon icon={faTrash} className='pr-1' />
             Eliminar
@@ -138,18 +193,7 @@ export const PlanTable = () => {
 
   }
 
-  const { mutate } = useMutation({
-      mutationFn: CreatePlan,
-      onError: (error) => {
-          console.log(error.message)
-          toast.error(error.message)
-      },
-      onSuccess: (data) => {
-          toast.success("Se ha guardado correctamente la información")
-          refetch()
-          setModal(false)
-      }
-  })
+
 
   const HandleSubmitCreateSuppliers = (formData: UploadPlanSchemaForm) => {
     console.log(formData)
@@ -215,6 +259,11 @@ export const PlanTable = () => {
                 onClick={DownloadFile}>Descargar</button>
               <button className="mt-2 sm:mt-0 mx-2 bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-semibold text-white"
                 onClick={() => setModal(true)}>Subir</button>
+              <button className="mt-2 sm:mt-0 mx-2 bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-semibold text-white"
+                onClick={() => {
+                  setModalAddToEdit(true)
+                  setSelectPlan(null)
+                }}>Nuevo</button>
             </div>
 
 
@@ -316,6 +365,14 @@ export const PlanTable = () => {
 
             </div>
           </form>}
+        {
+          (modalAddToEdit && !selectPlan) &&
+          <PlanModal setModalAddToEdit={setModalAddToEdit} refetch={refetch} />
+        }
+        {
+          (modalAddToEdit && selectPlan) &&
+          <PlanEditModal plan={selectPlan} setModalAddToEdit={setModalAddToEdit} refetch={refetch} />
+        }
       </div>
     </>
   )
