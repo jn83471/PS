@@ -25,7 +25,7 @@ export const PlanView = () => {
 
   const [fecha, setFecha] = useState<Dayjs | null>(dayjs());
   const { data, isError, isLoading, error, refetch } = useQuery({
-    queryKey: ['PlanView',fecha?.format("YYYY-MM-DD")],
+    queryKey: ['PlanView',fecha?.format("YYYY-MM-DD"),shift],
     queryFn: () => GetPlanView(fecha?.format("YYYY-MM-DD"), shift),
     retry: false,
     refetchInterval:30000

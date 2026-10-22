@@ -469,7 +469,25 @@ export class PlanController {
             console.log(update)
         
 
+        const plan = await Plans.findOne({
+            where: {
+                machine: machine,
+                Shift: Shift,
+                PartNumber: PartNumber,
+                Customer: Customer,
+                LevenDesign: LevenDesign,
+                Shortpart: Shortpart,
+                id:{
+                    [Op.not]:req.Plans.id
+                },
+                createdAt: {
+                    [Op.gte]: dt,
+                    [Op.lt]: inicioSiguienteMes
+                }
+            }
+        })
 
+        if (!plan) {
         
             const create = await Plans.update({
                 machine: machine,
@@ -490,6 +508,11 @@ export class PlanController {
                     id:req.Plans.id
                 }
             })
+        }
+        else{
+            const error = new Error('Ya coincide con un plan no puede ser generado')
+                return res.status(401).json({ error: error.message })
+        }
 
 
 
@@ -727,57 +750,6 @@ export class PlanController {
             })
             return res.json({ send: data, plan })
         }
-
-
-        /*
-{
-            "id": 724,
-            "machine": "TO16",
-            "Capacity": 95,
-            "Line": "Tacoma Floor 1 B-MAX",
-            "Program": "TACOMA",
-            "Shift": "1",
-            "PartNumber": "82161-AK050",
-            "Customer": "TMMGD",
-            "LevenDesign": "F 0102",
-            "Shortpart": "MJM9",
-            "Kmh": 0.96025,
-            "d1": 0,
-            "d2": 0,
-            "d3": 4,
-            "d4": 0,
-            "d5": 0,
-            "d6": 0,
-            "d7": 0,
-            "d8": 0,
-            "d9": 0,
-            "d10": 2,
-            "d11": 0,
-            "d12": 0,
-            "d13": 0,
-            "d14": 0,
-            "d15": 2,
-            "d16": 0,
-            "d17": 0,
-            "d18": 0,
-            "d19": 0,
-            "d20": 0,
-            "d21": 0,
-            "d22": 4,
-            "d23": 0,
-            "d24": 0,
-            "d25": 0,
-            "d26": 0,
-            "d27": 0,
-            "d28": 0,
-            "d29": 2,
-            "d30": 0,
-            "d31": 0,
-            "status": true,
-            "createdAt": "2026-09-02T00:00:00.000Z",
-            "updatedAt": "2026-09-05T01:32:00.413Z"
-        }
-        */
 
     }
 
