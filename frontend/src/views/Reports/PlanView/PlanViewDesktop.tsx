@@ -7,23 +7,62 @@ import dayjs, { Dayjs } from "dayjs"
 import type React from "react"
 import { MauiTable } from "../../../components/Gnr/MauiTable"
 
-type PlanViewDesktopProp={
-    fecha:Dayjs,
-    setFecha:any,
+type PlanViewDesktopProp = {
+    fecha: Dayjs,
+    setFecha: any,
     shift, setShift,
     machine, setMachine,
     machines, setMachines,
-    plan,column
+    plan, column
 }
-export const PlanViewDesktop = ({fecha,setFecha,shift, setShift,machine, setMachine,machines, setMachines,plan,column}:PlanViewDesktopProp) => {
+export const PlanViewDesktop = ({ fecha, setFecha, shift, setShift, machine, setMachine, machines, setMachines, plan, column }: PlanViewDesktopProp) => {
+
+    const planFiltrado = plan.filter((row) => {
+        const acumulado =
+            (row.d1 || 0) +
+            (row.d2 || 0) +
+            (row.d3 || 0) +
+            (row.d4 || 0) +
+            (row.d5 || 0) +
+            (row.d6 || 0) +
+            (row.d7 || 0) +
+            (row.d8 || 0) +
+            (row.d9 || 0) +
+            (row.d10 || 0) +
+            (row.d11 || 0) +
+            (row.d12 || 0) +
+            (row.d13 || 0) +
+            (row.d14 || 0) +
+            (row.d15 || 0) +
+            (row.d16 || 0) +
+            (row.d17 || 0) +
+            (row.d18 || 0) +
+            (row.d19 || 0) +
+            (row.d20 || 0) +
+            (row.d21 || 0) +
+            (row.d22 || 0) +
+            (row.d23 || 0) +
+            (row.d24 || 0) +
+            (row.d25 || 0) +
+            (row.d26 || 0) +
+            (row.d27 || 0) +
+            (row.d28 || 0) +
+            (row.d29 || 0) +
+            (row.d30 || 0) +
+            (row.d31 || 0);
+
+        return !(acumulado === 0 && Number(row.qty || 0) === 0);
+    });
+
     return (
+
         <>
             <div className='border-b border-gray-600 flex text-2xl text-center sm:text-left sm:text-4xl font-bold py-3 text-black'>
                 PlanView
             </div>
             <div className="flex-1 min-w-0 py-4 px-2">
 
-                <div className='bg-white rounded-xl py-5  w-full min-h-[75vh] relative'>
+                <div className='bg-white rounded-xl py-5 w-full h-[calc(100vh-180px)] flex flex-col'>
                     <section className="flex justify-between px-2 flex-col sm:flex-row">
                         <div className="flex justify-between flex-col sm:flex-row gap-2 sm:gap-0">
                             <DatePicker
@@ -188,7 +227,18 @@ export const PlanViewDesktop = ({fecha,setFecha,shift, setShift,machine, setMach
 
 
                     </section>
-                    <MauiTable rowspaning={false} size={12} setId={null} title='' data={plan} setModal={null} columns={column} text={"Nueva planta"} />
+                    <div className="flex-1 overflow-hidden">
+                        <MauiTable
+                            rowspaning={false}
+                            size={12}
+                            setId={null}
+                            title=''
+                            data={planFiltrado}
+                            setModal={null}
+                            columns={column}
+                            text={"Nueva planta"}
+                        />
+                    </div>
                 </div >
 
             </div >

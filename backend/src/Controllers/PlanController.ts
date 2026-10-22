@@ -76,6 +76,7 @@ export class PlanController {
         return res.json(plan)
     }
     static Plan: any = async (req: Request, res: Response) => {
+        try {
         let machines = []
         if (req.User.PlantId == null) {
             const machine = await Machine.findAll({
@@ -166,19 +167,21 @@ export class PlanController {
                 continue
             }
 
+            console.log(resultado[i]["col4"].toString()[0])
+
             if (pl.find(x => x.machine == resultado[i]["col0"] &&
-                x.Shift == resultado[i]["col4"][0] && x.PartNumber == resultado[i]["col5"] &&
+                x.Shift == resultado[i]["col4"].toString()[0] && x.PartNumber == resultado[i]["col5"] &&
                 x.Customer == resultado[i]["col6"] && x.LevenDesign == resultado[i]["col7"] && x.Shortpart == resultado[i]["col8"]) == null
                 &&
                 plan.find(x => x.machine == resultado[i]["col0"] &&
-                    x.Shift == resultado[i]["col4"][0] && x.PartNumber == resultado[i]["col5"] &&
+                    x.Shift == resultado[i]["col4"].toString()[0] && x.PartNumber == resultado[i]["col5"] &&
                     x.Customer == resultado[i]["col6"] && x.LevenDesign == resultado[i]["col7"] && x.Shortpart == resultado[i]["col8"]) == null) {
                 pl.push({
                     machine: resultado[i]["col0"],
                     Capacity: resultado[i]["col1"] == "" || resultado[i]["col1"] == null ? 0 : parseFloat(resultado[i]["col1"]),
                     Line: resultado[i]["col2"],
                     Program: resultado[i]["col3"],
-                    Shift: resultado[i]["col4"][0],
+                    Shift: resultado[i]["col4"].toString()[0],
                     PartNumber: resultado[i]["col5"],
                     Customer: resultado[i]["col6"],
                     LevenDesign: resultado[i]["col7"],
@@ -220,10 +223,10 @@ export class PlanController {
                 //break;
             }
             else if (plan.find(x => x.machine == resultado[i]["col0"] &&
-                x.Shift == resultado[i]["col4"][0] && x.PartNumber == resultado[i]["col5"] &&
+                x.Shift == resultado[i]["col4"].toString()[0] && x.PartNumber == resultado[i]["col5"] &&
                 x.Customer == resultado[i]["col6"] && x.LevenDesign == resultado[i]["col7"] && x.Shortpart == resultado[i]["col8"]) != null) {
                 const upd = plan.find(x => x.machine == resultado[i]["col0"] &&
-                    x.Shift == resultado[i]["col4"][0] && x.PartNumber == resultado[i]["col5"] &&
+                    x.Shift == resultado[i]["col4"].toString()[0] && x.PartNumber == resultado[i]["col5"] &&
                     x.Customer == resultado[i]["col6"] && x.LevenDesign == resultado[i]["col7"] && x.Shortpart == resultado[i]["col8"])
 
                 if (upd != null) {
@@ -312,15 +315,24 @@ export class PlanController {
 
             }
         }
-        await Plans.bulkCreate(pl, {
-            logging: false
-        })
+console.error("pl")
+        console.log(pl)
+
+            await Plans.bulkCreate(pl, {
+                logging: false
+            })
 
 
         res.json({
             resultado,
             fecha
         });
+    }
+        catch (error) {
+            console.log(error.message)
+            //const error = new Error('La maquina no fue encontrada')
+            return res.status(401).json({ error: error.message })
+        }
     }
     static PlanManual: any = async (req: Request, res: Response) => {
 
@@ -391,7 +403,7 @@ export class PlanController {
                 machine: machine,
                 Line: Line,
                 Shift: Shift,
-                Capacity:Capacity,
+                Capacity: Capacity,
                 PartNumber: PartNumber,
                 Customer: Customer,
                 LevenDesign: LevenDesign,
@@ -411,7 +423,7 @@ export class PlanController {
                 machine: machine,
                 Line: Line,
                 Shift: Shift,
-                Capacity:Capacity,
+                Capacity: Capacity,
                 PartNumber: PartNumber,
                 Customer: Customer,
                 LevenDesign: LevenDesign,
@@ -422,9 +434,9 @@ export class PlanController {
                 d2,
                 d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18,
                 d19, d20, d21, d22, d23, d24, d25, d26, d27, d28, d29, d30, d31,
-            },{
-                where:{
-                    id:plan.id
+            }, {
+                where: {
+                    id: plan.id
                 }
             })
         }
@@ -436,7 +448,7 @@ export class PlanController {
 
 
         let machines = []
-        const { fecha,Capacity, Shortpart, Kmh, machine, Line, Program, Shift, PartNumber, Customer, LevenDesign,
+        const { fecha, Capacity, Shortpart, Kmh, machine, Line, Program, Shift, PartNumber, Customer, LevenDesign,
             d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18, d19, d20, d21, d22, d23, d24, d25, d26, d27, d28, d29, d30, d31
         } = req.body
         let [year, month, day] = fecha
@@ -460,16 +472,16 @@ export class PlanController {
             ]
         })
 
-            const update = await Smhcas.update({
-                Kmh: Kmh
-            }, {
-                where: {
-                    ShortPart: Shortpart
-                }
-            })
-            console.log("modificar")
-            console.log(update)
-        
+        const update = await Smhcas.update({
+            Kmh: Kmh
+        }, {
+            where: {
+                ShortPart: Shortpart
+            }
+        })
+        console.log("modificar")
+        console.log(update)
+
 
         const plan = await Plans.findOne({
             where: {
@@ -479,8 +491,8 @@ export class PlanController {
                 Customer: Customer,
                 LevenDesign: LevenDesign,
                 Shortpart: Shortpart,
-                id:{
-                    [Op.not]:req.Plans.id
+                id: {
+                    [Op.not]: req.Plans.id
                 },
                 createdAt: {
                     [Op.gte]: dt,
@@ -490,11 +502,11 @@ export class PlanController {
         })
 
         if (!plan) {
-        
+
             const create = await Plans.update({
                 machine: machine,
                 Line: Line,
-                Capacity:Capacity,
+                Capacity: Capacity,
                 Shift: Shift,
                 PartNumber: PartNumber,
                 Customer: Customer,
@@ -506,15 +518,15 @@ export class PlanController {
                 d2,
                 d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18,
                 d19, d20, d21, d22, d23, d24, d25, d26, d27, d28, d29, d30, d31,
-            },{
-                where:{
-                    id:req.Plans.id
+            }, {
+                where: {
+                    id: req.Plans.id
                 }
             })
         }
-        else{
+        else {
             const error = new Error('Ya coincide con un plan no puede ser generado')
-                return res.status(401).json({ error: error.message })
+            return res.status(401).json({ error: error.message })
         }
 
 
