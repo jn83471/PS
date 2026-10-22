@@ -262,6 +262,13 @@ General Supervisor
 
 Manufacturing Operations & Process Improvement
 
+# Colaboradores
+**Victor Gamaliel**
+
+Jr Supervisor
+
+Manufacturing Operations & Process Improvement
+
 ---
 
 # Licencia

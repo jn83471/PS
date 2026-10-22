@@ -16,6 +16,8 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { PlanModal } from "../../components/Plan/PlanModal";
 import { PlanEditModal } from "../../components/Plan/PlanEditModal";
+import { ReactTable } from "../../components/Gnr/ReactTable";
+import type { ColDef } from "ag-grid-community";
 
 export const PlanTable = () => {
   const DownloadFile = () => {
@@ -24,7 +26,7 @@ export const PlanTable = () => {
   const [fecha, setFecha] = useState<Dayjs | null>(dayjs());
   const [modal, setModal] = useState(false)
   const [modalAddToEdit, setModalAddToEdit] = useState(false)
-  const [selectPlan,setSelectPlan]=useState(null)
+  const [selectPlan, setSelectPlan] = useState(null)
 
   const { data, isError, isLoading, error, refetch } = useQuery({
     queryKey: ['Plans'],
@@ -102,89 +104,114 @@ export const PlanTable = () => {
   const [machine, setMachine] = useState("")
   const [machines, setMachines] = useState([])
 
-  
 
-  const column: GridColDef[] = [
-    { field: 'machine', headerName: 'Código', maxWidth: 300, pinnable: true },
-    { field: 'Capacity', headerName: 'Capacidad', maxWidth: 300 },
-    { field: 'Line', headerName: 'Línea', maxWidth: 300, width: 200 },
-    { field: 'Program', headerName: 'Program', maxWidth: 300, width: 200 },
-    { field: 'Shift', headerName: 'Shift', maxWidth: 300, width: 200 },
-    { field: 'PartNumber', headerName: 'numero de parte', maxWidth: 300, width: 200 },
-    { field: 'Customer', headerName: 'Cliente', maxWidth: 300, width: 200 },
-    { field: 'LevenDesign', headerName: 'Nivel de diseño', maxWidth: 300, width: 200 },
-    { field: 'Shortpart', headerName: 'Shortpart', maxWidth: 300, width: 200 },
-    { field: 'Kmh', headerName: 'Kmh', maxWidth: 300, width: 200 },
-    { field: 'd1', headerName: 'd1', maxWidth: 300, width: 200 },
-    { field: 'd2', headerName: 'd2', maxWidth: 300, width: 200 },
-    { field: 'd3', headerName: 'd3', maxWidth: 300, width: 200 },
-    { field: 'd4', headerName: 'd4', maxWidth: 300, width: 200 },
-    { field: 'd5', headerName: 'd5', maxWidth: 300, width: 200 },
-    { field: 'd6', headerName: 'd6', maxWidth: 300, width: 200 },
-    { field: 'd7', headerName: 'd7', maxWidth: 300, width: 200 },
-    { field: 'd8', headerName: 'd8', maxWidth: 300, width: 200 },
-    { field: 'd9', headerName: 'd9', maxWidth: 300, width: 200 },
-    { field: 'd10', headerName: 'd10', maxWidth: 300, width: 200 },
-    { field: 'd11', headerName: 'd11', maxWidth: 300, width: 200 },
-    { field: 'd12', headerName: 'd12', maxWidth: 300, width: 200 },
-    { field: 'd13', headerName: 'd13', maxWidth: 300, width: 200 },
-    { field: 'd14', headerName: 'd14', maxWidth: 300, width: 200 },
-    { field: 'd15', headerName: 'd15', maxWidth: 300, width: 200 },
-    { field: 'd16', headerName: 'd16', maxWidth: 300, width: 200 },
-    { field: 'd17', headerName: 'd17', maxWidth: 300, width: 200 },
-    { field: 'd18', headerName: 'd18', maxWidth: 300, width: 200 },
-    { field: 'd19', headerName: 'd19', maxWidth: 300, width: 200 },
-    { field: 'd20', headerName: 'd20', maxWidth: 300, width: 200 },
-    { field: 'd21', headerName: 'd21', maxWidth: 300, width: 200 },
-    { field: 'd22', headerName: 'd22', maxWidth: 300, width: 200 },
-    { field: 'd23', headerName: 'd23', maxWidth: 300, width: 200 },
-    { field: 'd24', headerName: 'd24', maxWidth: 300, width: 200 },
-    { field: 'd25', headerName: 'd25', maxWidth: 300, width: 200 },
-    { field: 'd26', headerName: 'd26', maxWidth: 300, width: 200 },
-    { field: 'd27', headerName: 'd27', maxWidth: 300, width: 200 },
-    { field: 'd28', headerName: 'd28', maxWidth: 300, width: 200 },
-    { field: 'd29', headerName: 'd29', maxWidth: 300, width: 200 },
-    { field: 'd30', headerName: 'd30', maxWidth: 300, width: 200 },
-    { field: 'd31', headerName: 'd31', maxWidth: 300, width: 200 },
-    {
-      field: 'acciones',
-      headerName: 'Acciones',
-      width: 250,
-      renderCell: (params) => (
-        <>
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            onClick={() => { 
-              setModalAddToEdit(true)
-              setSelectPlan(params.row)
-              console.log(params.row)
-             }}
-            style={{
-              marginRight: 8,
-              paddingLeft: 5,
-              paddingRight: 5,
-            }}
-          >
-            <FontAwesomeIcon icon={faEdit} className='pr-1' />
-            Editar
-          </Button>
 
-          <Button
-            variant="contained"
-            color="error"
-            size="small"
-            onClick={() => HandleDeletePlan(params.row.id)}
-          >
-            <FontAwesomeIcon icon={faTrash} className='pr-1' />
-            Eliminar
-          </Button>
-        </>
-      ),
-    },
+  const column : ColDef[] = [
+  {
+    field: "machine",
+    headerName: "Código",
+    width: 120,
+    pinned: "left",
+  },
+  {
+    field: "Capacity",
+    headerName: "Capacidad",
+    width: 120,
+  },
+  {
+    field: "Line",
+    headerName: "Línea",
+    width: 200,
+  },
+  {
+    field: "Program",
+    headerName: "Program",
+    width: 150,
+  },
+  {
+    field: "Shift",
+    headerName: "Shift",
+    width: 120,
+    pinned: "left",
+  },
+  {
+    field: "PartNumber",
+    headerName: "Número de Parte",
+    width: 200,
+  },
+  {
+    field: "Customer",
+    headerName: "Cliente",
+    width: 180,
+  },
+  {
+    field: "LevenDesign",
+    headerName: "Nivel Diseño",
+    width: 180,
+  },
+  {
+    field: "Shortpart",
+    headerName: "Shortpart",
+    width: 180,
+    pinned: "left",
+  },
+  {
+    field: "Kmh",
+    headerName: "Kmh",
+    width: 120,
+  },
 
-  ];
+  ...Array.from({ length: 31 }, (_, i) => ({
+    field: `d${i + 1}`,
+    headerName: `D${i + 1}`,
+    width: 90,
+  })),
+
+  {
+    field: "acciones",
+    headerName: "Acciones",
+    width: 250,
+    pinned: "right",
+
+    cellRenderer: (params: any) => (
+      <>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => {
+            setModalAddToEdit(true);
+            setSelectPlan(params.data);
+          }}
+          style={{
+            marginRight: 8,
+          }}
+        >
+          <FontAwesomeIcon
+            icon={faEdit}
+            className="pr-1"
+          />
+          Editar
+        </Button>
+
+        <Button
+          variant="contained"
+          color="error"
+          size="small"
+          onClick={() =>
+            HandleDeletePlan(params.data.id)
+          }
+        >
+          <FontAwesomeIcon
+            icon={faTrash}
+            className="pr-1"
+          />
+          Eliminar
+        </Button>
+      </>
+    ),
+  },
+];
 
   /*modal variables*/
   const initialValues: UploadPlanSchemaForm = {
@@ -209,8 +236,18 @@ export const PlanTable = () => {
       <div className="flex-1 min-w-0 sm:p-4">
 
         <div className='bg-white border border-gray-400 rounded-xl py-5 px-2 w-full min-h-[75vh] relative'>
-          <section className="flex flex-col sm:flex-row justify-between">
-
+          <div className="flex flex-row items-center border-b border-gray-200 py-2">
+              <div className="flex-1">
+                <div className="text-3xl font-bold">
+                  Plan de producción
+                </div>
+                <div className="text-gray-400 text-sm">
+                  Consulta y seguimiento de la producción
+                </div>
+              </div>
+            </div>
+          <section className="flex flex-col sm:flex-row justify-between py-2">
+            
             <DatePicker
               label="Years in descending order"
               openTo="year"
@@ -269,7 +306,7 @@ export const PlanTable = () => {
 
 
           </section>
-          <MauiTable rowspaning={false} setId={null} title='' data={data} setModal={null} columns={column} text={"Nueva planta"} />
+          <ReactTable rowspaning={false} setId={null} title='' data={data} setModal={null} columns={column} text={"Nueva planta"} />
         </div>
 
         {modal &&

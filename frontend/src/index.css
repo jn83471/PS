@@ -39,3 +39,10 @@ div[role="rowheader"]{
 .fc-timegrid-slot:nth-child(even) {
 background: rgba(255,255,255,.02);
 }
+
+.MuiDataGrid-licenseInfo {
+    display:none;
+}
+[class*="license"]{
+    display:none;
+}

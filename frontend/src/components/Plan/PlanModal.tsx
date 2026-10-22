@@ -233,7 +233,7 @@ export const PlanModal = ({ setModalAddToEdit, refetch }: PlanModalProp) => {
                                 )} />
                         </div>
                         <div className="py-2">
-                            <label className="text-xl mb-2 text-black block">Numero de parte:</label>
+                            <label className="text-xl mb-2 text-black block">Shortpart:</label>
 
                             <Controller name="Shortpart"
                                 control={control}

@@ -326,7 +326,7 @@ export class PlanController {
 
 
         let machines = []
-        const { fecha, Shortpart, Kmh, machine, Line, Program, Shift, PartNumber, Customer, LevenDesign,
+        const { fecha, Capacity, Shortpart, Kmh, machine, Line, Program, Shift, PartNumber, Customer, LevenDesign,
             d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18, d19, d20, d21, d22, d23, d24, d25, d26, d27, d28, d29, d30, d31
         } = req.body
         let [year, month, day] = fecha
@@ -391,6 +391,7 @@ export class PlanController {
                 machine: machine,
                 Line: Line,
                 Shift: Shift,
+                Capacity:Capacity,
                 PartNumber: PartNumber,
                 Customer: Customer,
                 LevenDesign: LevenDesign,
@@ -410,6 +411,7 @@ export class PlanController {
                 machine: machine,
                 Line: Line,
                 Shift: Shift,
+                Capacity:Capacity,
                 PartNumber: PartNumber,
                 Customer: Customer,
                 LevenDesign: LevenDesign,
@@ -434,7 +436,7 @@ export class PlanController {
 
 
         let machines = []
-        const { fecha, Shortpart, Kmh, machine, Line, Program, Shift, PartNumber, Customer, LevenDesign,
+        const { fecha,Capacity, Shortpart, Kmh, machine, Line, Program, Shift, PartNumber, Customer, LevenDesign,
             d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18, d19, d20, d21, d22, d23, d24, d25, d26, d27, d28, d29, d30, d31
         } = req.body
         let [year, month, day] = fecha
@@ -492,6 +494,7 @@ export class PlanController {
             const create = await Plans.update({
                 machine: machine,
                 Line: Line,
+                Capacity:Capacity,
                 Shift: Shift,
                 PartNumber: PartNumber,
                 Customer: Customer,

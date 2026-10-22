@@ -2,9 +2,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import {
-    faColumns,
-    faDownload,
-    faFilter,
     faPlus
 } from '@fortawesome/free-solid-svg-icons';
 import { DataGrid, useGridApiRef, type GridColDef } from '@mui/x-data-grid';
@@ -18,7 +15,8 @@ type MauiTableProp = {
     setModal?: React.Dispatch<React.SetStateAction<boolean>>;
     rowspaning:boolean,
     header: boolean,
-    size:number
+    size:number,
+    pinnedColumns:any
 }
 export const MauiTable = ({ data, columns, text, title,setId, setModal ,rowspaning ,header,size}: MauiTableProp) => {
     const apiRef = useGridApiRef();
@@ -44,7 +42,7 @@ export const MauiTable = ({ data, columns, text, title,setId, setModal ,rowspani
 
 
 
-            <DataGrid pageSizeOptions={[5,10,25,50,100]}  rowSpanning={rowspaning} apiRef={apiRef} showToolbar className='text-xl text-white font-semibold bg-white! w-full' rows={data} columns={columns}
+            <DataGrid  pageSizeOptions={[5,10,25,50,100]}  rowSpanning={rowspaning} apiRef={apiRef} showToolbar className='text-xl text-white font-semibold bg-white! w-full' rows={data??[]} columns={columns}
 
 
                 initialState={{
@@ -58,7 +56,7 @@ export const MauiTable = ({ data, columns, text, title,setId, setModal ,rowspani
                         paginationModel:{
                             pageSize:25
                         }
-                    }
+                    },
                 }}
                 sx={{
                     backgroundColor: "white",
