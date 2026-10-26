@@ -214,7 +214,7 @@ export const UrsModalDetailsMobile = ({ id, setId, view, setView,url, data, hand
                 }
             </section>
 
-            {(data?.Verify == 3 && data.Process != 99 && data.LastProcessDay != null) ?
+            {(data?.Verify == 3 && data.Process != 99 && data.LastProcessDay != null) || data?.Verify == 4?
                 hasCamera ?
                     <>
                         <div className="grid grid-cols-2 p-2">
@@ -344,10 +344,10 @@ export const UrsModalDetailsMobile = ({ id, setId, view, setView,url, data, hand
             <div className={`grid ${data?.Verify == 2?" grid-cols-3 ":"grid-cols-2"} text-right`}>
                 {data?.Verify == 2 && <button onClick={HandleCancelFolio} type="button" className="py-2 px-4 bg-red-500 text-white rounded hover:bg-gray-700 mr-2">
                     <svg data-prefix="fas" data-icon="ban" className="svg-inline--fa fa-ban" role="img" viewBox="0 0 512 512" aria-hidden="true"><path fill="currentColor" d="M367.2 412.5L99.5 144.8c-22.4 31.4-35.5 69.8-35.5 111.2 0 106 86 192 192 192 41.5 0 79.9-13.1 111.2-35.5zm45.3-45.3c22.4-31.4 35.5-69.8 35.5-111.2 0-106-86-192-192-192-41.5 0-79.9 13.1-111.2 35.5L412.5 367.2zM0 256a256 256 0 1 1 512 0 256 256 0 1 1 -512 0z"></path></svg> Cancelar</button>}
-                <Link to={`/urs/${url}/${id}`} type="submit" className="py-2 px-4 bg-blue-900 text-white rounded font-medium hover:bg-blue-700 mr-2 transition duration-500 text-center">
+                {(!(data?.Verify == 3 && data.Process != 99 && data.LastProcessDay != null && data.UrsFolioPictures.length==0) && data?.Verify != 4) ? <Link to={`/urs/${url}/${id}`} type="submit" className="py-2 px-4 bg-blue-900 text-white rounded font-medium hover:bg-blue-700 mr-2 transition duration-500 text-center">
                     <FontAwesomeIcon icon={faEdit} />
                     Modificar
-                </Link>
+                </Link>:<></>}
                 <button onClick={save} type="button" className="py-2 px-4 bg-red-500 text-white rounded hover:bg-red-700 mr-2">
                     <FontAwesomeIcon icon={faCheckCircle} />
                     Verificar

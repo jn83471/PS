@@ -43,6 +43,15 @@ export const UrsDetail = () => {
     name: 'EMBARCADA',
     column: 'ClosedDay',
     type: "UTC"
+  },
+ {
+    name: 'ASN',
+    column: 'ClosedDay',
+    type: "UTC"
+  }, {
+    name: 'Enviado',
+    column: 'ClosedDay',
+    type: "UTC"
   }];
   const TimeZone = GetTimeZone(User?.data?.TimeZone)
   const porcentaje = data?.Verify / (progress.length - 1) * 100
@@ -292,7 +301,7 @@ export const UrsDetail = () => {
               {
                 Array.from({ length: 4 }).map((_, index) => (
                   <div className="flex flex-col border border-blue-100 rounded-lg shadow">
-                    {data?.UrsFolioPictures?.length <= index ?
+                    {data?.UrsFolioPictures?.filter(x => x.Verify == 4).length <= index ?
                       <>
                         <div className="lg:h-[150px] xl:h-[250px] overflow-hidden bg-blue-50 rounded-t-lg p-2 flex flex-col items-center justify-center text-blue-500">
                           Imagen {index + 1}
@@ -301,7 +310,7 @@ export const UrsDetail = () => {
                       </>
                       : <>
                         <div className="lg:h-[150px] xl:h-[250px] overflow-hidden bg-blue-50 rounded-t-lg p-2 flex flex-col items-center justify-center text-blue-500">
-                          <img src={`${import.meta.env.VITE_API_UPLOAD}/${data?.UrsFolioPictures?.[index]?.Name}`} />
+                          <img src={`${import.meta.env.VITE_API_UPLOAD}/${data?.UrsFolioPictures?.filter(x => x.Verify == 4)?.[index]?.Name}`} />
                         </div>
                       </>
                     }
@@ -313,6 +322,43 @@ export const UrsDetail = () => {
           </div>
 
 
+        </div>
+
+      </div>
+      <div>
+
+        <div className="bg-white border border-gray-200 my-4 rounded-lg p-4">
+          <div>
+
+            <div className="text-2xl font-bold">
+              Evidencias de envio
+            </div>
+            <div className="text-sm text-gray-400">
+              Datos principales requeridos para coordinar el envío
+            </div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 py-2 gap-4">
+            {
+              Array.from({ length: 8 }).map((_, index) => (
+                <div className="flex flex-col border border-blue-100 rounded-lg shadow">
+                  {data?.UrsFolioPictures?.filter(x => x.Verify == 5).length <= index ?
+                    <>
+                      <div className="lg:h-[150px] xl:h-[250px] overflow-hidden bg-blue-50 rounded-t-lg p-2 flex flex-col items-center justify-center text-blue-500">
+                        Imagen {index + 1}
+                      </div>
+
+                    </>
+                    : <>
+                      <div className="lg:h-[150px] xl:h-[250px] overflow-hidden bg-blue-50 rounded-t-lg p-2 flex flex-col items-center justify-center text-blue-500">
+                        <img src={`${import.meta.env.VITE_API_UPLOAD}/${data?.UrsFolioPictures?.filter(x => x.Verify == 5)?.[index]?.Name}`} />
+                      </div>
+                    </>
+                  }
+                </div>
+              ))
+            }
+
+          </div>
         </div>
       </div>
     </>

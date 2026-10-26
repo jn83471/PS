@@ -48,7 +48,7 @@ export const UrsVerficationEmb = () => {
     retry: false
   })
 
-  const rows = data?.filter(x => x.Verify == 3 && x.Process != 99 && x.LastProcessDay != null)
+  const rows = data?.filter(x => x.Verify == 3 && x.Process != 99 && x.LastProcessDay != null && x.UrsFolioPictures.length>=1)
   const TimeZone = GetTimeZone(User?.data?.TimeZone)
 
   const [files, setFiles] = useState<File[]>([]);
@@ -102,7 +102,7 @@ export const UrsVerficationEmb = () => {
 
 
   const { mutate } = useMutation({
-    mutationFn: ThirdVerify,
+    mutationFn: FirstVerify,
     onError: (error) => {
       console.log(error.message)
       toast.error(error.message)
@@ -119,17 +119,10 @@ export const UrsVerficationEmb = () => {
 
   const HandleFourVeryfyFolio = (e) => {
     e.preventDefault()
-    if(files.length==0)
-    {
-      toast.error("Necesita añadir evidencia para continuar.")
-      return
-    }
-    const dt: UrsVerificateSendFolio = {
+    const dt: UrsVerificateFolio = {
       Verify: 4,
-      files:files
     }
     console.log(dt)
-
     mutate({ formData: dt, idFolio: detailsId.id })
   }
 

@@ -10,7 +10,7 @@ import { UrsPriority } from "../../../Models/URS/UrsPriority";
 import { UrsRequestScannHistory } from "../../../Models/URS/UrsRequestScannHistory";
 import { io } from "../../../server";
 import { UrsRequestsFolio } from "../../../Models/URS/UrsRequestsFolio";
-import { UrsSendNewRequestVerification4 } from "../../../Messages/Urs/UrsNewRequest";
+import { UrsSendNewRequestVerification32, UrsSendNewRequestVerification4 } from "../../../Messages/Urs/UrsNewRequest";
 import { EmailsToSend } from "../../../Models/EmailsToSend";
 
 export class UrsScannController {
@@ -289,7 +289,7 @@ export class UrsScannController {
                             title: "Solicitud de verificación",
                             to: Emails.Emails
                         }
-                        await UrsSendNewRequestVerification4(dt)
+                        await UrsSendNewRequestVerification32(dt)
 
                     }
 

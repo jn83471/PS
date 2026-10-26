@@ -2,6 +2,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import {
+    faCircleXmark,
+    faDownload,
+    faFilterCircleXmark,
     faPlus
 } from '@fortawesome/free-solid-svg-icons';
 import { AgGridReact } from "ag-grid-react";
@@ -55,7 +58,7 @@ export const ReactTable = ({ data, columns, text, title, setId, setModal, rowspa
                     </button>
                 </div>
             </div>)}
-            <div className="flex flex-wrap gap-2 items-center">
+            <div className="flex flex-wrap gap-2 items-center justify-end py-2">
 
                 <input
                     type="text"
@@ -72,7 +75,7 @@ export const ReactTable = ({ data, columns, text, title, setId, setModal, rowspa
                         });
                     }}
                 >
-                    Descargar CSV
+                    <FontAwesomeIcon icon={faDownload}/>
                 </button>
 
                 <button
@@ -81,7 +84,7 @@ export const ReactTable = ({ data, columns, text, title, setId, setModal, rowspa
                         gridRef.current?.api.setFilterModel(null);
                     }}
                 >
-                    Limpiar Filtros
+                    <FontAwesomeIcon icon={faFilterCircleXmark}/>
                 </button>
 
             </div>

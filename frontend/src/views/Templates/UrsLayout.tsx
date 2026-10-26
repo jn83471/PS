@@ -118,13 +118,13 @@ export const UrsLayout = () => {
                                     <FontAwesomeIcon icon={faSquareCheck} />
                                     <span className="pl-2 hidden sm:inline">{t("Urs.SideBar.ShipmentVerification")}</span>
                                 </NavLink>}
-                            {/*hasPermission("URS", data, "Request") &&
+                            {(hasPermission("URS", data, "SCANN") || data?.UrsProcessId)&&
                                 <NavLink to={'/urs/verificationsRes'} className={({ isActive }) => (isActive ? "bg-purple-200/10 border-l-purple-700 border-l-2 " : "") + "my-2 text-white   w-full block p-2 rounded-r-xl"}>
                                     <FontAwesomeIcon icon={faCheckCircle} />
                                     <span className="pl-2 hidden sm:inline">{t("Urs.SideBar.ReceiptVerification")}</span>
-                                </NavLink>*/}
+                                </NavLink>}
 
-/*</div>
+</div>
 <div className="m-2">
     <Link className='p-2 text-center w-full bg-red-500 rounded-2xl hover:scale-[102%] hover:bg-red-600 transition-all duration-200 block text-white' to={"/apps"}>
         <FontAwesomeIcon icon={faPowerOff} className='px-1' />

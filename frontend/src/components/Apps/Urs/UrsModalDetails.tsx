@@ -196,8 +196,8 @@ export const UrsModalDetails = ({ id, setId, refetch, url, save, files, setFiles
 
     const handleFiles = (fileList: FileList | null) => {
         if (!fileList) return;
-        if (files.length >= 4) {
-            toast.error("No puede contener mas de 4 imagenes de verificación")
+        if (files.length >= (data?.Verify==3? 4:8)) {
+            toast.error(`No puede contener mas de ${(data?.Verify==3? 4:8)} imagenes de verificación`)
             return
         }
 
@@ -216,8 +216,8 @@ export const UrsModalDetails = ({ id, setId, refetch, url, save, files, setFiles
     const handleCapture = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
-        if (files.length >= 4) {
-            toast.error("No puede contener mas de 4 imagenes de verificación")
+        if (files.length >= (data?.Verify==3? 4:8)) {
+            toast.error(`No puede contener mas de ${(data?.Verify==3? 4:8)} imagenes de verificación`)
             return
         }
         const file = event.target.files?.[0];

@@ -103,115 +103,130 @@ export const PlanTable = () => {
 
   const [machine, setMachine] = useState("")
   const [machines, setMachines] = useState([])
+  const [isLargeScreen, setIsLargeScreen] = useState(
+    window.innerWidth >= 1660
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsLargeScreen(window.innerWidth >= 1660);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
 
+  const column: ColDef[] = [
+    {
+      field: "machine",
+      headerName: "Código",
+      width: 100,
+      pinned: "left",
+    },
+    {
+      field: "Capacity",
+      headerName: "Capacidad",
+      width: 120,
+    },
+    {
+      field: "Line",
+      headerName: "Línea",
+      width: 200,
+    },
+    {
+      field: "Program",
+      headerName: "Program",
+      width: 150,
+    },
+    {
+      field: "Shortpart",
+      headerName: "Shortpart",
+      width: 130,
+      pinned: "left",
+    },
+    {
+      field: "Shift",
+      headerName: "Shift",
+      width: 90,
+      pinned: "left",
+    },
+    {
+      field: "PartNumber",
+      headerName: "Número de Parte",
+      width: 200,
+    },
+    {
+      field: "Customer",
+      headerName: "Cliente",
+      width: 180,
+    },
+    {
+      field: "LevenDesign",
+      headerName: "Nivel Diseño",
+      width: 180,
+    },
 
-  const column : ColDef[] = [
-  {
-    field: "machine",
-    headerName: "Código",
-    width: 120,
-    pinned: "left",
-  },
-  {
-    field: "Capacity",
-    headerName: "Capacidad",
-    width: 120,
-  },
-  {
-    field: "Line",
-    headerName: "Línea",
-    width: 200,
-  },
-  {
-    field: "Program",
-    headerName: "Program",
-    width: 150,
-  },
-  {
-    field: "Shift",
-    headerName: "Shift",
-    width: 120,
-    pinned: "left",
-  },
-  {
-    field: "PartNumber",
-    headerName: "Número de Parte",
-    width: 200,
-  },
-  {
-    field: "Customer",
-    headerName: "Cliente",
-    width: 180,
-  },
-  {
-    field: "LevenDesign",
-    headerName: "Nivel Diseño",
-    width: 180,
-  },
-  {
-    field: "Shortpart",
-    headerName: "Shortpart",
-    width: 180,
-    pinned: "left",
-  },
-  {
-    field: "Kmh",
-    headerName: "Kmh",
-    width: 120,
-  },
+    {
+      field: "Kmh",
+      headerName: "Kmh",
+      width: 120,
+    },
 
-  ...Array.from({ length: 31 }, (_, i) => ({
-    field: `d${i + 1}`,
-    headerName: `D${i + 1}`,
-    width: 90,
-  })),
+    ...Array.from({ length: 31 }, (_, i) => ({
+      field: `d${i + 1}`,
+      headerName: `D${i + 1}`,
+      width: 85,
+    })),
 
-  {
-    field: "acciones",
-    headerName: "Acciones",
-    width: 250,
-    pinned: "right",
+    {
+      field: "acciones",
+      headerName: "Acciones",
+      width: 250,
+      pinned: isLargeScreen ? "right" : false,
+      cellRenderer: (params: any) => (
+        <>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={() => {
+              setModalAddToEdit(true);
+              setSelectPlan(params.data);
+            }}
+            style={{
+              marginRight: 8,
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faEdit}
+              className="pr-1"
+            />
+            Editar
+          </Button>
 
-    cellRenderer: (params: any) => (
-      <>
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          onClick={() => {
-            setModalAddToEdit(true);
-            setSelectPlan(params.data);
-          }}
-          style={{
-            marginRight: 8,
-          }}
-        >
-          <FontAwesomeIcon
-            icon={faEdit}
-            className="pr-1"
-          />
-          Editar
-        </Button>
-
-        <Button
-          variant="contained"
-          color="error"
-          size="small"
-          onClick={() =>
-            HandleDeletePlan(params.data.id)
-          }
-        >
-          <FontAwesomeIcon
-            icon={faTrash}
-            className="pr-1"
-          />
-          Eliminar
-        </Button>
-      </>
-    ),
-  },
-];
+          <Button
+            variant="contained"
+            color="error"
+            size="small"
+            onClick={() =>
+              HandleDeletePlan(params.data.id)
+            }
+          >
+            <FontAwesomeIcon
+              icon={faTrash}
+              className="pr-1"
+            />
+            Eliminar
+          </Button>
+        </>
+      ),
+    },
+  ];
+  console.log(window.innerWidth)
 
   /*modal variables*/
   const initialValues: UploadPlanSchemaForm = {
@@ -237,17 +252,17 @@ export const PlanTable = () => {
 
         <div className='bg-white border border-gray-400 rounded-xl py-5 px-2 w-full min-h-[75vh] relative'>
           <div className="flex flex-row items-center border-b border-gray-200 py-2">
-              <div className="flex-1">
-                <div className="text-3xl font-bold">
-                  Plan de producción
-                </div>
-                <div className="text-gray-400 text-sm">
-                  Consulta y seguimiento de la producción
-                </div>
+            <div className="flex-1">
+              <div className="text-3xl font-bold">
+                Plan de producción
+              </div>
+              <div className="text-gray-400 text-sm">
+                Consulta y seguimiento de la producción
               </div>
             </div>
+          </div>
           <section className="flex flex-col sm:flex-row justify-between py-2">
-            
+
             <DatePicker
               label="Years in descending order"
               openTo="year"
@@ -310,7 +325,7 @@ export const PlanTable = () => {
         </div>
 
         {modal &&
-          <form onSubmit={handleSubmit(HandleSubmitCreateSuppliers)} className='fixed w-screen h-screen top-0 left-0 bg-black/30 flex justify-center items-center text-black'>
+          <form onSubmit={handleSubmit(HandleSubmitCreateSuppliers)} className='fixed w-screen h-screen top-0 left-0 bg-black/30 flex justify-center items-center text-black z-50'>
             <div className="bg-white border border-amber-50 w-[1200px] max-w-[100%] min-h-[400px] rounded-2xl shadow-2xs shadow-black/75 p-4">
               <div className="flex flex-row items-center gap-2">
                 <div>

@@ -3,6 +3,7 @@ import { UrsRequestsFolio } from '../../../Models/URS/UrsRequestsFolio'
 import { Users } from '../../../Models/Index'
 import { UrsPriority, UrsProcess } from '../../../Models/URS/UrsIndex'
 import { PriorityHasProcess } from '../../../Models/URS/UrsIndex'
+import { UrsFolioPictures } from '../../../Models/URS/UrsFolioPictures'
 
 declare global {
     namespace Express {
@@ -45,20 +46,24 @@ export const validateUrsRequestFolioId: any = async (req: Request, res: Response
                 {
                     model: UrsPriority,
                     as: "UrsPriority",
-                    include:[
+                    include: [
                         {
-                            model:PriorityHasProcess,
-                            as:"PriorityHasProcess",
-                            include:[
+                            model: PriorityHasProcess,
+                            as: "PriorityHasProcess",
+                            include: [
                                 {
-                                    model:UrsProcess,
-                                    as:"UrsProcess"
+                                    model: UrsProcess,
+                                    as: "UrsProcess"
                                 }
                             ]
                         }
                     ]
-                },
-                
+                }
+                ,
+                {
+                    model: UrsFolioPictures,
+                    as: "UrsFolioPictures"
+                }
             ]
         })
         if (!machine) {

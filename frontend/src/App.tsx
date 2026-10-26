@@ -46,6 +46,7 @@ import { HXHLayout } from './views/Templates/HXHLayout'
 import { HXHLine } from './views/Apps/HourXHour/Line/HXHLine'
 import React from 'react'
 import { UrsDetail } from './views/Apps/Urs/Details/UrsDetail'
+import { UrsVerificatePictures } from './views/Apps/Urs/Requests/UrsVerificatePictures'
 
 function App() {
 
@@ -70,7 +71,7 @@ function App() {
                 <Route path='scann/:id' element={<UrsScannProducts />} />
                 <Route path='FollowScann' element={<FollowScann />} />
                 <Route path='FollowScann/:id' element={<FollowScannDetails />} />
-                <Route path='Evidence' element={<FollowScann />} />
+                <Route path='Evidence' element={<UrsVerificatePictures />} />
                 <Route path='verificationsEmb' element={<UrsVerficationEmb />} />
                 <Route path='verificationsEmb/:id' element={<UrsVerificateFoliosEmb />} />
                 <Route path='verificationsRes' element={<UrsVerificateRes />} />

@@ -175,7 +175,7 @@ export const FollowScannDetails = () => {
             <div className="flex flex-row">
               <div className="relative flex-1 overflow-x-auto p-2">
                 <div className="">{/*w-[110vw]*/}
-                  {procesos.length > 0 &&
+                  {procesos?.length > 0 &&
                     element.UrsRequestScannHistory?.filter(x => x.UrsProcessId == procesos[0].id).map(process => (
                       <div className="border border-gray-200 p-2 my-2 rounded-lg flex flex-row items-center gap-2 ">
 

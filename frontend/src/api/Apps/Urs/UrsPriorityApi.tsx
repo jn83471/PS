@@ -157,6 +157,7 @@ export async function ThirdVerify({ formData, idFolio }: ThirdVerifyprop) {
     }
 }
 
+
 type UrsCancelFolioProp = {
     idFolio: number
 }

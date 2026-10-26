@@ -59,8 +59,8 @@ export const PlanModal = ({ setModalAddToEdit, refetch }: PlanModalProp) => {
     }
 
     return (
-        <form onSubmit={handleSubmit(HandleSubmitCreatePlans)} className='fixed w-screen h-screen top-0 left-0 bg-black/30 flex justify-center items-center text-black z-50'>
-            <div className="bg-white border border-amber-50 w-[600px] max-w-[90%] min-h-[400px] rounded-2xl shadow-2xs shadow-black/75 h-[80vh] flex flex-col relative">
+        <form onSubmit={handleSubmit(HandleSubmitCreatePlans)} className='fixed w-screen h-screen top-0 left-0 bg-black/30 flex justify-center items-center text-black z-[99]'>
+            <div className="bg-white border border-amber-50 w-[600px] max-w-[90%] min-h-[400px] rounded-2xl shadow-2xs shadow-black/75 h-[80vh] flex flex-col relative z-50">
                 <button onClick={() => setModalAddToEdit(false)} className="absolute top-0 right-0 w-7 h-7 flex items-center justify-center rounded-full bg-red-500 text-white translate-x-[50%] translate-y-[-50%]">
                     <FontAwesomeIcon icon={faClose} />
                 </button>

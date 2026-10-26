@@ -11,7 +11,7 @@ import { Smhcas } from "../../../Models/SMHCAS";
 import { PriorityHasProcess, UrsPriority, UrsProcess, UrsRequests, UrsRequestsFolio } from "../../../Models/URS/UrsIndex";
 import { io, uploadDir } from "../../../server";
 import { sendEmail } from "../../../Utils/Emails";
-import { UrsSendNewRequest, UrsSendNewRequestVerification2, UrsSendNewRequestVerification3, UrsSendNewRequestVerification4, UrsSendNewRequestVerification5, UrsSendNewRequestVerification6, UrsSendNewRequestVerificationCancel } from "../../../Messages/Urs/UrsNewRequest";
+import { UrsSendNewRequest, UrsSendNewRequestVerification2, UrsSendNewRequestVerification3, UrsSendNewRequestVerification32, UrsSendNewRequestVerification4, UrsSendNewRequestVerification5, UrsSendNewRequestVerification6, UrsSendNewRequestVerificationCancel } from "../../../Messages/Urs/UrsNewRequest";
 import { EmailsToSend } from "../../../Models/EmailsToSend";
 import { ConvertToUTC, GetTimeZone } from "../../../Utils/GetTimeZone";
 import PDFDocument from "pdfkit";
@@ -56,6 +56,10 @@ export class UrsRequestFolioController {
                         model: UrsPriority,
                         as: "UrsPriority"
                     }]
+                },
+                {
+                    model: UrsFolioPictures,
+                    as: "UrsFolioPictures"
                 }
             ]
         })
@@ -128,8 +132,8 @@ export class UrsRequestFolioController {
                     ]
                 },
                 {
-                    model:UrsFolioPictures,
-                    as:"UrsFolioPictures"
+                    model: UrsFolioPictures,
+                    as: "UrsFolioPictures"
                 }
 
             ]
@@ -298,7 +302,46 @@ export class UrsRequestFolioController {
                 return res.json("Se ha modificado la verificacion cp")
             }
             else if (Verify == 3) {
+                let EmailToSends = "UrsESC"
+                const files = req.files as Express.Multer.File[];
+                if (files != undefined) {
+                    const files = req.files as Express.Multer.File[];;
 
+                    const imgs: Array<{
+                        Verify: number;
+                        UrsRequestsFolioId: number;
+                        Name: string;
+                    }> = []
+                    for (let index = 0; index < files.length; index++) {
+                        const element = files[index];
+
+                        const fileName = `${req.UrsRequestsFolio.id}-finish-${index + 1}.webp`;
+
+                        const filePath = path.join(
+                            uploadDir,
+                            "URS/Folios",
+                            fileName
+                        );
+
+                        await sharp(element.buffer)
+                            .webp({
+                                quality: 50 // 0-100
+                            })
+                            /*.resize({
+                                width: 1920, // opcional
+                                withoutEnlargement: true
+                            })*/
+                            .toFile(filePath);
+                        imgs.push({
+                            Verify: 4,
+                            UrsRequestsFolioId: req.UrsRequestsFolio.id,
+                            Name: "URS/Folios/" + fileName
+                        })
+
+                    }
+                    const images = await UrsFolioPictures.bulkCreate(imgs)
+                    EmailToSends = "UrsProd"
+                }
                 const Request = await UrsRequestsFolio.update({
                     Verify,
                     FinishUserSMTSBy: req.User.id,
@@ -312,7 +355,7 @@ export class UrsRequestFolioController {
                 const Emails = await EmailsToSend.findOne({
                     where: [
                         {
-                            Key: "UrsESC"
+                            Key: EmailToSends
                         }
                     ]
                 })
@@ -342,14 +385,18 @@ export class UrsRequestFolioController {
                     title: "Solicitud en escaneo",
                     to: Emails.Emails
                 }
-
-                await UrsSendNewRequestVerification3(dt)
+                if (files != undefined) {
+                    await UrsSendNewRequestVerification4(dt)
+                }
+                else{
+                    await UrsSendNewRequestVerification3(dt)
+                }
 
                 io.to("Urs").emit("Request", Request)
                 return res.json("Se ha modificado la verificacion actual")
             }
             else if (Verify == 4) {
-                const files = req.files as Express.Multer.File[];;
+                /*const files = req.files as Express.Multer.File[];;
 
                 const imgs: Array<{
                     Verify: number;
@@ -371,10 +418,7 @@ export class UrsRequestFolioController {
                         .webp({
                             quality: 50 // 0-100
                         })
-                        /*.resize({
-                            width: 1920, // opcional
-                            withoutEnlargement: true
-                        })*/
+
                         .toFile(filePath);
                     imgs.push({
                         Verify: 4,
@@ -383,7 +427,7 @@ export class UrsRequestFolioController {
                     })
 
                 }
-                const images = await UrsFolioPictures.bulkCreate(imgs)
+                const images = await UrsFolioPictures.bulkCreate(imgs)*/
                 const Request = await UrsRequestsFolio.update({
                     ClosedUserId: req.User.id,
                     Verify,
@@ -433,6 +477,38 @@ export class UrsRequestFolioController {
                 return res.json("Se ha realizado la verificacion de embarque")
             }
             else if (Verify == 5) {
+                const files = req.files as Express.Multer.File[];;
+
+                const imgs: Array<{
+                    Verify: number;
+                    UrsRequestsFolioId: number;
+                    Name: string;
+                }> = []
+                for (let index = 0; index < files.length; index++) {
+                    const element = files[index];
+
+                    const fileName = `${req.UrsRequestsFolio.id}-send-${index + 1}.webp`;
+
+                    const filePath = path.join(
+                        uploadDir,
+                        "URS/Folios",
+                        fileName
+                    );
+
+                    await sharp(element.buffer)
+                        .webp({
+                            quality: 50 // 0-100
+                        })
+
+                        .toFile(filePath);
+                    imgs.push({
+                        Verify: 5,
+                        UrsRequestsFolioId: req.UrsRequestsFolio.id,
+                        Name: "URS/Folios/" + fileName
+                    })
+
+                }
+                const images = await UrsFolioPictures.bulkCreate(imgs)
                 const Request = await UrsRequestsFolio.update({
                     Verify,
                     SMTSLastVerificationUser: req.User.id,
