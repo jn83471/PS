@@ -16,43 +16,65 @@ type PlanViewDesktopProp = {
     plan, column
 }
 export const PlanViewDesktop = ({ fecha, setFecha, shift, setShift, machine, setMachine, machines, setMachines, plan, column }: PlanViewDesktopProp) => {
+    console.log(plan[0]);
+    console.log("Ahora todo el plan:");
+    console.log(plan);
 
-    const planFiltrado = plan.filter((row) => {
-        const acumulado =
-            (row.d1 || 0) +
-            (row.d2 || 0) +
-            (row.d3 || 0) +
-            (row.d4 || 0) +
-            (row.d5 || 0) +
-            (row.d6 || 0) +
-            (row.d7 || 0) +
-            (row.d8 || 0) +
-            (row.d9 || 0) +
-            (row.d10 || 0) +
-            (row.d11 || 0) +
-            (row.d12 || 0) +
-            (row.d13 || 0) +
-            (row.d14 || 0) +
-            (row.d15 || 0) +
-            (row.d16 || 0) +
-            (row.d17 || 0) +
-            (row.d18 || 0) +
-            (row.d19 || 0) +
-            (row.d20 || 0) +
-            (row.d21 || 0) +
-            (row.d22 || 0) +
-            (row.d23 || 0) +
-            (row.d24 || 0) +
-            (row.d25 || 0) +
-            (row.d26 || 0) +
-            (row.d27 || 0) +
-            (row.d28 || 0) +
-            (row.d29 || 0) +
-            (row.d30 || 0) +
-            (row.d31 || 0);
+    const buildDailyProgress = (row: any) => {
 
-        return !(acumulado === 0 && Number(row.qty || 0) === 0);
-    });
+        const qty = Number(row.qty ?? 0)
+
+        let acumulado = 0
+
+        const result = { ...row }
+
+        for (let i = 1; i <= 31; i++) {
+
+            const key = `d${i}`
+
+            const valorDia = Number(row[key] ?? 0)
+
+            acumulado += valorDia
+
+            if (qty >= acumulado) {
+
+                result[key] = `${valorDia}`
+
+                result[`${key}_status`] = valorDia > 0
+                    ? "complete"
+                    : "pending"
+
+            } else {
+
+                const faltante = acumulado - qty
+
+                let producidoDia = valorDia - faltante
+
+                if (producidoDia < 0)
+                    producidoDia = 0
+
+                result[key] = `${producidoDia} / ${valorDia}`
+
+                const diaActual = dayjs().date()
+
+                if (producidoDia > 0) {
+
+                    result[`${key}_status`] =
+                        i < diaActual
+                            ? "delayed"
+                            : "progress"
+
+                } else {
+
+                    result[`${key}_status`] = "pending"
+
+                }
+            }
+        }
+
+        return result
+    }
+    const result = plan.map(row => buildDailyProgress(row))
 
     return (
 
@@ -233,7 +255,7 @@ export const PlanViewDesktop = ({ fecha, setFecha, shift, setShift, machine, set
                             size={12}
                             setId={null}
                             title=''
-                            data={planFiltrado}
+                            data={result}
                             setModal={null}
                             columns={column}
                             text={"Nueva planta"}

@@ -25,12 +25,12 @@ export const PlanView = () => {
 
   const [fecha, setFecha] = useState<Dayjs | null>(dayjs());
   const { data, isError, isLoading, error, refetch } = useQuery({
-    queryKey: ['PlanView',fecha?.format("YYYY-MM-DD"),shift],
+    queryKey: ['PlanView', fecha?.format("YYYY-MM-DD"), shift],
     queryFn: () => GetPlanView(fecha?.format("YYYY-MM-DD"), shift),
     retry: false,
-    refetchInterval:30000
+    refetchInterval: 30000
   })
-  
+
   useEffect(() => {
     if (data?.plan) {
       console.log(data?.plan.map(x => x.machine))
@@ -40,7 +40,7 @@ export const PlanView = () => {
 
 
 
-
+  /*
   const plan = useMemo(() => {
     const newPlan: any[] = [];
     data?.plan?.forEach(x => {
@@ -62,7 +62,69 @@ export const PlanView = () => {
     })
     return newPlan
   }, [machine, data]);
+*/
+  const plan = useMemo(() => {
+    const newPlan: any[] = [];
 
+    data?.plan?.forEach(x => {
+
+      const qty =
+        data.send.find(
+          y =>
+            y.line_c === x.machine &&
+            y.ShortPart === x.Shortpart
+        )?.total ?? 0;
+
+      const acumulado =
+        (x.d1 || 0) +
+        (x.d2 || 0) +
+        (x.d3 || 0) +
+        (x.d4 || 0) +
+        (x.d5 || 0) +
+        (x.d6 || 0) +
+        (x.d7 || 0) +
+        (x.d8 || 0) +
+        (x.d9 || 0) +
+        (x.d10 || 0) +
+        (x.d11 || 0) +
+        (x.d12 || 0) +
+        (x.d13 || 0) +
+        (x.d14 || 0) +
+        (x.d15 || 0) +
+        (x.d16 || 0) +
+        (x.d17 || 0) +
+        (x.d18 || 0) +
+        (x.d19 || 0) +
+        (x.d20 || 0) +
+        (x.d21 || 0) +
+        (x.d22 || 0) +
+        (x.d23 || 0) +
+        (x.d24 || 0) +
+        (x.d25 || 0) +
+        (x.d26 || 0) +
+        (x.d27 || 0) +
+        (x.d28 || 0) +
+        (x.d29 || 0) +
+        (x.d30 || 0) +
+        (x.d31 || 0);
+
+      // Ocultar registros sin plan y sin producción
+      if (qty <= 0 && acumulado <= 0) {
+        return;
+      }
+
+      const dt = {
+        ...x,
+        qty
+      };
+
+      if (machine === "" || machine === x.machine) {
+        newPlan.push(dt);
+      }
+    });
+
+    return newPlan;
+  }, [machine, data]);
 
 
 
@@ -71,9 +133,9 @@ export const PlanView = () => {
   return (
 
     isMobile && !isTabletOnly ?
-      <PlanViewMobile machine={machine} setMachine={setMachine} machines={machines} setMachines={setMachines}/>
+      <PlanViewMobile machine={machine} setMachine={setMachine} machines={machines} setMachines={setMachines} />
       :
-      <PlanViewDesktop fecha={fecha} setFecha={setFecha} shift={shift} setShift={setShift} machine={machine} setMachine={setMachine} machines={machines} setMachines={setMachines} plan={plan} column={column}/>
+      <PlanViewDesktop fecha={fecha} setFecha={setFecha} shift={shift} setShift={setShift} machine={machine} setMachine={setMachine} machines={machines} setMachines={setMachines} plan={plan} column={column} />
 
   )
 }
