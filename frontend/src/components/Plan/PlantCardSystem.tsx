@@ -49,9 +49,15 @@ export const PlantCardSystem = ({ data, names, fecha, lines, setPersonName }: Pl
                         data?.filter(elm => names.includes(elm.machine)).map(element => (
                             <div className="border border-gray-200 rounded-lg p-2 relative">
                                 <div className="absolute right-2 top-4">
-                                    <div className="p-2 bg-blue-500 text-white rounded-lg text-sm">
-                                        {element.Shortpart}
+                                    <div className="rounded-lg border border-gray-200 flex flex-row items-center">
+                                        <div className="p-2 bg-blue-500 text-white rounded-lg text-sm">
+                                            {element.Shortpart}:
+                                        </div>
+                                        <div className="px-2 font-bold">
+                                            {Math.round(element.Kmh*100)/100}
+                                        </div>
                                     </div>
+
 
                                 </div>
                                 <div className="flex flex-row items-center gap-2 p-2">

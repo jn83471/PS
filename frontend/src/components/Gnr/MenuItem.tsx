@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, NavLink } from "react-router-dom";
+import { isMobile, isTabletOnly } from "../../Utils/Media";
 
 
 type MenuItemProp = {
@@ -29,7 +30,7 @@ export const MenuItem = ({ label, active, link,icon, events }: MenuItemProp) => 
         className={({isActive })=> (isActive ?"bg-green-600 hover:bg-green-500 ":"" )+" px-4 py-3 rounded-lg cursor-pointer block hover:bg-green-400 text-sm"}
       >
         <FontAwesomeIcon className="pr-2 text-xl" icon={icon}/>
-        <span className="hidden lg:inline">{label}</span>
+        <span className={`${isMobile && !isTabletOnly ?"": "hidden lg:inline"}`}>{label}</span>
       </NavLink>
     );
   }
