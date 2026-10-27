@@ -31,7 +31,7 @@ export const ReactTable = ({ data, columns, text, title, setId, setModal, rowspa
     const defaultColDef = {
         sortable: true,
         filter: true,
-        floatingFilter: true,
+        floatingFilter: header,
         resizable: true,
     };
     ModuleRegistry.registerModules([
@@ -41,23 +41,6 @@ export const ReactTable = ({ data, columns, text, title, setId, setModal, rowspa
     const gridRef = useRef<AgGridReact>(null);
     return (
         <>
-            {header && (<div className=' px-2 flex py-3 flex-col sm:flex-row sm:justify-between sm:items-center border-b border-b-[rgba(255,255,255,.2)]'>
-                <h1 className='font-bold text-3xl text-black text-center'>
-                    {title}
-                </h1>
-                <div className='sm:pt-2 text-center'>
-                    <button
-                        onClick={() => {
-                            setId(0)
-                            setModal?.(true)
-                        }}
-                        className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-semibold text-white"
-                    >
-                        <FontAwesomeIcon icon={faPlus} className='sm:pr-2 block sm:inline' />
-                        <p className='hidden sm:inline'>{text}</p>
-                    </button>
-                </div>
-            </div>)}
             <div className="flex flex-wrap gap-2 items-center justify-end py-2">
 
                 <input

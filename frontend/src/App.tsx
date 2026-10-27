@@ -9,7 +9,6 @@ import { GnrProduction } from './views/Reports/Production/GnrProduction'
 import { CodeTable } from './views/Code/CodeTable'
 import { ClientTable } from './views/Client/ClientTable'
 import { PlantTable } from './views/plants/PlantTable'
-import { PlanTable } from './views/Plan/PlanTable'
 import { Dash } from './views/Reports/Production/Dash'
 import { Apps } from './views/Aplications/Apps'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -47,6 +46,7 @@ import { HXHLine } from './views/Apps/HourXHour/Line/HXHLine'
 import React from 'react'
 import { UrsDetail } from './views/Apps/Urs/Details/UrsDetail'
 import { UrsVerificatePictures } from './views/Apps/Urs/Requests/UrsVerificatePictures'
+import { PlanPage } from './Page/Plan/PlanPage'
 
 function App() {
 
@@ -110,7 +110,7 @@ function App() {
                 <Route path='Code' element={<CodeTable />} />
                 <Route path='Plant' element={<PlantTable />} />
                 <Route path='Client' element={<ClientTable />} />
-                <Route path='Plan' element={<PlanTable />} />
+                <Route path='Plan' element={<PlanPage />} />
                 <Route path='reports' element={<Dash />}></Route>
                 <Route path='production' element={<Production />}>
                   <Route index element={<GnrProduction />} />

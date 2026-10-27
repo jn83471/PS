@@ -4,7 +4,7 @@ import { formatFolio } from "../../../../Utils/Urs"
 import { useParams } from "react-router-dom"
 import { GetUrsRequest, GetUrsRequestDetails } from "../../../../api/Apps/Urs/UrsRequestApi"
 import { useQuery } from "@tanstack/react-query"
-import { formatDateTimeZone, formatDateTimeZoneComplete, formatDateUTC, formDateHours } from "../../../../Utils/Date"
+import { formatDateTimeZone, formatDateTimeZoneComplete, formatDateUTC, formatDateUTCComplete, formDateHours } from "../../../../Utils/Date"
 import { GetTimeZone } from "../../../../hook/GetTimeZone"
 import { useAuthWithApps } from "../../../../hook/useAuth"
 import { UrsTables } from "../../../../components/Apps/Urs/UrsTables"
@@ -25,36 +25,37 @@ export const UrsDetail = () => {
   })
   const progress = [{
     name: 'Solicitado',
-    column: 'createdAt',
+    column: 'data.createdAt',
     type: "UTC"
   }, {
     name: 'REVISION CPLOCAL',
-    column: 'DeliveryDay',
+    column: 'data.DeliveryDay',
     type: "UTC"
   }, {
     name: 'REVISION SMTS ',
-    column: 'FinishUserSMTSDate',
+    column: 'data.FinishUserSMTSDate',
     type: "UTC"
   }, {
     name: 'EN ESCANEO ',
-    column: 'LastProcessDay',
+    column: 'data.LastProcessDay',
     type: "UTC"
   }, {
-    name: 'EMBARCADA',
-    column: 'ClosedDay',
+    name: 'Verificado',
+    column: 'data.ClosedDay',
     type: "UTC"
   },
- {
+  {
     name: 'ASN',
-    column: 'ClosedDay',
-    type: "UTC"
+    column: 'ACCT_DATE',
+    type: "STATIC",
+    Alert:"Horario FGSS"
   }, {
     name: 'Enviado',
-    column: 'ClosedDay',
+    column: 'data.SMTSLastVerification',
     type: "UTC"
   }];
   const TimeZone = GetTimeZone(User?.data?.TimeZone)
-  const porcentaje = data?.Verify / (progress.length - 1) * 100
+  const porcentaje = ((data?.data?.Verify+(data?.results?.length>0?1:0)+(data?.data?.Verify==5?1:0) ) / (progress.length - 1) * 100) + 1
 
   const column: GridColDef[] = useMemo<GridColDef[]>(() => [
     {
@@ -121,13 +122,14 @@ export const UrsDetail = () => {
 
 
 
-        {data?.Verify >= 4 && <button onClick={HandleDownloadFile}
-          className="p-2 text-sm rounded-lg border border-green-500 bg-green-100/50 text-black
+        {(data?.data?.Verify >= 4 && data?.results?.[0]?.asn_number )&&
+          <div> <button onClick={HandleDownloadFile}
+            className="p-2 text-sm rounded-lg border border-green-500 bg-green-100/50 text-black
                                             hover:bg-green-500 hover:text-white duration-150 ease-in">
-          <FontAwesomeIcon icon={faDownload}
-            className="pr-1" />
-          ASN
-        </button>}
+            <FontAwesomeIcon icon={faDownload}
+              className="pr-1" />
+            ASN
+          </button></div>}
       </header>
       <section className="border-t-4  bg-white border border-gray-200 my-4 rounded-lg p-4 border-t-purple-600">
         <div className="p-2 border-b border-b-gray-200 flex flex-row">
@@ -149,23 +151,23 @@ export const UrsDetail = () => {
               Solicitado por
             </div>
             <div className="text-2xl font-bold">
-              {data?.RequestUser?.Name}
+              {data?.data?.RequestUser?.Name}
             </div>
           </div>
-          <div className="p-4 flex flex-col gap-2 lg:border-r border-gray-200 border-t sm:border-t-0">
+          {/*<div className="p-4 flex flex-col gap-2 lg:border-r border-gray-200 border-t sm:border-t-0">
             <div className="text-sm text-gray-400">
               Fecha de solicitud
             </div>
             <div className="text-2xl font-bold">
-              {formatDateTimeZone(data?.createdAt, TimeZone)}
+              {formatDateTimeZone(data?.data?.createdAt, TimeZone)}
             </div>
-          </div>
+          </div>*/}
           <div className="p-4 flex flex-col gap-2 sm:border-r border-gray-200 border-t sm:border-t-0">
             <div className="text-sm text-gray-400">
               Fecha propuesta
             </div>
             <div className="text-2xl font-bold">
-              {formatDateUTC(data?.ProposedDate ?? '')}
+              {formatDateUTC(data?.data?.ProposedDate ?? '')}
             </div>
           </div>
           <div className="p-4 flex flex-col gap-2 lg:border-r border-gray-200 border-t sm:border-t-0">
@@ -173,15 +175,23 @@ export const UrsDetail = () => {
               Hora de pickup
             </div>
             <div className="text-2xl font-bold">
-              {formDateHours(new Date(data?.hrs), TimeZone)}
+              {formDateHours(new Date(data?.data?.hrs), TimeZone)}
             </div>
           </div>
-          <div className="p-4 flex flex-col gap-2 border-gray-200 border-t sm:border-t-0">
+          <div className="p-4 flex flex-col gap-2 border-gray-200 border-t sm:border-t-0 lg:border-r">
             <div className="text-sm text-gray-400">
               Método de envío
             </div>
             <div className="text-2xl font-bold">
-              {data?.UrsRequests?.[0]?.UrsPriority.name}
+              {data?.data?.UrsRequests?.[0]?.UrsPriority.name}
+            </div>
+          </div>
+          <div className="p-4 flex flex-col gap-2 border-gray-200 border-t sm:border-t-0">
+            <div className="text-sm text-gray-400">
+              ASN
+            </div>
+            <div className="text-2xl font-bold">
+              {data?.results?.[0]?.asn_number}
             </div>
           </div>
         </div>
@@ -201,7 +211,7 @@ export const UrsDetail = () => {
               MFG
             </div>
             <div className="text-lg font-bold">
-              {data?.UrsRequests?.[0]?.Codes?.name}
+              {data?.data?.UrsRequests?.[0]?.Codes?.name}
             </div>
           </div>
           <div className="bg-blue-50/50 border border-blue-200 rounded-lg p-4 flex flex-col gap-2">
@@ -209,7 +219,7 @@ export const UrsDetail = () => {
               Motivo
             </div>
             <div className="text-lg font-bold">
-              {data?.UrsRequests?.[0]?.Reason}
+              {data?.data?.UrsRequests?.[0]?.Reason}
             </div>
           </div>
           <div className="bg-blue-50/50 border border-blue-200 rounded-lg p-4 flex flex-col gap-2">
@@ -217,7 +227,7 @@ export const UrsDetail = () => {
               Cantidad de pedidos
             </div>
             <div className="text-lg font-bold">
-              {data?.UrsRequests?.length}
+              {data?.data?.UrsRequests?.length}
             </div>
           </div>
           <div className="bg-blue-50/50 border border-blue-200 rounded-lg p-4 flex flex-col gap-2">
@@ -225,7 +235,7 @@ export const UrsDetail = () => {
               Cantidad
             </div>
             <div className="text-lg font-bold">
-              {data?.Qty}
+              {data?.data?.Qty}
             </div>
           </div>
         </div>
@@ -249,17 +259,31 @@ export const UrsDetail = () => {
                 {
                   progress.map((x, index) => (<div className="z-50" key={`progress${index}`}>
                     <FontAwesomeIcon icon={faCircle} className={`${(index * (100 / (progress.length - 1))) <= porcentaje ? "text-purple-500" : "text-gray-300"} text-2xl`} />
-                    <div className="hidden sm:block absolute translate-x-[-25%] text-sm text-gray-500 block text-center">
+                    <div className="hidden sm:block absolute translate-x-[-25%] md:text-sm text-gray-500 text-center w-[90PX] text-[.5rem]">
                       <div>
                         {x.name}
                       </div>
-                      <div >
-                        {formatDateTimeZoneComplete(data?.[x.column], TimeZone).split(",").map(y => (
-                          <div key={`dates${y}`}>
-                            {y}
-                          </div>
-                        ))}
+                      <div className="">
+                        {
+                          x.type === "UTC" ? formatDateTimeZoneComplete(x.column.includes("data.") ? data?.data?.[x.column.split(".")[1]] : data?.results?.[0]?.[x.column], TimeZone).split(",").map(y => (
+                            <div key={`dates${y}`}>
+                              {y}
+
+                            </div>
+                          )) :
+                            formatDateUTCComplete(x.column.includes("data.") ? data?.data?.[x.column.split(".")[1]] : data?.results?.[0]?.[x.column], TimeZone).split(",").map(y => (
+                              <div key={`dates${y}`}>
+                                {y}
+
+                              </div>
+                            ))}
+
                       </div>
+                      {
+                        x.Alert &&<div className="text-red-500 text-sm bg-red-100 rounded-lg absolute">
+                          {x.Alert}
+                        </div>
+                      }
                     </div>
 
                   </div>))
@@ -283,7 +307,7 @@ export const UrsDetail = () => {
               </div>
             </div>
 
-            <UrsTables rows={data?.UrsRequests} column={column} />
+            <UrsTables rows={data?.data?.UrsRequests} column={column} />
 
           </div>
         </div>
@@ -301,7 +325,7 @@ export const UrsDetail = () => {
               {
                 Array.from({ length: 4 }).map((_, index) => (
                   <div className="flex flex-col border border-blue-100 rounded-lg shadow">
-                    {data?.UrsFolioPictures?.filter(x => x.Verify == 4).length <= index ?
+                    {data?.data?.UrsFolioPictures?.filter(x => x.Verify == 4).length <= index ?
                       <>
                         <div className="lg:h-[150px] xl:h-[250px] overflow-hidden bg-blue-50 rounded-t-lg p-2 flex flex-col items-center justify-center text-blue-500">
                           Imagen {index + 1}
@@ -310,7 +334,7 @@ export const UrsDetail = () => {
                       </>
                       : <>
                         <div className="lg:h-[150px] xl:h-[250px] overflow-hidden bg-blue-50 rounded-t-lg p-2 flex flex-col items-center justify-center text-blue-500">
-                          <img src={`${import.meta.env.VITE_API_UPLOAD}/${data?.UrsFolioPictures?.filter(x => x.Verify == 4)?.[index]?.Name}`} />
+                          <img src={`${import.meta.env.VITE_API_UPLOAD}/${data?.data?.UrsFolioPictures?.filter(x => x.Verify == 4)?.[index]?.Name}`} />
                         </div>
                       </>
                     }
@@ -341,7 +365,7 @@ export const UrsDetail = () => {
             {
               Array.from({ length: 8 }).map((_, index) => (
                 <div className="flex flex-col border border-blue-100 rounded-lg shadow">
-                  {data?.UrsFolioPictures?.filter(x => x.Verify == 5).length <= index ?
+                  {data?.data?.UrsFolioPictures?.filter(x => x.Verify == 5).length <= index ?
                     <>
                       <div className="lg:h-[150px] xl:h-[250px] overflow-hidden bg-blue-50 rounded-t-lg p-2 flex flex-col items-center justify-center text-blue-500">
                         Imagen {index + 1}
@@ -350,7 +374,7 @@ export const UrsDetail = () => {
                     </>
                     : <>
                       <div className="lg:h-[150px] xl:h-[250px] overflow-hidden bg-blue-50 rounded-t-lg p-2 flex flex-col items-center justify-center text-blue-500">
-                        <img src={`${import.meta.env.VITE_API_UPLOAD}/${data?.UrsFolioPictures?.filter(x => x.Verify == 5)?.[index]?.Name}`} />
+                        <img src={`${import.meta.env.VITE_API_UPLOAD}/${data?.data?.UrsFolioPictures?.filter(x => x.Verify == 5)?.[index]?.Name}`} />
                       </div>
                     </>
                   }

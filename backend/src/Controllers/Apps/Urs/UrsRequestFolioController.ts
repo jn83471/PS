@@ -141,7 +141,83 @@ export class UrsRequestFolioController {
         if (!machine) {
             return res.status(404).json("Solicitud no encontrada")
         }
-        return res.json(machine)
+
+        const dt: FggsAsnDetails[] = []
+
+        const tenantsFgss: DBConfig[] = [
+        ];
+
+        const UrsRequest = await UrsRequests.findAll({
+            where: [{
+                Process: {
+                    [Op.not]: 99
+                },
+                UrsRequestsFolioId: machine.id
+            },
+            ],
+            include: [
+                {
+                    model: Codes,
+                    as: "Codes"
+                },
+                {
+                    model: UrsRequestScannHistory,
+                    as: "UrsRequestScannHistory",
+                    required: false,
+                }
+            ]
+        })
+        const servers = [
+            ...new Set(
+                UrsRequest.map(item => item.Codes?.fgsServer)
+            )
+        ].filter(Boolean);
+        const boxes = [
+            ...new Set(
+                UrsRequest.flatMap(item => item.UrsRequestScannHistory?.map(box => box.Box))
+            )
+        ].filter(Boolean);
+
+        console.log(UrsRequest)
+        if (boxes.length > 0) {
+            for (let index = 0; index < servers.length; index++) {
+                try {
+                    const cry = decrypt(servers[index].toLocaleString())
+                    if (tenantsFgss?.filter(x => x.name == cry.split('|')[0]).length == 0) {
+
+                        tenantsFgss.push({
+                            name: cry.split('|')[0],
+                            host: cry.split('|')[0],
+                            database: cry.split('|')[1],
+                            username: "fgssaccess",
+                            password: "fgsssql"
+                        })
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+
+            const promises = tenantsFgss.map(async (t) => {
+                const conn = await TenantConnection(t);
+
+                return withTimeout(
+                    this.getInfoASN(conn, boxes),
+                    10000 // 3 segundos max
+                );
+            });
+
+            const results = await Promise.allSettled(promises);
+
+            if (results.length > 0) {
+                console.log(results)
+                for (let index = 0; index < results.length; index++) {
+                    dt.push(...results[index]["value"]);
+                }
+            }
+        }
+
+        return res.json({ data: machine, results: dt })
     }
     static Create: any = async (req: Request, res: Response) => {
 
@@ -388,7 +464,7 @@ export class UrsRequestFolioController {
                 if (files != undefined) {
                     await UrsSendNewRequestVerification4(dt)
                 }
-                else{
+                else {
                     await UrsSendNewRequestVerification3(dt)
                 }
 

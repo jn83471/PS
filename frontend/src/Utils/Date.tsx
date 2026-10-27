@@ -54,3 +54,17 @@ export const formatDateTimeZoneComplete = (date: string, TimeZone: string) => {
         minute: "2-digit"
     }) ?? '';
 }
+
+export const formatDateUTCComplete = (date: string, TimeZone: string) => {
+    if (date == undefined) {
+        return "-"
+    }
+    return new Date(date).toLocaleDateString('es-MX', {
+        timeZone: "UTC",
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: "2-digit",
+        minute: "2-digit"
+    }) ?? '';
+}
