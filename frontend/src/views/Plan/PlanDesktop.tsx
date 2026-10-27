@@ -32,6 +32,9 @@ export const PlanDesktop = ({ DownloadFile, fecha, setValue, setFecha, modal, se
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
     const [personName, setPersonName] = useState<string[]>([]);
+    const [shift, setShift] = useState(0)
+    const [plan, setPlan] = useState(0)
+
 
     const handleChange = (event: SelectChangeEvent) => {
         //setPersonName(event.target.value as string);
@@ -105,7 +108,22 @@ export const PlanDesktop = ({ DownloadFile, fecha, setValue, setFecha, modal, se
             field: `d${i + 1}`,
             headerName: `D${i + 1}`,
             width: 85,
+            cellRenderer: (params: any) => params.data[`d${i + 1}`].toLocaleString()
         })),
+        {
+            field: "Total",
+            headerName: "Total",
+            width: 85,
+            cellRenderer: (params: any) => {
+
+                const total = Array.from(
+                    { length: 31 },
+                    (_, i) => Number(params.data[`d${i + 1}`] || 0)
+                ).reduce((acc, value) => acc + value, 0);
+
+                return <>{total.toLocaleString()}</>;
+            }
+        },
 
         {
             field: "acciones",
@@ -163,7 +181,17 @@ export const PlanDesktop = ({ DownloadFile, fecha, setValue, setFecha, modal, se
             },
         },
     };
-    const rows = data?.filter(x => personName.includes(x.machine) || personName.length == 0)
+    const rows = data?.filter(x => (personName.includes(x.machine) || personName.length == 0) &&
+        (shift == 0 || x.Shift == shift) &&
+        ((Array.from(
+            { length: 31 },
+            (_, i) => Number(x[`d${i + 1}`] || 0)
+        ).filter(value => value > 0).length > 0 && plan == 1)
+            || plan == 0 
+            || (Array.from(
+                { length: 31 },
+                (_, i) => Number(x[`d${i + 1}`] || 0)
+            ).filter(value => value > 0).length == 0 && plan == 2)))
 
 
     useEffect(() => {
@@ -208,79 +236,135 @@ export const PlanDesktop = ({ DownloadFile, fecha, setValue, setFecha, modal, se
                     </div>
 
                     <section className="flex flex-col md:flex-row sm:justify-between py-2 justify-end">
-                        <div className='flex flex-col sm:flex-row gap-2'>
-                            <DatePicker
-                                label="Years in descending order"
-                                openTo="year"
-                                views={['year', 'month']}
-                                yearsOrder="desc"
-                                value={fecha}
-                                onChange={async (newValue) => {
-                                    await setFecha(dayjs(`${newValue?.toDate().getFullYear()}-${(newValue!.toDate().getMonth() + 1)}-${newValue?.toDate().getDay()}`))
-                                    setValue("fecha", fecha?.format("YYYY-MM-DD"))
-                                    //refetch()
-                                }}
-                                sx={{
-                                    '& .MuiInputBase-input': {
-
-                                        color: '#fff',
-                                    },
-                                    '& .MuiInputLabel-root': {
-                                        color: '#ccc',
-                                    },
-                                    '& .MuiSvgIcon-root': {
-                                        color: '#fff',
-                                    },
-                                    '& .MuiInputLabel-root.Mui-focused': {
-                                        color: '#fff',
-                                    },
-
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                        borderColor: '#888',
-                                    },
-                                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                                        borderColor: '#fff',
-                                    },
-                                    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
-                                    {
-                                        borderColor: '#fff',
-                                    },
-                                    '& input::placeholder': {
-                                        color: '#ccc',
-                                        opacity: 1,
-                                    },
-                                }}
-
-                            />
-                            <FormControl >
-                                <InputLabel id="demo-multiple-name-label">Lineas</InputLabel>
-                                <Select
-                                    labelId="demo-multiple-name-label"
-                                    id="demo-multiple-name"
-                                    multiple
-                                    value={personName}
-                                    onChange={handleChange}
-                                    input={<OutlinedInput label="Name" />}
-                                    MenuProps={MenuProps}
+                        <div className='flex flex-col md:flex-row gap-1 flex-1'>
+                            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-1'>
+                                <DatePicker
+                                    label="Years in descending order"
+                                    openTo="year"
+                                    views={['year', 'month']}
+                                    yearsOrder="desc"
+                                    value={fecha}
+                                    onChange={async (newValue) => {
+                                        await setFecha(dayjs(`${newValue?.toDate().getFullYear()}-${(newValue!.toDate().getMonth() + 1)}-${newValue?.toDate().getDay()}`))
+                                        setValue("fecha", fecha?.format("YYYY-MM-DD"))
+                                        //refetch()
+                                    }}
                                     sx={{
                                         width: "100%",
-                                        minWidth: "170px"
+                                        '& .MuiInputBase-input': {
+
+                                            color: '#fff',
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: '#ccc',
+                                        },
+                                        '& .MuiSvgIcon-root': {
+                                            color: '#fff',
+                                        },
+                                        '& .MuiInputLabel-root.Mui-focused': {
+                                            color: '#fff',
+                                        },
+
+                                        '& .MuiOutlinedInput-notchedOutline': {
+                                            borderColor: '#888',
+                                        },
+                                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                                            borderColor: '#fff',
+                                        },
+                                        '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
+                                        {
+                                            borderColor: '#fff',
+                                        },
+                                        '& input::placeholder': {
+                                            color: '#ccc',
+                                            opacity: 1,
+                                        },
                                     }}
-                                >
-                                    {lines.map((name) => (
+
+                                />
+                                <FormControl >
+                                    <InputLabel id="demo-multiple-name-label">Lineas</InputLabel>
+                                    <Select
+                                        labelId="demo-multiple-name-label"
+                                        id="demo-multiple-name"
+                                        multiple
+                                        value={personName}
+                                        onChange={handleChange}
+                                        input={<OutlinedInput label="Name" />}
+                                        MenuProps={MenuProps}
+                                        sx={{
+                                            width: "100%",
+                                        }}
+                                    >
+                                        {lines.map((name) => (
+                                            <MenuItem
+                                                key={name}
+                                                value={name}
+                                            //style={getStyles(name, personName, theme)}
+                                            >
+                                                {name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                                <FormControl >
+                                    <InputLabel id="demo-multiple-name-label">Turno</InputLabel>
+                                    <Select
+                                        value={shift}
+                                        onChange={(e) => setShift(e.target.value)}
+                                        input={<OutlinedInput label="Name" />}
+                                        MenuProps={MenuProps}
+                                        sx={{
+                                            width: "100%",
+                                        }}
+                                    >
+                                        {Array.from({ length: 3 }).map((_, index) => (
+                                            <MenuItem
+                                                key={index}
+                                                value={index}
+                                            //style={getStyles(name, personName, theme)}
+                                            >
+                                                {index == 0 ? "Todos" : `Turno ${index}`}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                                <FormControl >
+                                    <InputLabel id="demo-multiple-name-label">Plan</InputLabel>
+                                    <Select
+                                        value={plan}
+                                        onChange={(e) => setPlan(e.target.value)}
+                                        input={<OutlinedInput label="Name" />}
+                                        MenuProps={MenuProps}
+                                        sx={{
+                                            width: "100%",
+                                        }}
+                                    >
                                         <MenuItem
-                                            key={name}
-                                            value={name}
+                                            value={0}
                                         //style={getStyles(name, personName, theme)}
                                         >
-                                            {name}
+                                            Todos
                                         </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+                                        <MenuItem
+                                            value={1}
+                                        //style={getStyles(name, personName, theme)}
+                                        >
+                                            Con Plan
+                                        </MenuItem>
+                                        <MenuItem
+                                            value={2}
+                                        //style={getStyles(name, personName, theme)}
+                                        >
+                                            Sin Plan
+                                        </MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </div>
+
                         </div>
 
-                        <div className="py-2 sm:py-0 text-right">
+                        <div className="py-2 sm:py-0 text-right w-full md:w-[6rem]">
                             <button onClick={() => setView("Table")} className={`${view === "Table" ? "bg-purple-500 text-white" : ""} p-2 rounded-l-lg  border border-gray-200`}>
                                 <FontAwesomeIcon icon={faTable} />
                             </button>
