@@ -33,7 +33,7 @@ export const UrsVerificateFoliosEmb = () => {
   )?.filter(x => x.id == Auth.data?.UrsProcessId || !Auth.data?.UrsProcessId);
 
   const { mutate } = useMutation({
-    mutationFn: ThirdVerify,
+    mutationFn: FirstVerify,
     onError: (error) => {
       console.log(error.message)
       toast.error(error.message)

@@ -19,10 +19,10 @@ type PlanDesktopProp = {
     DownloadFile, fecha, setValue, setFecha,
     modal, setModal, modalAddToEdit, setModalAddToEdit, setSelectPlan
     data,
-    HandleDeletePlan, handleSubmit, HandleSubmitCreateSuppliers, file, handleFile, selectPlan, refetch, lines
+    HandleDeletePlan, handleSubmit, HandleSubmitCreateSuppliers, file, handleFile, selectPlan, refetch, lines,setFile
 }
 export const PlanDesktop = ({ DownloadFile, fecha, setValue, setFecha, modal, setModal, modalAddToEdit, setModalAddToEdit, setSelectPlan, data, HandleDeletePlan,
-    handleSubmit, HandleSubmitCreateSuppliers, file, handleFile, selectPlan, refetch, lines
+    handleSubmit, HandleSubmitCreateSuppliers, file, handleFile, selectPlan, refetch, lines,setFile
 }: PlanDesktopProp) => {
     const [isLargeScreen, setIsLargeScreen] = useState(
         window.innerWidth >= 1660
@@ -226,11 +226,16 @@ export const PlanDesktop = ({ DownloadFile, fecha, setValue, setFecha, modal, se
                             <button className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-semibold text-white"
                                 onClick={DownloadFile}>Descargar</button>
                             <button className="mt-2 sm:mt-0 mx-2 bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-semibold text-white"
-                                onClick={() => setModal(true)}>Subir</button>
+                                onClick={() => {
+                                    setModal(true)
+                                    setFile(null)
+                                    setValue("plan",undefined)
+                                    }}>Subir</button>
                             <button className="mt-2 sm:mt-0 mx-2 bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-semibold text-white"
                                 onClick={() => {
                                     setModalAddToEdit(true)
                                     setSelectPlan(null)
+                                    
                                 }}>Nuevo</button>
                         </div>
                     </div>
@@ -350,7 +355,7 @@ export const PlanDesktop = ({ DownloadFile, fecha, setValue, setFecha, modal, se
                                             value={1}
                                         //style={getStyles(name, personName, theme)}
                                         >
-                                            Con Plan
+                                            Con PlanSubir Plan de producción
                                         </MenuItem>
                                         <MenuItem
                                             value={2}

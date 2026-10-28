@@ -117,6 +117,10 @@ export const PlanPage = () => {
 
 
   const HandleSubmitCreateSuppliers = (formData: UploadPlanSchemaForm) => {
+    if(formData.plan==undefined){
+      toast.error("Debe seleccionar un archivo")
+      return
+    }
     console.log(formData)
     mutate(formData)
   }
@@ -133,7 +137,7 @@ export const PlanPage = () => {
         modalAddToEdit={modalAddToEdit} setModalAddToEdit={setModalAddToEdit} setSelectPlan={setSelectPlan}
         data={data} modal={modal} setModal={setModal}
         HandleDeletePlan={HandleDeletePlan} handleSubmit={handleSubmit} HandleSubmitCreateSuppliers={HandleSubmitCreateSuppliers}
-        file={file} handleFile={handleFile} selectPlan={selectPlan} refetch={refetch} lines={lines}/>
+        file={file} handleFile={handleFile} selectPlan={selectPlan} refetch={refetch} lines={lines} setFile={setFile}/>
     </>
   )
 }
