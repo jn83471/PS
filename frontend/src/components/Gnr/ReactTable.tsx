@@ -86,7 +86,7 @@ export const ReactTable = ({ data, columns, text, title, setId, setModal, rowspa
                     rowData={data}
                     columnDefs={columns}
                     pagination={true}
-                    paginationPageSize={20}
+                    paginationPageSize={100}
                     animateRows={true}
                     defaultColDef={defaultColDef}
 

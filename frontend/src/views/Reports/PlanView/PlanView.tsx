@@ -370,7 +370,7 @@ export const PlanView = () => {
             machines={machines}
             setMachines={setMachines}
             plan={processedPlan}
-            column={columns}
+            //column={columns}
         />
     )
 }

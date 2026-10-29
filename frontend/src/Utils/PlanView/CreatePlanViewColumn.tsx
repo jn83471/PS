@@ -108,12 +108,15 @@ export const createPlanviewColumns = (): GridColDef[] => {
             headerAlign: "center",
             align: "center"
         },
+        /*
         {
             field: "Line",
             headerName: "Nombre",
             width: 150,
             minWidth: 150
         },
+        */
+       /*
         {
             field: "Program",
             headerName: "Programa",
