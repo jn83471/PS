@@ -10,7 +10,6 @@ import '@fullcalendar/react/themes/forma/palettes/purple.css'; // YOUR THEME'S P
 import { useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { useAuthWithApps } from '../../../../hook/useAuth';
-import { GetTimeZone } from '../../../../hook/GetTimeZone';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBroom, faCancel, faClock, faClockFour, faCoffee, faCookie, faInfo, faInfoCircle, faSave, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { GetMachines } from '../../../../api/MachineApis';
@@ -23,6 +22,7 @@ import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import type { HourByHourEventsForm } from '../../../../types/HourByHour/HourByHourEventsSchema';
 import { Controller, useForm } from 'react-hook-form';
+import { HourByHourGetTime } from '../../../../api/Apps/HourByHour/HourByHourApi';
 
 
 
@@ -38,10 +38,9 @@ export const HXHLine = () => {
 
     const Event = useQuery({
         queryKey: ['HourByHourEvents', machine],
-        queryFn: () => HourByHourGetEvents(machine),
+        queryFn: () => HourByHourGetTime(machine),
         enabled: machine != 0,
         retry: false,
-        refetchInterval: 60000
     })
 
     const events = useMemo((x) => {
@@ -70,7 +69,6 @@ export const HXHLine = () => {
     const { register, handleSubmit, formState: { errors }, control, setValue } = useForm<HourByHourEventsForm>({ defaultValues: initialValues })
     const [showModal, setShowModal] = useState<boolean>()
 
-    const TimeZone = GetTimeZone(auth?.data?.TimeZone)
 
     const dt = useMemo(() => {
         const hours = Array.from({ length: 24 }, (_, i) => ({
@@ -133,7 +131,7 @@ export const HXHLine = () => {
 
     const handleDateClick = (info) => {
         setValue("Start", new Date(info.dateStr).toLocaleDateString('es-MX', {
-            timeZone: TimeZone,
+            timeZone: "UTC",
             day: '2-digit',
             month: 'numeric',
             year: 'numeric',
@@ -144,7 +142,7 @@ export const HXHLine = () => {
         const endDate = new Date(info.dateStr);
         endDate.setMinutes(endDate.getMinutes() + 30);
         setValue("End", endDate.toLocaleTimeString("es-MX", {
-            timeZone: TimeZone,
+            timeZone: "UTC",
             hour: "2-digit",
             minute: "2-digit",
             hour12: false,
@@ -160,10 +158,10 @@ export const HXHLine = () => {
                     "id": x.id,
                     "title": x.title,
                     "start": dayjs(info.event.start)
-                        .tz(TimeZone)
+                        .tz("UTC")
                         .format("YYYY-MM-DD HH:mm:ss"),
                     "end": dayjs(info.event.end)
-                        .tz(TimeZone)
+                        .tz("UTC")
                         .format("YYYY-MM-DD HH:mm:ss")
                 }
             }
@@ -248,8 +246,6 @@ export const HXHLine = () => {
                     headerToolbar={false}
                     dayHeaders={false}
                     allDaySlot={false}
-                    timeZoneParam={TimeZone}
-                    timeZone={TimeZone}
                     duration={'00:15:00'}
                     slotDuration={'00:10:00'}
                     snapDuration="00:10:00"
@@ -268,7 +264,7 @@ export const HXHLine = () => {
                     slotEventOverlap={false}
                     eventMaxStack={5}
                     eventContent={(arg) => (
-                        <div>
+                        <div className='bg-red-500 text-white p-2'>
                             <strong>{arg.timeText}</strong>
                             <br />
                             {arg.event.title}

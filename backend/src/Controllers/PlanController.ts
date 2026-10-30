@@ -77,257 +77,264 @@ export class PlanController {
     }
     static Plan: any = async (req: Request, res: Response) => {
         try {
-        let machines = []
-        if (req.User.PlantId == null) {
-            const machine = await Machine.findAll({
-                where: [
-                    {
-                        status: true,
-                    }
-                ]
-            })
-            machines = machine.map(row => row.machineCode);
-        }
-        else {
-            const machine = await Machine.findAll({
-                where: [
-                    {
-                        status: true,
-                        PlantId: req.User?.PlantId
-                    }
-                ]
-            })
-            machines = machine.map(row => row.machineCode);
-        }
-        const { fecha } = req.body
-        let [year, month, day] = fecha
-            .split("-")
-            .map(Number);
-        const dt = new Date(year, month - 1, 2);
-
-        const inicioSiguienteMes = new Date(
-            dt.getFullYear(),
-            dt.getMonth() + 1,
-            1
-        );
-        //inicioSiguienteMes.setDate(inicioSiguienteMes.getDate() + 1);
-
-        const workbook = XLSX.read(req.file.buffer, {
-            type: 'buffer'
-        });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        const datos = XLSX.utils.sheet_to_json(sheet, {
-            header: 1,
-            defval: '' // evita undefined en celdas vacías
-        });
-        const resultado = [];
-        for (let i = 6; i < datos.length; i++) {
-
-            const filaActual = datos[i];
-
-            const registro = {};
-
-            for (let j = 0; j <= 40; j++) {
-
-                registro[`col${j}`] = filaActual[j];
-
-            }
-
-            resultado.push(registro);
-
-        }
-        const smhcas = await Smhcas.findAll()
-        const smh = []
-        for (let i = 0; i < resultado.length; i++) {
-            if (smh.find(x => x.ShortPart == resultado[i]["col8"]) == null && smhcas.find(x => x.ShortPart == resultado[i]["col8"]) == null) {
-                smh.push({
-                    ShortPart: resultado[i]["col8"],
-                    Kmh: resultado[i]["col9"]
+            let machines = []
+            if (req.User.PlantId == null) {
+                const machine = await Machine.findAll({
+                    where: [
+                        {
+                            status: true,
+                        }
+                    ]
                 })
+                machines = machine.map(row => row.machineCode);
             }
-        }
-        await Smhcas.bulkCreate(smh)
+            else {
+                const machine = await Machine.findAll({
+                    where: [
+                        {
+                            status: true,
+                            PlantId: req.User?.PlantId
+                        }
+                    ]
+                })
+                machines = machine.map(row => row.machineCode);
+            }
+            const { fecha } = req.body
+            let [year, month, day] = fecha
+                .split("-")
+                .map(Number);
+            const dt = new Date(year, month - 1, 2);
 
-        const plan = await Plans.findAll({
-            where: {
-                createdAt: {
-                    [Op.gte]: dt,
-                    [Op.lt]: inicioSiguienteMes
+            const inicioSiguienteMes = new Date(
+                dt.getFullYear(),
+                dt.getMonth() + 1,
+                1
+            );
+            //inicioSiguienteMes.setDate(inicioSiguienteMes.getDate() + 1);
+
+            const workbook = XLSX.read(req.file.buffer, {
+                type: 'buffer'
+            });
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const datos = XLSX.utils.sheet_to_json(sheet, {
+                header: 1,
+                defval: '' // evita undefined en celdas vacías
+            });
+            const resultado = [];
+            for (let i = 6; i < datos.length; i++) {
+
+                const filaActual = datos[i];
+
+                const registro = {};
+
+                for (let j = 0; j <= 40; j++) {
+
+                    registro[`col${j}`] = filaActual[j];
+
                 }
+
+                resultado.push(registro);
+
             }
-        })
-        const insert = new Date(dt)
-        insert.setDate(insert.getDate() + 1)
-        //return res.json({ plan, dt, inicioSiguienteMes })
-        const pl = []
-        for (let i = 0; i < resultado.length; i++) {
-
-            if (!machines.includes(resultado[i]["col0"])) {
-                continue
-            }
-
-            console.log(resultado[i]["col4"].toString()[0])
-
-            if (pl.find(x => x.machine == resultado[i]["col0"] &&
-                x.Shift == resultado[i]["col4"].toString()[0] && x.PartNumber == resultado[i]["col5"] &&
-                x.Customer == resultado[i]["col6"] && x.LevenDesign == resultado[i]["col7"] && x.Shortpart == resultado[i]["col8"]) == null
-                &&
-                plan.find(x => x.machine == resultado[i]["col0"] &&
-                    x.Shift == resultado[i]["col4"].toString()[0] && x.PartNumber == resultado[i]["col5"] &&
-                    x.Customer == resultado[i]["col6"] && x.LevenDesign == resultado[i]["col7"] && x.Shortpart == resultado[i]["col8"]) == null) {
-                pl.push({
-                    machine: resultado[i]["col0"],
-                    Capacity: resultado[i]["col1"] == "" || resultado[i]["col1"] == null ? 0 : parseFloat(resultado[i]["col1"]),
-                    Line: resultado[i]["col2"],
-                    Program: resultado[i]["col3"],
-                    Shift: resultado[i]["col4"].toString()[0],
-                    PartNumber: resultado[i]["col5"],
-                    Customer: resultado[i]["col6"],
-                    LevenDesign: resultado[i]["col7"],
-                    Shortpart: resultado[i]["col8"],
-                    Kmh: resultado[i]["col9"],
-                    d1: resultado[i]["col10"] == "" || resultado[i]["col10"] == null ? 0 : resultado[i]["col10"].toString().split(".")[0],
-                    d2: resultado[i]["col11"] == "" || resultado[i]["col11"] == null ? 0 : resultado[i]["col11"].toString().split(".")[0],
-                    d3: resultado[i]["col12"] == "" || resultado[i]["col12"] == null ? 0 : resultado[i]["col12"].toString().split(".")[0],
-                    d4: resultado[i]["col13"] == "" || resultado[i]["col13"] == null ? 0 : resultado[i]["col13"].toString().split(".")[0],
-                    d5: resultado[i]["col14"] == "" || resultado[i]["col14"] == null ? 0 : resultado[i]["col14"].toString().split(".")[0],
-                    d6: resultado[i]["col15"] == "" || resultado[i]["col15"] == null ? 0 : resultado[i]["col15"].toString().split(".")[0],
-                    d7: resultado[i]["col16"] == "" || resultado[i]["col16"] == null ? 0 : resultado[i]["col16"].toString().split(".")[0],
-                    d8: resultado[i]["col17"] == "" || resultado[i]["col17"] == null ? 0 : resultado[i]["col17"].toString().split(".")[0],
-                    d9: resultado[i]["col18"] == "" || resultado[i]["col18"] == null ? 0 : resultado[i]["col18"].toString().split(".")[0],
-                    d10: resultado[i]["col19"] == "" || resultado[i]["col19"] == null ? 0 : resultado[i]["col19"].toString().split(".")[0],
-                    d11: resultado[i]["col20"] == "" || resultado[i]["col20"] == null ? 0 : resultado[i]["col20"].toString().split(".")[0],
-                    d12: resultado[i]["col21"] == "" || resultado[i]["col21"] == null ? 0 : resultado[i]["col21"].toString().split(".")[0],
-                    d13: resultado[i]["col22"] == "" || resultado[i]["col22"] == null ? 0 : resultado[i]["col22"].toString().split(".")[0],
-                    d14: resultado[i]["col23"] == "" || resultado[i]["col23"] == null ? 0 : resultado[i]["col23"].toString().split(".")[0],
-                    d15: resultado[i]["col24"] == "" || resultado[i]["col24"] == null ? 0 : resultado[i]["col24"].toString().split(".")[0],
-                    d16: resultado[i]["col25"] == "" || resultado[i]["col25"] == null ? 0 : resultado[i]["col25"].toString().split(".")[0],
-                    d17: resultado[i]["col26"] == "" || resultado[i]["col26"] == null ? 0 : resultado[i]["col26"].toString().split(".")[0],
-                    d18: resultado[i]["col27"] == "" || resultado[i]["col27"] == null ? 0 : resultado[i]["col27"].toString().split(".")[0],
-                    d19: resultado[i]["col28"] == "" || resultado[i]["col28"] == null ? 0 : resultado[i]["col28"].toString().split(".")[0],
-                    d20: resultado[i]["col29"] == "" || resultado[i]["col29"] == null ? 0 : resultado[i]["col29"].toString().split(".")[0],
-                    d21: resultado[i]["col30"] == "" || resultado[i]["col30"] == null ? 0 : resultado[i]["col30"].toString().split(".")[0],
-                    d22: resultado[i]["col31"] == "" || resultado[i]["col31"] == null ? 0 : resultado[i]["col31"].toString().split(".")[0],
-                    d23: resultado[i]["col32"] == "" || resultado[i]["col32"] == null ? 0 : resultado[i]["col32"].toString().split(".")[0],
-                    d24: resultado[i]["col33"] == "" || resultado[i]["col33"] == null ? 0 : resultado[i]["col33"].toString().split(".")[0],
-                    d25: resultado[i]["col34"] == "" || resultado[i]["col34"] == null ? 0 : resultado[i]["col34"].toString().split(".")[0],
-                    d26: resultado[i]["col35"] == "" || resultado[i]["col35"] == null ? 0 : resultado[i]["col35"].toString().split(".")[0],
-                    d27: resultado[i]["col36"] == "" || resultado[i]["col36"] == null ? 0 : resultado[i]["col36"].toString().split(".")[0],
-                    d28: resultado[i]["col37"] == "" || resultado[i]["col37"] == null ? 0 : resultado[i]["col37"].toString().split(".")[0],
-                    d29: resultado[i]["col38"] == "" || resultado[i]["col38"] == null ? 0 : resultado[i]["col38"].toString().split(".")[0],
-                    d30: resultado[i]["col39"] == "" || resultado[i]["col39"] == null ? 0 : resultado[i]["col39"].toString().split(".")[0],
-                    d31: resultado[i]["col40"] == "" || resultado[i]["col40"] == null ? 0 : resultado[i]["col40"].toString().split(".")[0],
-                    createdAt: insert
-                })
-                //break;
-            }
-            else if (plan.find(x => x.machine == resultado[i]["col0"] &&
-                x.Shift == resultado[i]["col4"].toString()[0] && x.PartNumber == resultado[i]["col5"] &&
-                x.Customer == resultado[i]["col6"] && x.LevenDesign == resultado[i]["col7"] && x.Shortpart == resultado[i]["col8"]) != null) {
-                const upd = plan.find(x => x.machine == resultado[i]["col0"] &&
-                    x.Shift == resultado[i]["col4"].toString()[0] && x.PartNumber == resultado[i]["col5"] &&
-                    x.Customer == resultado[i]["col6"] && x.LevenDesign == resultado[i]["col7"] && x.Shortpart == resultado[i]["col8"])
-
-                if (upd != null) {
-
-                    if (
-                        upd.d1 == (resultado[i]["col10"] == "" || resultado[i]["col10"] == null ? 0 : resultado[i]["col10"].toString().split(".")[0]) &&
-                        upd.d2 == (resultado[i]["col11"] == "" || resultado[i]["col11"] == null ? 0 : resultado[i]["col11"].toString().split(".")[0]) &&
-                        upd.d3 == (resultado[i]["col12"] == "" || resultado[i]["col12"] == null ? 0 : resultado[i]["col12"].toString().split(".")[0]) &&
-                        upd.d4 == (resultado[i]["col13"] == "" || resultado[i]["col13"] == null ? 0 : resultado[i]["col13"].toString().split(".")[0]) &&
-                        upd.d5 == (resultado[i]["col14"] == "" || resultado[i]["col14"] == null ? 0 : resultado[i]["col14"].toString().split(".")[0]) &&
-                        upd.d6 == (resultado[i]["col15"] == "" || resultado[i]["col15"] == null ? 0 : resultado[i]["col15"].toString().split(".")[0]) &&
-                        upd.d7 == (resultado[i]["col16"] == "" || resultado[i]["col16"] == null ? 0 : resultado[i]["col16"].toString().split(".")[0]) &&
-                        upd.d8 == (resultado[i]["col17"] == "" || resultado[i]["col17"] == null ? 0 : resultado[i]["col17"].toString().split(".")[0]) &&
-                        upd.d9 == (resultado[i]["col18"] == "" || resultado[i]["col18"] == null ? 0 : resultado[i]["col18"].toString().split(".")[0]) &&
-                        upd.d10 == (resultado[i]["col19"] == "" || resultado[i]["col19"] == null ? 0 : resultado[i]["col19"].toString().split(".")[0]) &&
-                        upd.d11 == (resultado[i]["col20"] == "" || resultado[i]["col20"] == null ? 0 : resultado[i]["col20"].toString().split(".")[0]) &&
-                        upd.d12 == (resultado[i]["col21"] == "" || resultado[i]["col21"] == null ? 0 : resultado[i]["col21"].toString().split(".")[0]) &&
-                        upd.d13 == (resultado[i]["col22"] == "" || resultado[i]["col22"] == null ? 0 : resultado[i]["col22"].toString().split(".")[0]) &&
-                        upd.d14 == (resultado[i]["col23"] == "" || resultado[i]["col23"] == null ? 0 : resultado[i]["col23"].toString().split(".")[0]) &&
-                        upd.d15 == (resultado[i]["col24"] == "" || resultado[i]["col24"] == null ? 0 : resultado[i]["col24"].toString().split(".")[0]) &&
-                        upd.d16 == (resultado[i]["col25"] == "" || resultado[i]["col25"] == null ? 0 : resultado[i]["col25"].toString().split(".")[0]) &&
-                        upd.d17 == (resultado[i]["col26"] == "" || resultado[i]["col26"] == null ? 0 : resultado[i]["col26"].toString().split(".")[0]) &&
-                        upd.d18 == (resultado[i]["col27"] == "" || resultado[i]["col27"] == null ? 0 : resultado[i]["col27"].toString().split(".")[0]) &&
-                        upd.d19 == (resultado[i]["col28"] == "" || resultado[i]["col28"] == null ? 0 : resultado[i]["col28"].toString().split(".")[0]) &&
-                        upd.d20 == (resultado[i]["col29"] == "" || resultado[i]["col29"] == null ? 0 : resultado[i]["col29"].toString().split(".")[0]) &&
-                        upd.d21 == (resultado[i]["col30"] == "" || resultado[i]["col30"] == null ? 0 : resultado[i]["col30"].toString().split(".")[0]) &&
-                        upd.d22 == (resultado[i]["col31"] == "" || resultado[i]["col31"] == null ? 0 : resultado[i]["col31"].toString().split(".")[0]) &&
-                        upd.d23 == (resultado[i]["col32"] == "" || resultado[i]["col32"] == null ? 0 : resultado[i]["col32"].toString().split(".")[0]) &&
-                        upd.d24 == (resultado[i]["col33"] == "" || resultado[i]["col33"] == null ? 0 : resultado[i]["col33"].toString().split(".")[0]) &&
-                        upd.d25 == (resultado[i]["col34"] == "" || resultado[i]["col34"] == null ? 0 : resultado[i]["col34"].toString().split(".")[0]) &&
-                        upd.d26 == (resultado[i]["col35"] == "" || resultado[i]["col35"] == null ? 0 : resultado[i]["col35"].toString().split(".")[0]) &&
-                        upd.d27 == (resultado[i]["col36"] == "" || resultado[i]["col36"] == null ? 0 : resultado[i]["col36"].toString().split(".")[0]) &&
-                        upd.d28 == (resultado[i]["col37"] == "" || resultado[i]["col37"] == null ? 0 : resultado[i]["col37"].toString().split(".")[0]) &&
-                        upd.d29 == (resultado[i]["col38"] == "" || resultado[i]["col38"] == null ? 0 : resultado[i]["col38"].toString().split(".")[0]) &&
-                        upd.d30 == (resultado[i]["col39"] == "" || resultado[i]["col39"] == null ? 0 : resultado[i]["col39"].toString().split(".")[0]) &&
-                        upd.d31 == (resultado[i]["col40"] == "" || resultado[i]["col40"] == null ? 0 : resultado[i]["col40"].toString().split(".")[0])
-                    ) {
-                        continue
-                    }
-
-
-
-                    upd.Kmh = resultado[i]["col9"]
-                    upd.d1 = resultado[i]["col10"] == "" || resultado[i]["col10"] == null ? 0 : resultado[i]["col10"].toString().split(".")[0]
-                    upd.d2 = resultado[i]["col11"] == "" || resultado[i]["col11"] == null ? 0 : resultado[i]["col11"].toString().split(".")[0]
-                    upd.d3 = resultado[i]["col12"] == "" || resultado[i]["col12"] == null ? 0 : resultado[i]["col12"].toString().split(".")[0]
-                    upd.d4 = resultado[i]["col13"] == "" || resultado[i]["col13"] == null ? 0 : resultado[i]["col13"].toString().split(".")[0]
-                    upd.d5 = resultado[i]["col14"] == "" || resultado[i]["col14"] == null ? 0 : resultado[i]["col14"].toString().split(".")[0]
-                    upd.d6 = resultado[i]["col15"] == "" || resultado[i]["col15"] == null ? 0 : resultado[i]["col15"].toString().split(".")[0]
-                    upd.d7 = resultado[i]["col16"] == "" || resultado[i]["col16"] == null ? 0 : resultado[i]["col16"].toString().split(".")[0]
-                    upd.d8 = resultado[i]["col17"] == "" || resultado[i]["col17"] == null ? 0 : resultado[i]["col17"].toString().split(".")[0]
-                    upd.d9 = resultado[i]["col18"] == "" || resultado[i]["col18"] == null ? 0 : resultado[i]["col18"].toString().split(".")[0]
-                    upd.d10 = resultado[i]["col19"] == "" || resultado[i]["col19"] == null ? 0 : resultado[i]["col19"].toString().split(".")[0]
-                    upd.d11 = resultado[i]["col20"] == "" || resultado[i]["col20"] == null ? 0 : resultado[i]["col20"].toString().split(".")[0]
-                    upd.d12 = resultado[i]["col21"] == "" || resultado[i]["col21"] == null ? 0 : resultado[i]["col21"].toString().split(".")[0]
-                    upd.d13 = resultado[i]["col22"] == "" || resultado[i]["col22"] == null ? 0 : resultado[i]["col22"].toString().split(".")[0]
-                    upd.d14 = resultado[i]["col23"] == "" || resultado[i]["col23"] == null ? 0 : resultado[i]["col23"].toString().split(".")[0]
-                    upd.d15 = resultado[i]["col24"] == "" || resultado[i]["col24"] == null ? 0 : resultado[i]["col24"].toString().split(".")[0]
-                    upd.d16 = resultado[i]["col25"] == "" || resultado[i]["col25"] == null ? 0 : resultado[i]["col25"].toString().split(".")[0]
-                    upd.d17 = resultado[i]["col26"] == "" || resultado[i]["col26"] == null ? 0 : resultado[i]["col26"].toString().split(".")[0]
-                    upd.d18 = resultado[i]["col27"] == "" || resultado[i]["col27"] == null ? 0 : resultado[i]["col27"].toString().split(".")[0]
-                    upd.d19 = resultado[i]["col28"] == "" || resultado[i]["col28"] == null ? 0 : resultado[i]["col28"].toString().split(".")[0]
-                    upd.d20 = resultado[i]["col29"] == "" || resultado[i]["col29"] == null ? 0 : resultado[i]["col29"].toString().split(".")[0]
-                    upd.d21 = resultado[i]["col30"] == "" || resultado[i]["col30"] == null ? 0 : resultado[i]["col30"].toString().split(".")[0]
-                    upd.d22 = resultado[i]["col31"] == "" || resultado[i]["col31"] == null ? 0 : resultado[i]["col31"].toString().split(".")[0]
-                    upd.d23 = resultado[i]["col32"] == "" || resultado[i]["col32"] == null ? 0 : resultado[i]["col32"].toString().split(".")[0]
-                    upd.d24 = resultado[i]["col33"] == "" || resultado[i]["col33"] == null ? 0 : resultado[i]["col33"].toString().split(".")[0]
-                    upd.d25 = resultado[i]["col34"] == "" || resultado[i]["col34"] == null ? 0 : resultado[i]["col34"].toString().split(".")[0]
-                    upd.d26 = resultado[i]["col35"] == "" || resultado[i]["col35"] == null ? 0 : resultado[i]["col35"].toString().split(".")[0]
-                    upd.d27 = resultado[i]["col36"] == "" || resultado[i]["col36"] == null ? 0 : resultado[i]["col36"].toString().split(".")[0]
-                    upd.d28 = resultado[i]["col37"] == "" || resultado[i]["col37"] == null ? 0 : resultado[i]["col37"].toString().split(".")[0]
-                    upd.d29 = resultado[i]["col38"] == "" || resultado[i]["col38"] == null ? 0 : resultado[i]["col38"].toString().split(".")[0]
-                    upd.d30 = resultado[i]["col39"] == "" || resultado[i]["col39"] == null ? 0 : resultado[i]["col39"].toString().split(".")[0]
-                    upd.d31 = resultado[i]["col40"] == "" || resultado[i]["col40"] == null ? 0 : resultado[i]["col40"].toString().split(".")[0]
-                    const data = await Plans.update(upd.dataValues, {
-                        where: [
-                            {
-                                id: upd.id
-                            }
-                        ]
+            const smhcas = await Smhcas.findAll()
+            const smh = []
+            for (let i = 0; i < resultado.length; i++) {
+                if (smh.find(x => x.ShortPart == resultado[i]["col8"]) == null && smhcas.find(x => x.ShortPart == resultado[i]["col8"]) == null) {
+                    smh.push({
+                        ShortPart: resultado[i]["col8"],
+                        Kmh: resultado[i]["col9"]
                     })
                 }
-                else {
+            }
+            await Smhcas.bulkCreate(smh)
+
+            const plan = await Plans.findAll({
+                where: {
+                    createdAt: {
+                        [Op.gte]: dt,
+                        [Op.lt]: inicioSiguienteMes
+                    }
+                }
+            })
+            const insert = new Date(dt)
+            insert.setDate(insert.getDate() + 1)
+            //return res.json({ plan, dt, inicioSiguienteMes })
+            const pl = []
+            for (let i = 0; i < resultado.length; i++) {
+
+                if (!machines.includes(resultado[i]["col0"])) {
+                    continue
                 }
 
 
-            }
-        }
-console.error("pl")
-        console.log(pl)
+                if (pl.find(x => x.machine == resultado[i]["col0"] &&
+                    x.Shift == resultado[i]["col4"].toString().trim()[0] && x.PartNumber == resultado[i]["col5"].trim() &&
+                    x.Customer == resultado[i]["col6"].trim() && x.LevenDesign == resultado[i]["col7"].trim() && x.Shortpart == resultado[i]["col8"].trim()) == null
+                    &&
+                    plan.find(x => x.machine == resultado[i]["col0"] &&
+                        x.Shift == resultado[i]["col4"].toString().trim()[0] && x.PartNumber == resultado[i]["col5"].trim() &&
+                        x.Customer == resultado[i]["col6"].trim() && x.LevenDesign == resultado[i]["col7"].trim() && x.Shortpart == resultado[i]["col8"].trim()) == null) {
+                    pl.push({
+                        machine: resultado[i]["col0"],
+                        Capacity: resultado[i]["col1"] == "" || resultado[i]["col1"] == null ? 0 : parseFloat(resultado[i]["col1"]),
+                        Line: resultado[i]["col2"].trim(),
+                        Program: resultado[i]["col3"].trim(),
+                        Shift: resultado[i]["col4"].toString()[0],
+                        PartNumber: resultado[i]["col5"].trim(),
+                        Customer: resultado[i]["col6"].trim(),
+                        LevenDesign: resultado[i]["col7"].trim(),
+                        Shortpart: resultado[i]["col8"].trim(),
+                        Kmh: resultado[i]["col9"],
+                        d1: resultado[i]["col10"] == "" || resultado[i]["col10"] == null ? 0 : resultado[i]["col10"].toString().split(".")[0],
+                        d2: resultado[i]["col11"] == "" || resultado[i]["col11"] == null ? 0 : resultado[i]["col11"].toString().split(".")[0],
+                        d3: resultado[i]["col12"] == "" || resultado[i]["col12"] == null ? 0 : resultado[i]["col12"].toString().split(".")[0],
+                        d4: resultado[i]["col13"] == "" || resultado[i]["col13"] == null ? 0 : resultado[i]["col13"].toString().split(".")[0],
+                        d5: resultado[i]["col14"] == "" || resultado[i]["col14"] == null ? 0 : resultado[i]["col14"].toString().split(".")[0],
+                        d6: resultado[i]["col15"] == "" || resultado[i]["col15"] == null ? 0 : resultado[i]["col15"].toString().split(".")[0],
+                        d7: resultado[i]["col16"] == "" || resultado[i]["col16"] == null ? 0 : resultado[i]["col16"].toString().split(".")[0],
+                        d8: resultado[i]["col17"] == "" || resultado[i]["col17"] == null ? 0 : resultado[i]["col17"].toString().split(".")[0],
+                        d9: resultado[i]["col18"] == "" || resultado[i]["col18"] == null ? 0 : resultado[i]["col18"].toString().split(".")[0],
+                        d10: resultado[i]["col19"] == "" || resultado[i]["col19"] == null ? 0 : resultado[i]["col19"].toString().split(".")[0],
+                        d11: resultado[i]["col20"] == "" || resultado[i]["col20"] == null ? 0 : resultado[i]["col20"].toString().split(".")[0],
+                        d12: resultado[i]["col21"] == "" || resultado[i]["col21"] == null ? 0 : resultado[i]["col21"].toString().split(".")[0],
+                        d13: resultado[i]["col22"] == "" || resultado[i]["col22"] == null ? 0 : resultado[i]["col22"].toString().split(".")[0],
+                        d14: resultado[i]["col23"] == "" || resultado[i]["col23"] == null ? 0 : resultado[i]["col23"].toString().split(".")[0],
+                        d15: resultado[i]["col24"] == "" || resultado[i]["col24"] == null ? 0 : resultado[i]["col24"].toString().split(".")[0],
+                        d16: resultado[i]["col25"] == "" || resultado[i]["col25"] == null ? 0 : resultado[i]["col25"].toString().split(".")[0],
+                        d17: resultado[i]["col26"] == "" || resultado[i]["col26"] == null ? 0 : resultado[i]["col26"].toString().split(".")[0],
+                        d18: resultado[i]["col27"] == "" || resultado[i]["col27"] == null ? 0 : resultado[i]["col27"].toString().split(".")[0],
+                        d19: resultado[i]["col28"] == "" || resultado[i]["col28"] == null ? 0 : resultado[i]["col28"].toString().split(".")[0],
+                        d20: resultado[i]["col29"] == "" || resultado[i]["col29"] == null ? 0 : resultado[i]["col29"].toString().split(".")[0],
+                        d21: resultado[i]["col30"] == "" || resultado[i]["col30"] == null ? 0 : resultado[i]["col30"].toString().split(".")[0],
+                        d22: resultado[i]["col31"] == "" || resultado[i]["col31"] == null ? 0 : resultado[i]["col31"].toString().split(".")[0],
+                        d23: resultado[i]["col32"] == "" || resultado[i]["col32"] == null ? 0 : resultado[i]["col32"].toString().split(".")[0],
+                        d24: resultado[i]["col33"] == "" || resultado[i]["col33"] == null ? 0 : resultado[i]["col33"].toString().split(".")[0],
+                        d25: resultado[i]["col34"] == "" || resultado[i]["col34"] == null ? 0 : resultado[i]["col34"].toString().split(".")[0],
+                        d26: resultado[i]["col35"] == "" || resultado[i]["col35"] == null ? 0 : resultado[i]["col35"].toString().split(".")[0],
+                        d27: resultado[i]["col36"] == "" || resultado[i]["col36"] == null ? 0 : resultado[i]["col36"].toString().split(".")[0],
+                        d28: resultado[i]["col37"] == "" || resultado[i]["col37"] == null ? 0 : resultado[i]["col37"].toString().split(".")[0],
+                        d29: resultado[i]["col38"] == "" || resultado[i]["col38"] == null ? 0 : resultado[i]["col38"].toString().split(".")[0],
+                        d30: resultado[i]["col39"] == "" || resultado[i]["col39"] == null ? 0 : resultado[i]["col39"].toString().split(".")[0],
+                        d31: resultado[i]["col40"] == "" || resultado[i]["col40"] == null ? 0 : resultado[i]["col40"].toString().split(".")[0],
+                        createdAt: insert
+                    })
+                    //break;
+                }
+                else if (plan.find(x => x.machine == resultado[i]["col0"] &&
+                    x.Shift == resultado[i]["col4"].toString().trim()[0] && x.PartNumber == resultado[i]["col5"].trim() &&
+                    x.Customer == resultado[i]["col6"].trim() && x.LevenDesign == resultado[i]["col7"].trim() && x.Shortpart == resultado[i]["col8"].trim()) != null) {
+                    const upd = plan.find(x => x.machine == resultado[i]["col0"] &&
+                        x.Shift == resultado[i]["col4"].toString().trim()[0] && x.PartNumber == resultado[i]["col5"].trim() &&
+                        x.Customer == resultado[i]["col6"].trim() && x.LevenDesign == resultado[i]["col7"].trim() && x.Shortpart == resultado[i]["col8"].trim())
 
+                    if (upd != null) {
+
+                        if (
+                            upd.Line == resultado[i]["col2"].trim() &&
+                            upd.Program == resultado[i]["col3"].trim() &&
+                            upd.d1 == (resultado[i]["col10"] == "" || resultado[i]["col10"] == null ? 0 : resultado[i]["col10"].toString().split(".")[0]) &&
+                            upd.d2 == (resultado[i]["col11"] == "" || resultado[i]["col11"] == null ? 0 : resultado[i]["col11"].toString().split(".")[0]) &&
+                            upd.d3 == (resultado[i]["col12"] == "" || resultado[i]["col12"] == null ? 0 : resultado[i]["col12"].toString().split(".")[0]) &&
+                            upd.d4 == (resultado[i]["col13"] == "" || resultado[i]["col13"] == null ? 0 : resultado[i]["col13"].toString().split(".")[0]) &&
+                            upd.d5 == (resultado[i]["col14"] == "" || resultado[i]["col14"] == null ? 0 : resultado[i]["col14"].toString().split(".")[0]) &&
+                            upd.d6 == (resultado[i]["col15"] == "" || resultado[i]["col15"] == null ? 0 : resultado[i]["col15"].toString().split(".")[0]) &&
+                            upd.d7 == (resultado[i]["col16"] == "" || resultado[i]["col16"] == null ? 0 : resultado[i]["col16"].toString().split(".")[0]) &&
+                            upd.d8 == (resultado[i]["col17"] == "" || resultado[i]["col17"] == null ? 0 : resultado[i]["col17"].toString().split(".")[0]) &&
+                            upd.d9 == (resultado[i]["col18"] == "" || resultado[i]["col18"] == null ? 0 : resultado[i]["col18"].toString().split(".")[0]) &&
+                            upd.d10 == (resultado[i]["col19"] == "" || resultado[i]["col19"] == null ? 0 : resultado[i]["col19"].toString().split(".")[0]) &&
+                            upd.d11 == (resultado[i]["col20"] == "" || resultado[i]["col20"] == null ? 0 : resultado[i]["col20"].toString().split(".")[0]) &&
+                            upd.d12 == (resultado[i]["col21"] == "" || resultado[i]["col21"] == null ? 0 : resultado[i]["col21"].toString().split(".")[0]) &&
+                            upd.d13 == (resultado[i]["col22"] == "" || resultado[i]["col22"] == null ? 0 : resultado[i]["col22"].toString().split(".")[0]) &&
+                            upd.d14 == (resultado[i]["col23"] == "" || resultado[i]["col23"] == null ? 0 : resultado[i]["col23"].toString().split(".")[0]) &&
+                            upd.d15 == (resultado[i]["col24"] == "" || resultado[i]["col24"] == null ? 0 : resultado[i]["col24"].toString().split(".")[0]) &&
+                            upd.d16 == (resultado[i]["col25"] == "" || resultado[i]["col25"] == null ? 0 : resultado[i]["col25"].toString().split(".")[0]) &&
+                            upd.d17 == (resultado[i]["col26"] == "" || resultado[i]["col26"] == null ? 0 : resultado[i]["col26"].toString().split(".")[0]) &&
+                            upd.d18 == (resultado[i]["col27"] == "" || resultado[i]["col27"] == null ? 0 : resultado[i]["col27"].toString().split(".")[0]) &&
+                            upd.d19 == (resultado[i]["col28"] == "" || resultado[i]["col28"] == null ? 0 : resultado[i]["col28"].toString().split(".")[0]) &&
+                            upd.d20 == (resultado[i]["col29"] == "" || resultado[i]["col29"] == null ? 0 : resultado[i]["col29"].toString().split(".")[0]) &&
+                            upd.d21 == (resultado[i]["col30"] == "" || resultado[i]["col30"] == null ? 0 : resultado[i]["col30"].toString().split(".")[0]) &&
+                            upd.d22 == (resultado[i]["col31"] == "" || resultado[i]["col31"] == null ? 0 : resultado[i]["col31"].toString().split(".")[0]) &&
+                            upd.d23 == (resultado[i]["col32"] == "" || resultado[i]["col32"] == null ? 0 : resultado[i]["col32"].toString().split(".")[0]) &&
+                            upd.d24 == (resultado[i]["col33"] == "" || resultado[i]["col33"] == null ? 0 : resultado[i]["col33"].toString().split(".")[0]) &&
+                            upd.d25 == (resultado[i]["col34"] == "" || resultado[i]["col34"] == null ? 0 : resultado[i]["col34"].toString().split(".")[0]) &&
+                            upd.d26 == (resultado[i]["col35"] == "" || resultado[i]["col35"] == null ? 0 : resultado[i]["col35"].toString().split(".")[0]) &&
+                            upd.d27 == (resultado[i]["col36"] == "" || resultado[i]["col36"] == null ? 0 : resultado[i]["col36"].toString().split(".")[0]) &&
+                            upd.d28 == (resultado[i]["col37"] == "" || resultado[i]["col37"] == null ? 0 : resultado[i]["col37"].toString().split(".")[0]) &&
+                            upd.d29 == (resultado[i]["col38"] == "" || resultado[i]["col38"] == null ? 0 : resultado[i]["col38"].toString().split(".")[0]) &&
+                            upd.d30 == (resultado[i]["col39"] == "" || resultado[i]["col39"] == null ? 0 : resultado[i]["col39"].toString().split(".")[0]) &&
+                            upd.d31 == (resultado[i]["col40"] == "" || resultado[i]["col40"] == null ? 0 : resultado[i]["col40"].toString().split(".")[0])
+                        ) {
+                            continue
+                        }
+
+
+                        upd.Line = resultado[i]["col2"].trim()
+                        upd.Program = resultado[i]["col3"].trim()
+                        upd.Capacity = resultado[i]["col1"] == "" || resultado[i]["col1"] == null ? 0 : parseFloat(resultado[i]["col1"])
+                        upd.d1 = resultado[i]["col10"] == "" || resultado[i]["col10"] == null ? 0 : resultado[i]["col10"].toString().split(".")[0]
+                        upd.d2 = resultado[i]["col11"] == "" || resultado[i]["col11"] == null ? 0 : resultado[i]["col11"].toString().split(".")[0]
+                        upd.d3 = resultado[i]["col12"] == "" || resultado[i]["col12"] == null ? 0 : resultado[i]["col12"].toString().split(".")[0]
+                        upd.d4 = resultado[i]["col13"] == "" || resultado[i]["col13"] == null ? 0 : resultado[i]["col13"].toString().split(".")[0]
+                        upd.d5 = resultado[i]["col14"] == "" || resultado[i]["col14"] == null ? 0 : resultado[i]["col14"].toString().split(".")[0]
+                        upd.d6 = resultado[i]["col15"] == "" || resultado[i]["col15"] == null ? 0 : resultado[i]["col15"].toString().split(".")[0]
+                        upd.d7 = resultado[i]["col16"] == "" || resultado[i]["col16"] == null ? 0 : resultado[i]["col16"].toString().split(".")[0]
+                        upd.d8 = resultado[i]["col17"] == "" || resultado[i]["col17"] == null ? 0 : resultado[i]["col17"].toString().split(".")[0]
+                        upd.d9 = resultado[i]["col18"] == "" || resultado[i]["col18"] == null ? 0 : resultado[i]["col18"].toString().split(".")[0]
+                        upd.d10 = resultado[i]["col19"] == "" || resultado[i]["col19"] == null ? 0 : resultado[i]["col19"].toString().split(".")[0]
+                        upd.d11 = resultado[i]["col20"] == "" || resultado[i]["col20"] == null ? 0 : resultado[i]["col20"].toString().split(".")[0]
+                        upd.d12 = resultado[i]["col21"] == "" || resultado[i]["col21"] == null ? 0 : resultado[i]["col21"].toString().split(".")[0]
+                        upd.d13 = resultado[i]["col22"] == "" || resultado[i]["col22"] == null ? 0 : resultado[i]["col22"].toString().split(".")[0]
+                        upd.d14 = resultado[i]["col23"] == "" || resultado[i]["col23"] == null ? 0 : resultado[i]["col23"].toString().split(".")[0]
+                        upd.d15 = resultado[i]["col24"] == "" || resultado[i]["col24"] == null ? 0 : resultado[i]["col24"].toString().split(".")[0]
+                        upd.d16 = resultado[i]["col25"] == "" || resultado[i]["col25"] == null ? 0 : resultado[i]["col25"].toString().split(".")[0]
+                        upd.d17 = resultado[i]["col26"] == "" || resultado[i]["col26"] == null ? 0 : resultado[i]["col26"].toString().split(".")[0]
+                        upd.d18 = resultado[i]["col27"] == "" || resultado[i]["col27"] == null ? 0 : resultado[i]["col27"].toString().split(".")[0]
+                        upd.d19 = resultado[i]["col28"] == "" || resultado[i]["col28"] == null ? 0 : resultado[i]["col28"].toString().split(".")[0]
+                        upd.d20 = resultado[i]["col29"] == "" || resultado[i]["col29"] == null ? 0 : resultado[i]["col29"].toString().split(".")[0]
+                        upd.d21 = resultado[i]["col30"] == "" || resultado[i]["col30"] == null ? 0 : resultado[i]["col30"].toString().split(".")[0]
+                        upd.d22 = resultado[i]["col31"] == "" || resultado[i]["col31"] == null ? 0 : resultado[i]["col31"].toString().split(".")[0]
+                        upd.d23 = resultado[i]["col32"] == "" || resultado[i]["col32"] == null ? 0 : resultado[i]["col32"].toString().split(".")[0]
+                        upd.d24 = resultado[i]["col33"] == "" || resultado[i]["col33"] == null ? 0 : resultado[i]["col33"].toString().split(".")[0]
+                        upd.d25 = resultado[i]["col34"] == "" || resultado[i]["col34"] == null ? 0 : resultado[i]["col34"].toString().split(".")[0]
+                        upd.d26 = resultado[i]["col35"] == "" || resultado[i]["col35"] == null ? 0 : resultado[i]["col35"].toString().split(".")[0]
+                        upd.d27 = resultado[i]["col36"] == "" || resultado[i]["col36"] == null ? 0 : resultado[i]["col36"].toString().split(".")[0]
+                        upd.d28 = resultado[i]["col37"] == "" || resultado[i]["col37"] == null ? 0 : resultado[i]["col37"].toString().split(".")[0]
+                        upd.d29 = resultado[i]["col38"] == "" || resultado[i]["col38"] == null ? 0 : resultado[i]["col38"].toString().split(".")[0]
+                        upd.d30 = resultado[i]["col39"] == "" || resultado[i]["col39"] == null ? 0 : resultado[i]["col39"].toString().split(".")[0]
+                        upd.d31 = resultado[i]["col40"] == "" || resultado[i]["col40"] == null ? 0 : resultado[i]["col40"].toString().split(".")[0]
+
+                        //if (upd.id == 1) {
+                            //console.log("modificar", upd.id)
+                            //console.log(upd)
+                        //}
+                        const data = await Plans.update(upd.dataValues, {
+                            where: [
+                                {
+                                    id: upd.id
+                                }
+                            ]
+                        })
+                        //if (upd.id == 1) {
+                            console.log("modificado", data)
+                        //}
+                    }
+                    else {
+                    }
+
+
+                }
+            }
             await Plans.bulkCreate(pl, {
                 logging: false
             })
 
 
-        res.json({
-            resultado,
-            fecha
-        });
-    }
+            res.json({
+                resultado,
+                fecha
+            });
+        }
         catch (error) {
             console.log(error.message)
             //const error = new Error('La maquina no fue encontrada')

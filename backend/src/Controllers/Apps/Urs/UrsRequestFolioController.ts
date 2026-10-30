@@ -13,7 +13,7 @@ import { io, uploadDir } from "../../../server";
 import { sendEmail } from "../../../Utils/Emails";
 import { UrsSendNewRequest, UrsSendNewRequestVerification2, UrsSendNewRequestVerification3, UrsSendNewRequestVerification32, UrsSendNewRequestVerification4, UrsSendNewRequestVerification5, UrsSendNewRequestVerification6, UrsSendNewRequestVerificationCancel } from "../../../Messages/Urs/UrsNewRequest";
 import { EmailsToSend } from "../../../Models/EmailsToSend";
-import { ConvertToUTC, GetTimeZone } from "../../../Utils/GetTimeZone";
+import { ConvertToUTC, formatDateUTC, GetTimeZone } from "../../../Utils/GetTimeZone";
 import PDFDocument from "pdfkit";
 import bwipjs from 'bwip-js';
 import { UrsRequestScannHistory } from "../../../Models/URS/UrsRequestScannHistory";
@@ -926,12 +926,12 @@ export class UrsRequestFolioController {
                 // DATE
                 doc.text('Date', 440, 105);
                 doc.text(':', 490, 105);
-                doc.text(new Date(data[0].ACCT_DATE).toLocaleString().substring(0, 10), 500, 105);
+                doc.text(formatDateUTC(new Date(data[0].ACCT_DATE).toISOString()), 500, 105);
 
                 // ASN DATE
                 doc.text('ASN Date', 440, 125);
                 doc.text(':', 490, 125);
-                doc.text(new Date(data[0].ACCT_DATE).toLocaleString().substring(0, 10), 500, 125);
+                doc.text(formatDateUTC(new Date(data[0].ACCT_DATE).toISOString()), 500, 125);
 
 
                 const startY = 160;

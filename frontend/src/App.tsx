@@ -42,9 +42,9 @@ import { UrsVerificateFoliosRes } from './views/Apps/Urs/Requests/UrsVerificateF
 import { EmptyView } from './views/Templates/EmptyView'
 import { ReinspectionDefects } from './views/Apps/Reinspection/ReinspectionDefects'
 import { HXHLayout } from './views/Templates/HXHLayout'
-import { HXHLine } from './views/Apps/HourXHour/Line/HXHLine'
+import { HXHLine } from './Page/Apps/Urs/HourByHour/HXHLine'
 import React from 'react'
-import { UrsDetail } from './views/Apps/Urs/Details/UrsDetail'
+import { UrsDetail } from './Page/Apps/Urs/Details/UrsDetail'
 import { UrsVerificatePictures } from './views/Apps/Urs/Requests/UrsVerificatePictures'
 import { PlanPage } from './Page/Plan/PlanPage'
 

@@ -3,12 +3,15 @@
 .mycalendar [data-time] {
     min-height: 400px;
 }
-.mycalendar .fc-W4{
+
+.mycalendar .fc-W4 {
     min-height: 30px;
 }
-.mycalendar{
+
+.mycalendar {
     font-size: 10px;
 }
+
 /*.mycalendar div .fc-W4 .fc-F4{
     width: 60px !important;
 }*/
@@ -20,65 +23,77 @@
     padding: .2rem;
     border-radius: 5px;
 }
-.mycalendar .fc-wN.fc-F4{
-    background-color: purple;
+
+.mycalendar .fc-wN.fc-F4 {
+    background-color: transparent;
     color: white;
     padding: 1rem;
     margin-left: 1rem;
     border-radius: .5rem;
+    position: relative;
 }
-.mycalendar .fc-F4.fc-AY .fc-W4{
+
+.mycalendar .fc-F4.fc-AY .fc-W4 {
     border-top: 1px solid rgba(0, 0, 0, .1) !important;
 }
-div[role="gridcell"] .fc-o0.fc-kv{
+
+div[role="gridcell"] .fc-o0.fc-kv {
     border-left: 1px solid rgba(0, 0, 0, .1);
 }
-div[role="rowheader"]{
+
+div[role="rowheader"] {
     width: 80px !important;
 }
+
 .fc-timegrid-slot:nth-child(even) {
-background: rgba(255,255,255,.02);
+    background: rgba(255, 255, 255, .02);
 }
 
 .MuiDataGrid-licenseInfo {
-    display:none;
+    display: none;
 }
-[class*="license"]{
-    display:none;
+
+[class*="license"] {
+    display: none;
 }
 
 /*calendar*/
 .weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  margin-bottom: 6px;
-  text-align: center;
-  font-size: 12px;
-  font-weight: 600;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 6px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 .calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
 }
 
 .calendar-day {
-  border-radius: 8px;
-  min-height: 55px;
-  padding: 4px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+    border-radius: 8px;
+    min-height: 55px;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .day-number {
-  font-size: 11px;
-  color: #374151;
+    font-size: 11px;
+    color: #374151;
 }
 
 .day-value {
-  font-size: 12px;
-  font-weight: 700;
-  text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/*zoom inner zoom image*/
+.iiz__zoom-img {
+  clip-path: inset(0);
 }
