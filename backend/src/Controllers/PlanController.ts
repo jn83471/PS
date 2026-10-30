@@ -163,28 +163,28 @@ export class PlanController {
             const pl = []
             for (let i = 0; i < resultado.length; i++) {
 
-                if (!machines.includes(resultado[i]["col0"])) {
+                if (!machines.includes(resultado[i]["col0"].toString().trim().toUpperCase())) {
                     continue
                 }
 
-
+                console.log("DESIGN: ",resultado[i]["col7"].toString().trim().toUpperCase())
                 if (pl.find(x => x.machine == resultado[i]["col0"] &&
-                    x.Shift == resultado[i]["col4"].toString().trim()[0] && x.PartNumber == resultado[i]["col5"].trim() &&
-                    x.Customer == resultado[i]["col6"].trim() && x.LevenDesign == resultado[i]["col7"].trim() && x.Shortpart == resultado[i]["col8"].trim()) == null
+                    x.Shift == resultado[i]["col4"].toString().trim()[0].toUpperCase() && x.PartNumber == resultado[i]["col5"].trim().toUpperCase() &&
+                    x.Customer == resultado[i]["col6"].trim().toUpperCase() && x.LevenDesign == resultado[i]["col7"].toString().trim().toUpperCase() && x.Shortpart == resultado[i]["col8"].trim().toUpperCase()) == null
                     &&
                     plan.find(x => x.machine == resultado[i]["col0"] &&
-                        x.Shift == resultado[i]["col4"].toString().trim()[0] && x.PartNumber == resultado[i]["col5"].trim() &&
-                        x.Customer == resultado[i]["col6"].trim() && x.LevenDesign == resultado[i]["col7"].trim() && x.Shortpart == resultado[i]["col8"].trim()) == null) {
+                        x.Shift == resultado[i]["col4"].toString().trim()[0].toUpperCase() && x.PartNumber == resultado[i]["col5"].trim().toUpperCase() &&
+                        x.Customer == resultado[i]["col6"].trim().toUpperCase() && x.LevenDesign == resultado[i]["col7"].toString().trim().toUpperCase() && x.Shortpart == resultado[i]["col8"].trim().toUpperCase()) == null) {
                     pl.push({
-                        machine: resultado[i]["col0"],
+                        machine: resultado[i]["col0"].toString().trim().toUpperCase(),
                         Capacity: resultado[i]["col1"] == "" || resultado[i]["col1"] == null ? 0 : parseFloat(resultado[i]["col1"]),
-                        Line: resultado[i]["col2"].trim(),
-                        Program: resultado[i]["col3"].trim(),
-                        Shift: resultado[i]["col4"].toString()[0],
-                        PartNumber: resultado[i]["col5"].trim(),
-                        Customer: resultado[i]["col6"].trim(),
-                        LevenDesign: resultado[i]["col7"].trim(),
-                        Shortpart: resultado[i]["col8"].trim(),
+                        Line: resultado[i]["col2"].trim().toUpperCase(),
+                        Program: resultado[i]["col3"].trim().toUpperCase(),
+                        Shift: resultado[i]["col4"].toString()[0].toUpperCase(),
+                        PartNumber: resultado[i]["col5"].trim().toUpperCase(),
+                        Customer: resultado[i]["col6"].trim().toUpperCase(),
+                        LevenDesign: resultado[i]["col7"].toString().trim().toUpperCase(),
+                        Shortpart: resultado[i]["col8"].trim().toUpperCase(),
                         Kmh: resultado[i]["col9"],
                         d1: resultado[i]["col10"] == "" || resultado[i]["col10"] == null ? 0 : resultado[i]["col10"].toString().split(".")[0],
                         d2: resultado[i]["col11"] == "" || resultado[i]["col11"] == null ? 0 : resultado[i]["col11"].toString().split(".")[0],
@@ -222,17 +222,17 @@ export class PlanController {
                     //break;
                 }
                 else if (plan.find(x => x.machine == resultado[i]["col0"] &&
-                    x.Shift == resultado[i]["col4"].toString().trim()[0] && x.PartNumber == resultado[i]["col5"].trim() &&
-                    x.Customer == resultado[i]["col6"].trim() && x.LevenDesign == resultado[i]["col7"].trim() && x.Shortpart == resultado[i]["col8"].trim()) != null) {
+                    x.Shift == resultado[i]["col4"].toString().trim()[0].toUpperCase() && x.PartNumber == resultado[i]["col5"].trim().toUpperCase() &&
+                    x.Customer == resultado[i]["col6"].trim().toUpperCase() && x.LevenDesign == resultado[i]["col7"].toString().trim().toUpperCase() && x.Shortpart == resultado[i]["col8"].trim().toUpperCase()) != null) {
                     const upd = plan.find(x => x.machine == resultado[i]["col0"] &&
-                        x.Shift == resultado[i]["col4"].toString().trim()[0] && x.PartNumber == resultado[i]["col5"].trim() &&
-                        x.Customer == resultado[i]["col6"].trim() && x.LevenDesign == resultado[i]["col7"].trim() && x.Shortpart == resultado[i]["col8"].trim())
+                        x.Shift == resultado[i]["col4"].toString().trim()[0].toUpperCase() && x.PartNumber == resultado[i]["col5"].trim().toUpperCase() &&
+                        x.Customer == resultado[i]["col6"].trim().toUpperCase() && x.LevenDesign == resultado[i]["col7"].toString().trim().toUpperCase() && x.Shortpart == resultado[i]["col8"].trim().toUpperCase())
 
                     if (upd != null) {
 
                         if (
-                            upd.Line == resultado[i]["col2"].trim() &&
-                            upd.Program == resultado[i]["col3"].trim() &&
+                            upd.Line == resultado[i]["col2"].trim().toUpperCase() &&
+                            upd.Program == resultado[i]["col3"].trim().toUpperCase() &&
                             upd.d1 == (resultado[i]["col10"] == "" || resultado[i]["col10"] == null ? 0 : resultado[i]["col10"].toString().split(".")[0]) &&
                             upd.d2 == (resultado[i]["col11"] == "" || resultado[i]["col11"] == null ? 0 : resultado[i]["col11"].toString().split(".")[0]) &&
                             upd.d3 == (resultado[i]["col12"] == "" || resultado[i]["col12"] == null ? 0 : resultado[i]["col12"].toString().split(".")[0]) &&
@@ -269,8 +269,8 @@ export class PlanController {
                         }
 
 
-                        upd.Line = resultado[i]["col2"].trim()
-                        upd.Program = resultado[i]["col3"].trim()
+                        upd.Line = resultado[i]["col2"].trim().toUpperCase()
+                        upd.Program = resultado[i]["col3"].trim().toUpperCase()
                         upd.Capacity = resultado[i]["col1"] == "" || resultado[i]["col1"] == null ? 0 : parseFloat(resultado[i]["col1"])
                         upd.d1 = resultado[i]["col10"] == "" || resultado[i]["col10"] == null ? 0 : resultado[i]["col10"].toString().split(".")[0]
                         upd.d2 = resultado[i]["col11"] == "" || resultado[i]["col11"] == null ? 0 : resultado[i]["col11"].toString().split(".")[0]

@@ -26,8 +26,12 @@ type ReactTableProp = {
     rowspaning: boolean,
     header: boolean,
     size: number,
+    showSearch?: boolean,
+    showClearFilters?: boolean,
+    showFloatingFilters?: boolean
 }
-export const ReactTable = ({ data, columns, text, title, setId, setModal, rowspaning, header, size }: ReactTableProp) => {
+export const ReactTable = ({ data, columns, text, title, setId, setModal, rowspaning, header, size, showSearch = true, showClearFilters = true,
+    showFloatingFilters = true }: ReactTableProp) => {
     const defaultColDef = {
         sortable: true,
         filter: true,
@@ -43,12 +47,12 @@ export const ReactTable = ({ data, columns, text, title, setId, setModal, rowspa
         <>
             <div className="flex flex-wrap gap-2 items-center justify-end py-2">
 
-                <input
+                {showSearch && (<input
                     type="text"
                     placeholder="Buscar..."
                     className="border rounded px-3 py-2"
                     onChange={(e) => setSearch(e.target.value)}
-                />
+                />)}
 
                 <button
                     className="bg-green-600 text-white px-4 py-2 rounded"
@@ -58,17 +62,19 @@ export const ReactTable = ({ data, columns, text, title, setId, setModal, rowspa
                         });
                     }}
                 >
-                    <FontAwesomeIcon icon={faDownload}/>
+                    <FontAwesomeIcon icon={faDownload} />
                 </button>
 
-                <button
-                    className="bg-gray-600 text-white px-4 py-2 rounded"
-                    onClick={() => {
-                        gridRef.current?.api.setFilterModel(null);
-                    }}
-                >
-                    <FontAwesomeIcon icon={faFilterCircleXmark}/>
-                </button>
+                {showClearFilters && (
+                    <button
+                        className="bg-gray-600 text-white px-4 py-2 rounded"
+                        onClick={() => {
+                            gridRef.current?.api.setFilterModel(null);
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faFilterCircleXmark} />
+                    </button>
+                )}
 
             </div>
 
