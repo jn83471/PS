@@ -89,22 +89,6 @@ const formatNumber = (
     return numericValue.toLocaleString()
 }
 
-/*
- * Determina el color visual de cada día:
- *
- * complete:
- *   La meta correspondiente ya fue completada.
- *
- * delayed:
- *   La producción continúa en un día anterior.
- *
- * progress:
- *   Puede representar el día actual o producción adelantada.
- *   Para distinguirlos, se compara el número de día.
- *
- * pending:
- *   Día sin avance actual. No recibe color especial.
- */
 const getDailyCellClasses = (
     status: DailyStatus,
     day: number,
@@ -124,10 +108,6 @@ const getDailyCellClasses = (
             ]
 
         case "progress":
-            /*
-             * Si el día en proceso es posterior al día actual,
-             * significa que la producción va adelantada.
-             */
             if (day > currentDay) {
                 return [
                     "plan-day-cell",
@@ -135,9 +115,6 @@ const getDailyCellClasses = (
                 ]
             }
 
-            /*
-             * Si corresponde al día actual, la producción va al día.
-             */
             return [
                 "plan-day-cell",
                 "plan-day-progress"
@@ -159,13 +136,6 @@ export const PlanViewDesktop = ({
     machines,
     plan
 }: PlanViewDesktopProps) => {
-    /*
-     * Se usa el día actual solamente cuando se consulta
-     * el mes actual.
-     *
-     * Para otros meses se conserva el último día del mes,
-     * manteniendo consistencia con buildDailyProgress.
-     */
     const currentDay = useMemo(() => {
         const today = dayjs()
         const selectedDate = fecha ?? today
@@ -221,9 +191,9 @@ export const PlanViewDesktop = ({
             {
                 field: "machine",
                 headerName: "Línea",
-                width: 90,
-                minWidth: 90,
-                maxWidth: 90,
+                width: 275,
+                minWidth: 275,
+                maxWidth: 275,
                 pinned: "left",
                 lockPinned: true,
                 suppressMovable: true,
@@ -327,13 +297,9 @@ export const PlanViewDesktop = ({
                 floatingFilter: true,
 
                 valueFormatter: (
-                    params: ValueFormatterParams<
-                        PlanViewRow
-                    >
+                    params: ValueFormatterParams<PlanViewRow>
                 ) => {
-                    const value = Number(
-                        params.value ?? 0
-                    )
+                    const value = Number(params.value ?? 0)
 
                     return Number.isFinite(value)
                         ? value.toFixed(3)
@@ -379,12 +345,43 @@ export const PlanViewDesktop = ({
                             )
                         },
 
+                        /*
+                         * Si la producción mensual no ha comenzado
+                         * y el primer día pendiente viene como:
+                         *
+                         * "0 / 220"
+                         *
+                         * se muestra solamente:
+                         *
+                         * "220"
+                         *
+                         * En cuanto qty sea mayor que cero:
+                         *
+                         * "1 / 220"
+                         *
+                         * se muestra sin modificaciones.
+                         */
                         valueFormatter: (
                             params: ValueFormatterParams<PlanViewRow>
                         ) => {
                             const value = String(
                                 params.value ?? "0"
                             ).trim()
+
+                            const qty = Number(
+                                params.data?.qty ?? 0
+                            )
+
+                            if (qty <= 0) {
+                                const notStartedMatch =
+                                    value.match(
+                                        /^0\s*\/\s*(.+)$/
+                                    )
+
+                                if (notStartedMatch) {
+                                    return notStartedMatch[1].trim()
+                                }
+                            }
 
                             return value === "0"
                                 ? "-"
@@ -393,6 +390,7 @@ export const PlanViewDesktop = ({
                     } as ColDef<PlanViewRow>
                 }
             )
+
         const resultColumns: ColDef<PlanViewRow>[] = [
             /*
             {
@@ -404,35 +402,27 @@ export const PlanViewDesktop = ({
                 floatingFilter: true,
 
                 valueFormatter: (
-                    params: ValueFormatterParams<
-                        PlanViewRow
-                    >
+                    params: ValueFormatterParams<PlanViewRow>
                 ) => {
-                    return formatNumber(
-                        params.value
-                    )
+                    return formatNumber(params.value)
                 },
 
                 cellClass:
                     "plan-result-cell plan-result-planned"
             },
-
+            */
             {
                 field: "qty",
                 headerName: "Producción",
                 width: 120,
                 minWidth: 120,
-                filter: "agNumberColumnFilter",
+                filter: "false",
                 floatingFilter: true,
 
                 valueFormatter: (
-                    params: ValueFormatterParams<
-                        PlanViewRow
-                    >
+                    params: ValueFormatterParams<PlanViewRow>
                 ) => {
-                    return formatNumber(
-                        params.value
-                    )
+                    return formatNumber(params.value)
                 },
 
                 cellClass: params => {
@@ -450,7 +440,7 @@ export const PlanViewDesktop = ({
                         : "plan-result-cell plan-production-progress"
                 }
             },
-            */
+            
 
             {
                 colId: "compliance",
@@ -530,12 +520,6 @@ export const PlanViewDesktop = ({
         )
     }
 
-    /*
-     * El valor seleccionado ahora será el nombre Line.
-     *
-     * Ejemplo:
-     * event.target.value = "32121-3BM"
-     */
     const handleMachineChange = (
         event: SelectChangeEvent<string>
     ) => {
@@ -544,13 +528,6 @@ export const PlanViewDesktop = ({
         )
     }
 
-    /*
-     * Como plan llega filtrado por Line, puede contener
-     * múltiples códigos machine asociados al mismo nombre.
-     *
-     * Ejemplo:
-     * 32121-3BM - JO25, JO26 - HONDA
-     */
     const tableTitle = useMemo(() => {
         if (!machine) {
             return "Todas las líneas"
@@ -611,8 +588,7 @@ export const PlanViewDesktop = ({
                                     }`}
                                 size="small"
                                 sx={{
-                                    backgroundColor:
-                                        "#f3f4f6",
+                                    backgroundColor: "#f3f4f6",
                                     color: "#374151",
                                     fontWeight: 700
                                 }}
@@ -635,9 +611,7 @@ export const PlanViewDesktop = ({
                             ]}
                             yearsOrder="desc"
                             value={fecha}
-                            onChange={
-                                handleDateChange
-                            }
+                            onChange={handleDateChange}
                             slotProps={{
                                 textField: {
                                     size: "small"
@@ -647,8 +621,7 @@ export const PlanViewDesktop = ({
                                 width: 190,
 
                                 "& .MuiInputBase-root": {
-                                    backgroundColor:
-                                        "white",
+                                    backgroundColor: "white",
                                     borderRadius: "10px"
                                 },
 
@@ -664,8 +637,7 @@ export const PlanViewDesktop = ({
 
                                 "& .MuiInputLabel-root.Mui-focused":
                                 {
-                                    color:
-                                        "#2563eb"
+                                    color: "#2563eb"
                                 },
 
                                 "& .MuiSvgIcon-root": {
@@ -674,20 +646,17 @@ export const PlanViewDesktop = ({
 
                                 "& .MuiOutlinedInput-notchedOutline":
                                 {
-                                    borderColor:
-                                        "#d1d5db"
+                                    borderColor: "#d1d5db"
                                 },
 
                                 "&:hover .MuiOutlinedInput-notchedOutline":
                                 {
-                                    borderColor:
-                                        "#9ca3af"
+                                    borderColor: "#9ca3af"
                                 },
 
                                 "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                                 {
-                                    borderColor:
-                                        "#2563eb"
+                                    borderColor: "#2563eb"
                                 }
                             }}
                         />
@@ -707,45 +676,35 @@ export const PlanViewDesktop = ({
                                 id="desktop-line-select"
                                 value={machine}
                                 label="Nombre de línea"
-                                onChange={
-                                    handleMachineChange
-                                }
+                                onChange={handleMachineChange}
                                 sx={{
-                                    backgroundColor:
-                                        "white",
+                                    backgroundColor: "white",
                                     borderRadius: "10px",
                                     color: "#111827",
 
-                                    "& .MuiSelect-select":
-                                    {
-                                        color:
-                                            "#111827",
+                                    "& .MuiSelect-select": {
+                                        color: "#111827",
                                         WebkitTextFillColor:
                                             "#111827"
                                     },
 
                                     "& .MuiOutlinedInput-notchedOutline":
                                     {
-                                        borderColor:
-                                            "#d1d5db"
+                                        borderColor: "#d1d5db"
                                     },
 
                                     "&:hover .MuiOutlinedInput-notchedOutline":
                                     {
-                                        borderColor:
-                                            "#9ca3af"
+                                        borderColor: "#9ca3af"
                                     },
 
                                     "&.Mui-focused .MuiOutlinedInput-notchedOutline":
                                     {
-                                        borderColor:
-                                            "#2563eb"
+                                        borderColor: "#2563eb"
                                     },
 
-                                    "& .MuiSvgIcon-root":
-                                    {
-                                        color:
-                                            "#4b5563"
+                                    "& .MuiSvgIcon-root": {
+                                        color: "#4b5563"
                                     }
                                 }}
                             >
@@ -782,7 +741,6 @@ export const PlanViewDesktop = ({
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2">
-                        {/* Cumplido */}
                         <div className="flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-1.5 text-xs font-semibold text-green-700">
                             <CheckCircleOutlineRoundedIcon
                                 fontSize="small"
@@ -791,7 +749,6 @@ export const PlanViewDesktop = ({
                             Cubierto
                         </div>
 
-                        {/* Producción al día */}
                         <div className="flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
                             <ScheduleRoundedIcon
                                 fontSize="small"
@@ -800,7 +757,6 @@ export const PlanViewDesktop = ({
                             Al día
                         </div>
 
-                        {/* Producción adelantada */}
                         <div className="flex items-center gap-2 rounded-full border border-amber-300 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-800">
                             <TrendingUpRoundedIcon
                                 fontSize="small"
@@ -809,7 +765,6 @@ export const PlanViewDesktop = ({
                             Adelantada
                         </div>
 
-                        {/* Producción atrasada */}
                         <div className="flex items-center gap-2 rounded-full border border-red-300 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700">
                             <WarningAmberRoundedIcon
                                 fontSize="small"
@@ -876,8 +831,7 @@ export const PlanViewDesktop = ({
                                     <Inventory2OutlinedIcon
                                         sx={{
                                             fontSize: 48,
-                                            color:
-                                                "#9ca3af"
+                                            color: "#9ca3af"
                                         }}
                                     />
 
@@ -916,46 +870,30 @@ export const PlanViewDesktop = ({
                         text-align: center;
                     }
 
-                    /*
-                     * Cumplido: verde.
-                     */
                     .plan-day-complete {
                         background-color: #16a34a !important;
                         border-color: #16a34a !important;
                         color: #ffffff !important;
                     }
 
-                    /*
-                     * Producción al día: azul.
-                     */
                     .plan-day-progress {
                         background-color: #eff6ff !important;
                         border: 2px solid #3b82f6 !important;
                         color: #1e3a8a !important;
                     }
 
-                    /*
-                     * Producción adelantada: amarillo.
-                     */
                     .plan-day-ahead {
                         background-color: #fef3c7 !important;
                         border: 2px solid #f59e0b !important;
                         color: #78350f !important;
                     }
 
-                    /*
-                     * Producción atrasada: rojo.
-                     */
                     .plan-day-delayed {
                         background-color: #fee2e2 !important;
                         border: 2px solid #ef4444 !important;
                         color: #991b1b !important;
                     }
 
-                    /*
-                     * Pendiente: se conserva neutro en la tabla,
-                     * pero ya no aparece en la leyenda.
-                     */
                     .plan-day-pending {
                         background-color: #ffffff !important;
                         border-color: #e5e7eb !important;
