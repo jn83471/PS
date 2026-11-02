@@ -11,7 +11,7 @@ import { Smhcas } from "../../../Models/SMHCAS";
 import { PriorityHasProcess, UrsPriority, UrsProcess, UrsRequests, UrsRequestsFolio } from "../../../Models/URS/UrsIndex";
 import { io, uploadDir } from "../../../server";
 import { sendEmail } from "../../../Utils/Emails";
-import { UrsSendNewRequest, UrsSendNewRequestVerification2, UrsSendNewRequestVerification3, UrsSendNewRequestVerification32, UrsSendNewRequestVerification4, UrsSendNewRequestVerification5, UrsSendNewRequestVerification6, UrsSendNewRequestVerificationCancel } from "../../../Messages/Urs/UrsNewRequest";
+import { UrsSendHrs, UrsSendNewRequest, UrsSendNewRequestVerification2, UrsSendNewRequestVerification3, UrsSendNewRequestVerification32, UrsSendNewRequestVerification4, UrsSendNewRequestVerification5, UrsSendNewRequestVerification6, UrsSendNewRequestVerificationCancel } from "../../../Messages/Urs/UrsNewRequest";
 import { EmailsToSend } from "../../../Models/EmailsToSend";
 import { ConvertToUTC, formatDateUTC, GetTimeZone } from "../../../Utils/GetTimeZone";
 import PDFDocument from "pdfkit";
@@ -265,8 +265,38 @@ export class UrsRequestFolioController {
                     id: req.UrsRequestsFolio.id
                 }]
             })
+            const UrsRequestData = await UrsRequests.findAll({
+                where: {
+                    UrsRequestsFolioId: req.UrsRequestsFolio.id
+                },
+                include: [
+                    {
+                        model: Codes,
+                        as: "Codes"
+                    },
+                    {
+                        model: UrsPriority,
+                        as: "UrsPriority"
+                    }
+                ]
+            })
 
+            const Emails = await EmailsToSend.findOne({
+                where: [
+                    {
+                        Key: "UrsProd"
+                    }
+                ]
+            })
 
+            const dt = {
+                data: UrsRequestData,
+                folio: req.UrsRequestsFolio,
+                title: "Solicitud aceptada",
+                to: Emails.Emails
+            }
+
+            await UrsSendHrs(dt)
             io.to("Urs").emit("Request", Request)
             return res.send("Se ha editado el PickUp")
         } catch (error) {

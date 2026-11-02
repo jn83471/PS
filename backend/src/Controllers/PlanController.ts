@@ -13,6 +13,7 @@ import { DBConfig, TenantConnection } from "../config/TenantConnection";
 import { decrypt } from "../Utils/crypto";
 import { formatDate, normalizes, withTimeout } from "../Utils/Gnr";
 import { Clients } from "../Models/Client";
+import { formatDateUTC, formatDateUTCDate } from "../Utils/GetTimeZone";
 
 
 export class PlanController {
@@ -552,8 +553,9 @@ export class PlanController {
 
 
 
-        const dt = new Date((fecha ?? '2025-04-01').toString())
+        const dt = formatDateUTCDate(fecha ?? '2025-04-01')
         dt.setDate(0)
+        console.log("fecha", dt)
 
         const inicioSiguienteMes = new Date(
             dt.getFullYear(),
