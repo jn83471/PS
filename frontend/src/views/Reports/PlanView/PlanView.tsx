@@ -1,6 +1,7 @@
 //PlanView.tsx anterior
 
 /*
+
 import { useEffect, useMemo, useState } from "react"
 import dayjs, { type Dayjs } from "dayjs"
 import type { GridColDef } from "@mui/x-data-grid"
@@ -24,12 +25,14 @@ export const PlanView = () => {
      *
      * Ejemplo:
      * machine = "32121-3BM"
+     * 
      
     const [machine, setMachine] = useState<string>("")
 
     /*
      * Aunque la variable se llama machines, ahora contendrá
      * los nombres únicos encontrados en row.Line.
+     * 
      
     const [machines, setMachines] = useState<string[]>([])
 
@@ -66,6 +69,7 @@ export const PlanView = () => {
         /*
          * El selector ahora se llena con los valores únicos
          * de Line, no con los valores de machine.
+         * 
          
         const nuevasLineas = [
             ...new Set(
@@ -100,6 +104,7 @@ export const PlanView = () => {
                  * La producción se sigue relacionando con el código
                  * machine, porque production.line_c contiene códigos
                  * como JO25 y JO26.
+                 * 
                  
                 const productionRecord = send.find(
                     (production: any) =>
@@ -162,6 +167,7 @@ export const PlanView = () => {
                  * Line = "32121-3BM"
                  *
                  * ambos registros pasarán este filtro.
+                 
                  
                 if (
                     machine !== "" &&
@@ -242,8 +248,8 @@ export const PlanView = () => {
         />
     )
 }
-*/
 
+¨*/
 //PlanView.tsx nuevo
 
 import { useEffect, useMemo, useState } from "react"
@@ -264,8 +270,8 @@ export const PlanView = () => {
     const [shift, setShift] = useState<number>(0)
 
     /*
-     * Contiene el nombre de la línea:
-     * por ejemplo "32121-3BM".
+     * Aunque la variable se llama machine, almacena
+     * el nombre de línea, es decir, row.Line.
      */
     const [machine, setMachine] = useState<string>("")
 
@@ -273,6 +279,13 @@ export const PlanView = () => {
      * Contiene los nombres únicos encontrados en row.Line.
      */
     const [machines, setMachines] = useState<string[]>([])
+
+    /*
+     * Controla si los registros deben agruparse
+     * por Shift y Shortpart.
+     */
+    const [summarize, setSummarize] =
+        useState<boolean>(false)
 
     const [fecha, setFecha] =
         useState<Dayjs | null>(dayjs())
@@ -300,7 +313,7 @@ export const PlanView = () => {
     })
 
     /*
-     * Genera la lista de nombres de línea para el selector.
+     * Genera las opciones del selector usando row.Line.
      */
     useEffect(() => {
         if (!data?.plan) {
@@ -327,113 +340,137 @@ export const PlanView = () => {
     }, [data])
 
     /*
-     * Une el plan con la producción real.
-     *
-     * En esta etapa todavía no se agrupan los registros.
+     * Une la planeación con la producción real
+     * y aplica los filtros existentes.
      */
-    const planConProduccion =
-        useMemo<PlanViewRow[]>(() => {
-            if (!data?.plan) {
-                return []
-            }
+    const plan = useMemo<PlanViewRow[]>(() => {
+        if (!data?.plan) {
+            return []
+        }
 
-            const send = data.send ?? []
+        const send = data.send ?? []
 
-            return data.plan.map(
-                (row: PlanViewRow) => {
-                    /*
-                     * La producción se sigue relacionando
-                     * mediante machine y Shortpart.
-                     */
-                    const productionRecord =
-                        send.find(
-                            (production: any) =>
-                                production.line_c ===
-                                    row.machine &&
-                                production.ShortPart ===
-                                    row.Shortpart
-                        )
-
-                    const qty = Number(
-                        productionRecord?.total ?? 0
-                    )
-
-                    return {
-                        ...row,
-                        qty
-                    }
-                }
-            )
-        }, [data])
-
-    /*
-     * Primero aplica el filtro por nombre de línea.
-     *
-     * Esto permite que, al seleccionar "32121-3BM",
-     * permanezcan todos los códigos relacionados,
-     * por ejemplo JO25 y JO26.
-     */
-    const planFiltradoPorLinea =
-        useMemo<PlanViewRow[]>(() => {
-            return planConProduccion.filter(row => {
-                if (machine === "") {
-                    return true
-                }
-
-                return (
-                    String(row.Line ?? "").trim() ===
-                    machine
+        return data.plan
+            .map((row: PlanViewRow) => {
+                const productionRecord = send.find(
+                    (production: any) =>
+                        production.line_c === row.machine &&
+                        production.ShortPart === row.Shortpart
                 )
+
+                const qty = Number(
+                    productionRecord?.total ?? 0
+                )
+
+                const acumuladoTotal = Array.from(
+                    { length: 31 },
+                    (_, index) => {
+                        const key = `d${index + 1}`
+
+                        return Number(
+                            row[key] ?? 0
+                        )
+                    }
+                ).reduce(
+                    (total, value) =>
+                        total + value,
+                    0
+                )
+
+                return {
+                    ...row,
+                    qty,
+                    acumuladoTotal
+                }
             })
-        }, [planConProduccion, machine])
+            .filter((row: PlanViewRow) => {
+                const shortpart =
+                    String(
+                        row.Shortpart ?? ""
+                    ).trim()
+
+                if (shortpart === "") {
+                    return false
+                }
+
+                const qty = Number(
+                    row.qty ?? 0
+                )
+
+                const acumuladoTotal = Number(
+                    row.acumuladoTotal ?? 0
+                )
+
+                /*
+                 * Se conserva el filtro existente:
+                 * ocultar cuando producción y plan son cero.
+                 */
+                if (
+                    qty <= 0 &&
+                    acumuladoTotal <= 0
+                ) {
+                    return false
+                }
+
+                /*
+                 * Filtro por nombre de línea.
+                 */
+                if (
+                    machine !== "" &&
+                    String(row.Line ?? "").trim() !==
+                        machine
+                ) {
+                    return false
+                }
+
+                return true
+            })
+    }, [data, machine])
 
     /*
-     * Agrupa registros que tengan el mismo:
+     * Agrupa únicamente cuando summarize está activado.
+     *
+     * La agrupación usa:
      *
      * Shift + Shortpart
      *
-     * Para cada grupo:
+     * Y suma:
      *
-     * - Une los códigos de machine.
-     * - Suma qty.
-     * - Suma d1 hasta d31.
-     * - Conserva los demás datos descriptivos.
+     * qty
+     * d1 ... d31
      */
-    const planAgrupado =
+    const summarizedPlan =
         useMemo<PlanViewRow[]>(() => {
-            const groups =
+            if (!summarize) {
+                return plan
+            }
+
+            const groupedRows =
                 new Map<string, PlanViewRow>()
 
-            planFiltradoPorLinea.forEach(row => {
+            plan.forEach(row => {
                 const normalizedShift =
-                    String(row.Shift ?? "").trim()
+                    String(
+                        row.Shift ?? ""
+                    ).trim()
 
                 const normalizedShortpart =
                     String(
                         row.Shortpart ?? ""
                     ).trim()
 
-                /*
-                 * La llave implementa exactamente la
-                 * condición solicitada.
-                 */
                 const groupKey =
                     `${normalizedShift}::${normalizedShortpart}`
 
-                const existingGroup =
-                    groups.get(groupKey)
+                const existingRow =
+                    groupedRows.get(groupKey)
 
                 /*
-                 * Primer registro del grupo.
+                 * Primer registro encontrado para el grupo.
                  */
-                if (!existingGroup) {
+                if (!existingRow) {
                     const initialRow: PlanViewRow = {
                         ...row,
-
-                        /*
-                         * Se normalizan los valores para
-                         * asegurar que puedan sumarse.
-                         */
                         qty: Number(row.qty ?? 0)
                     }
 
@@ -450,7 +487,26 @@ export const PlanView = () => {
                             )
                     }
 
-                    groups.set(
+                    initialRow.acumuladoTotal =
+                        Array.from(
+                            { length: 31 },
+                            (_, index) => {
+                                const dayKey =
+                                    `d${index + 1}`
+
+                                return Number(
+                                    initialRow[
+                                        dayKey
+                                    ] ?? 0
+                                )
+                            }
+                        ).reduce(
+                            (total, value) =>
+                                total + value,
+                            0
+                        )
+
+                    groupedRows.set(
                         groupKey,
                         initialRow
                     )
@@ -459,14 +515,14 @@ export const PlanView = () => {
                 }
 
                 /*
-                 * Une los códigos de línea sin repetirlos.
+                 * Combina los códigos de línea sin repetirlos.
                  *
                  * Ejemplo:
-                 * S045 + S047 = "S045 y S047"
+                 * JO25 + JO26 = "JO25 y JO26"
                  */
                 const machineCodes = new Set(
                     String(
-                        existingGroup.machine ?? ""
+                        existingRow.machine ?? ""
                     )
                         .split(" y ")
                         .map(value => value.trim())
@@ -484,21 +540,22 @@ export const PlanView = () => {
                     )
                 }
 
-                existingGroup.machine = [
-                    ...machineCodes
-                ].join(" y ")
+                existingRow.machine =
+                    Array.from(
+                        machineCodes
+                    ).join(" y ")
 
                 /*
-                 * Suma la producción de los registros.
+                 * Suma la producción.
                  */
-                existingGroup.qty =
+                existingRow.qty =
                     Number(
-                        existingGroup.qty ?? 0
+                        existingRow.qty ?? 0
                     ) +
                     Number(row.qty ?? 0)
 
                 /*
-                 * Suma la planeación diaria.
+                 * Suma la planeación de todos los días.
                  */
                 for (
                     let day = 1;
@@ -507,9 +564,9 @@ export const PlanView = () => {
                 ) {
                     const dayKey = `d${day}`
 
-                    existingGroup[dayKey] =
+                    existingRow[dayKey] =
                         Number(
-                            existingGroup[
+                            existingRow[
                                 dayKey
                             ] ?? 0
                         ) +
@@ -517,25 +574,12 @@ export const PlanView = () => {
                             row[dayKey] ?? 0
                         )
                 }
-            })
 
-            return Array.from(
-                groups.values()
-            )
-        }, [planFiltradoPorLinea])
-
-    /*
-     * Recalcula el acumulado total después de agrupar.
-     *
-     * También aplica los filtros existentes:
-     *
-     * 1. Shortpart no puede estar vacío.
-     * 2. Qty o acumuladoTotal deben ser mayores que cero.
-     */
-    const plan = useMemo<PlanViewRow[]>(() => {
-        return planAgrupado
-            .map(row => {
-                const acumuladoTotal =
+                /*
+                 * Recalcula el acumulado total
+                 * después de sumar el registro.
+                 */
+                existingRow.acumuladoTotal =
                     Array.from(
                         { length: 31 },
                         (_, index) => {
@@ -543,7 +587,9 @@ export const PlanView = () => {
                                 `d${index + 1}`
 
                             return Number(
-                                row[dayKey] ?? 0
+                                existingRow[
+                                    dayKey
+                                ] ?? 0
                             )
                         }
                     ).reduce(
@@ -551,64 +597,31 @@ export const PlanView = () => {
                             total + value,
                         0
                     )
-
-                return {
-                    ...row,
-                    acumuladoTotal
-                }
             })
-            .filter(row => {
-                const shortpart =
-                    String(
-                        row.Shortpart ?? ""
-                    ).trim()
 
-                if (shortpart === "") {
-                    return false
-                }
-
-                const qty =
-                    Number(row.qty ?? 0)
-
-                const acumuladoTotal =
-                    Number(
-                        row.acumuladoTotal ?? 0
-                    )
-
-                /*
-                 * Mantiene exactamente el filtro actual:
-                 * ocultar sólo si ambos están en cero.
-                 */
-                if (
-                    qty <= 0 &&
-                    acumuladoTotal <= 0
-                ) {
-                    return false
-                }
-
-                return true
-            })
-    }, [planAgrupado])
+            return Array.from(
+                groupedRows.values()
+            )
+        }, [plan, summarize])
 
     /*
-     * buildDailyProgress se ejecuta después de agrupar.
+     * El progreso se calcula después de agrupar.
      *
-     * Esto es importante para que la producción sumada
-     * se distribuya correctamente sobre el plan sumado.
+     * Esto permite distribuir el qty sumado sobre
+     * el plan diario también sumado.
      */
     const processedPlan =
         useMemo<PlanViewRow[]>(() => {
-            return plan.map(row =>
+            return summarizedPlan.map(row =>
                 buildDailyProgress(
                     row,
                     fecha
                 )
             )
-        }, [plan, fecha])
+        }, [summarizedPlan, fecha])
 
     /*
-     * Se conserva porque ya existía, aunque Desktop
-     * actualmente construye sus columnas con AG Grid.
+     * Se conserva porque ya existía en el archivo.
      */
     const columns = useMemo<GridColDef[]>(() => {
         return createPlanviewColumns()
@@ -653,6 +666,8 @@ export const PlanView = () => {
                 setMachine={setMachine}
                 machines={machines}
                 plan={processedPlan}
+                summarize={summarize}
+                setSummarize={setSummarize}
             />
         )
     }
@@ -668,6 +683,8 @@ export const PlanView = () => {
             machines={machines}
             setMachines={setMachines}
             plan={processedPlan}
+            summarize={summarize}
+            setSummarize={setSummarize}
             // column={columns}
         />
     )
