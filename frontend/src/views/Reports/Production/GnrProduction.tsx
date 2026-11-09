@@ -113,11 +113,12 @@ export const GnrProduction = () => {
     return (
         <div className="flex-1 min-w-0 sm:p-4">
 
-            <div className='bg-white border border-gray-400 rounded-xl py-5 px-2 w-full min-h-[75vh]'>
-                <div className='border-b border-gray-600 flex text-2xl text-center sm:text-left sm:text-4xl font-bold py-3 text-black'>
+            <div className='bg-[var(--page)] border border-[var(--border)] rounded-xl py-5 px-2 w-full min-h-[75vh]'>
+                <div className='border-b border-[var(--border)] flex text-2xl text-center sm:text-left sm:text-4xl font-bold py-3 text-[var(--color)]'>
                     Reporte de producción
                 </div>
                 <DatePicker
+                className=''
                                 label="Years in descending order"
                                 openTo="year"
                                 views={['year', 'month']}
@@ -128,22 +129,25 @@ export const GnrProduction = () => {
                                   refetch()
                                 }}
                                 sx={{
+                                    marginTop:"1rem",
                                   width: "190px",
+                                  color:"var(--color)",
+                                  WebkitTextFillColor:"var(--color)",
                                   '& .MuiInputBase-input': {
-                                    WebkitTextFillColor: 'black !important',
-                                    color: 'black',
+                                    WebkitTextFillColor: 'var(--color) !important',
+                                    color: 'var(--color)',
                                   },
                                   '& .MuiInputLabel-root': {
-                                    color: 'black',
-                                    WebkitTextFillColor: 'black !important',
+                                    color: 'var(--color)',
+                                    WebkitTextFillColor: 'var(--color) !important',
                                   },
                                   '& .MuiSvgIcon-root': {
-                                    color: 'black',
-                                    WebkitTextFillColor: 'black !important',
+                                    color: 'var(--color)',
+                                    WebkitTextFillColor: 'var(--color) !important',
                                   },
                                   '& .MuiInputLabel-root.Mui-focused': {
-                                    color: '#fff',
-                                    WebkitTextFillColor: '#fff !important',
+                                    color: 'var(--color)',
+                                    WebkitTextFillColor: 'var(--color) !important',
                                   },
                 
                                   '& .MuiOutlinedInput-notchedOutline': {
@@ -157,8 +161,8 @@ export const GnrProduction = () => {
                                     borderColor: '#fff',
                                   },
                                   '& input::placeholder': {
-                                    color: '#ccc',
-                                    WebkitTextFillColor: '#fff !important',
+                                    color: 'var(--color)',
+                                    WebkitTextFillColor: 'var(--color) !important',
                                     opacity: 1,
                                   },
                                 }}

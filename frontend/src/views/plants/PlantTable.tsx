@@ -117,7 +117,7 @@ export const PlantTable = () => {
   return (
     <>
       <div className="flex-1 min-w-0 sm:p-4">
-        <div className='rounded-xl py-5 px-2 w-full min-h-[75vh] border border-gray-400'>
+        <div className='rounded-xl py-5 px-2 w-full min-h-[75vh] border border-[var(--border)]'>
           <MauiTable key={"PlantTable"} rowspaning={false} size={14} header={true} setId={setId} title={t("Layout.Plants")} data={filteredRows} setModal={setModal} columns={columns} text={"Nueva planta"} />
         </div>
       </div>

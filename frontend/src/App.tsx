@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
+import './themes.css'
 import Dashboard from './views/Welcome/Dashboard'
 import Login from './views/Welcome/Login'
 import { Layout } from './views/Templates/Layout'
@@ -47,6 +48,7 @@ import React from 'react'
 import { UrsDetail } from './Page/Apps/Urs/Details/UrsDetail'
 import { UrsVerificatePictures } from './views/Apps/Urs/Requests/UrsVerificatePictures'
 import { PlanPage } from './Page/Plan/PlanPage'
+import { ThemePage } from './Page/ThemePage/ThemePage'
 
 function App() {
 
@@ -112,6 +114,7 @@ function App() {
                 <Route path='Client' element={<ClientTable />} />
                 <Route path='Plan' element={<PlanPage />} />
                 <Route path='reports' element={<Dash />}></Route>
+                <Route path='themes' element={<ThemePage />}></Route>
                 <Route path='production' element={<Production />}>
                   <Route index element={<GnrProduction />} />
                 </Route>

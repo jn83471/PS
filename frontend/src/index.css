@@ -97,3 +97,11 @@ div[role="rowheader"] {
 .iiz__zoom-img {
   clip-path: inset(0);
 }
+
+.ag-header-cell, .ag-input-field-input, .ag-paging-panel-content, .ag-paging-panel{
+    background-color: var(--headerTable);
+    color: var(--color);
+}
+.ag-input-field-input{
+    border: 1px solid var(--sidebarColor);
+}

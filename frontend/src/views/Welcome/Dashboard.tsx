@@ -5,7 +5,7 @@ export default function Dashboard() {
   return (
     <>
       {/* KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-[var(--color)]">
         <KPI title="Plantas" value="6" positive={false} warning={false} />
         <KPI title="Clientes" value="3" positive={false} warning={false}/>
         <KPI title="Cumplimiento" value="90.4%" warning={false} positive />
@@ -13,14 +13,14 @@ export default function Dashboard() {
       </div>
 
       {/* PRODUCTION STATUS */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-[var(--color)]">
 
         {/* TABLE */}
         <div className="border border-gray-200 rounded-xl p-4">
           <h2 className="font-semibold mb-4">Estado de Líneas</h2>
 
           <table className="w-full text-sm">
-            <thead className="text-gray-400">
+            <thead className="">
               <tr>
                 <th className="text-left py-2">Línea</th>
                 <th>Plan</th>
@@ -40,7 +40,7 @@ export default function Dashboard() {
         <div className=" border border-gray-200 rounded-xl p-4 flex flex-col justify-between">
           <div>
             <h2 className="font-semibold mb-4">Acciones rápidas</h2>
-            <p className="text-sm text-gray-400 mb-6">
+            <p className="text-sm text-[var(-color)] mb-6">
               Acceso directo para captura y ajustes de producción.
             </p>
           </div>
@@ -71,13 +71,13 @@ type KPIProp={
 }
 
 function KPI({ title, value, positive, warning }:KPIProp) {
-  let color = "text-black";
+  let color = "text-[var(--color)]";
   if (positive) color = "text-green-400";
   if (warning) color = "text-yellow-400";
 
   return (
     <div className="border border-gray-200 rounded-xl p-4">
-      <p className="text-sm text-black">{title}</p>
+      <p className="text-sm text-[var(--color)]">{title}</p>
       <p className={`text-2xl font-semibold ${color}`}>{value}</p>
     </div>
   );

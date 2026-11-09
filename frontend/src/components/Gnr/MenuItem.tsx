@@ -27,7 +27,7 @@ export const MenuItem = ({ label, active, link,icon, events }: MenuItemProp) => 
     return (
 
       <NavLink to={link}
-        className={({isActive })=> (isActive ?"bg-green-600 hover:bg-green-500 ":"" )+" px-4 py-3 rounded-lg cursor-pointer block hover:bg-green-400 text-sm"}
+        className={({isActive })=> (isActive ?"bg-green-600 hover:bg-green-500 ":"" )+" px-4 py-3 rounded-lg cursor-pointer block hover:bg-green-400 text-sm text-[var(--sidebarColor)] " }
       >
         <FontAwesomeIcon className="pr-2 text-xl" icon={icon}/>
         <span className={`${isMobile && !isTabletOnly ?"": "hidden lg:inline"}`}>{label}</span>

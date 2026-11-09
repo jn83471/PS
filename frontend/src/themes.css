@@ -1,0 +1,428 @@
+/* Configuración independiente de los 20 temas.
+   El primer tema es Default. */
+
+[data-theme="default"] {
+    --primary: #123f31;
+    --primary-strong: #232234;
+    --accent: #00a63c;
+    --accentColor: #ffffff;
+    --accent-soft: #eaf8ef;
+    --sidebar: #232234;
+    --sidebar-hover: #00a63c;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #e2e1e1;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="ocean"] {
+    --primary: #075985;
+    --primary-strong: #0c4a6e;
+    --accent: #0284c7;
+    --accentColor: #ffffff;
+    --accent-soft: #e0f2fe;
+    --sidebar: #082f49;
+    --sidebar-hover: #0284c7;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="royal"] {
+    --primary: #4338ca;
+    --primary-strong: #312e81;
+    --accent: #6366f1;
+    --accentColor: #ffffff;
+    --accent-soft: #eef2ff;
+    --sidebar: #1e1b4b;
+    --sidebar-hover: #6366f1;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="sunset"] {
+    --primary: #c2410c;
+    --primary-strong: #7c2d12;
+    --accent: #f97316;
+    --accentColor: #ffffff;
+    --accent-soft: #ffedd5;
+    --sidebar: #431407;
+    --sidebar-hover: #f97316;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="midnight"] {
+    --primary: #334155;
+    --primary-strong: #0f172a;
+    --accent: #38bdf8;
+    --accentColor: #ffffff;
+    --accent-soft: #e0f2fe;
+    --sidebar: #111827;
+    --sidebar-hover: #0ea5e9;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="slate"] {
+    --primary: #475569;
+    --primary-strong: #1e293b;
+    --accent: #64748b;
+    --accentColor: #ffffff;
+    --accent-soft: #f1f5f9;
+    --sidebar: #1e293b;
+    --sidebar-hover: #64748b;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="aqua"] {
+    --primary: #0f766e;
+    --primary-strong: #134e4a;
+    --accent: #14b8a6;
+    --accentColor: #ffffff;
+    --accent-soft: #ccfbf1;
+    --sidebar: #134e4a;
+    --sidebar-hover: #14b8a6;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="cobalt"] {
+    --primary: #1d4ed8;
+    --primary-strong: #1e3a8a;
+    --accent: #2563eb;
+    --accentColor: #ffffff;
+    --accent-soft: #dbeafe;
+    --sidebar: #172554;
+    --sidebar-hover: #2563eb;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="teal"] {
+    --primary: #115e59;
+    --primary-strong: #134e4a;
+    --accent: #0d9488;
+    --accentColor: #ffffff;
+    --accent-soft: #ccfbf1;
+    --sidebar: #042f2e;
+    --sidebar-hover: #0d9488;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="amber"] {
+    --primary: #92400e;
+    --primary-strong: #78350f;
+    --accent: #f59e0b;
+    --accentColor: #ffffff;
+    --accent-soft: #fef3c7;
+    --sidebar: #451a03;
+    --sidebar-hover: #f59e0b;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="coral"] {
+    --primary: #be123c;
+    --primary-strong: #881337;
+    --accent: #fb7185;
+    --accentColor: #ffffff;
+    --accent-soft: #ffe4e6;
+    --sidebar: #4c0519;
+    --sidebar-hover: #fb7185;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="violet"] {
+    --primary: #6d28d9;
+    --primary-strong: #4c1d95;
+    --accent: #8b5cf6;
+    --accentColor: #ffffff;
+    --accent-soft: #ede9fe;
+    --sidebar: #2e1065;
+    --sidebar-hover: #8b5cf6;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="rose"] {
+    --primary: #be185d;
+    --primary-strong: #831843;
+    --accent: #ec4899;
+    --accentColor: #ffffff;
+    --accent-soft: #fce7f3;
+    --sidebar: #500724;
+    --sidebar-hover: #ec4899;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="mint"] {
+    --primary: #047857;
+    --primary-strong: #064e3b;
+    --accent: #34d399;
+    --accentColor: #ffffff;
+    --accent-soft: #d1fae5;
+    --sidebar: #022c22;
+    --sidebar-hover: #34d399;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="sand"] {
+    --primary: #92400e;
+    --primary-strong: #78350f;
+    --accent: #d97706;
+    --accentColor: #ffffff;
+    --accent-soft: #fef3c7;
+    --sidebar: #422006;
+    --sidebar-hover: #d97706;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="graphite"] {
+    --primary: #374151;
+    --primary-strong: #111827;
+    --accent: #9ca3af;
+    --accentColor: #ffffff;
+    --accent-soft: #f3f4f6;
+    --sidebar: #111827;
+    --sidebar-hover: #6b7280;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="neon"] {
+    --primary: #166534;
+    --primary-strong: #052e16;
+    --accent: #84cc16;
+    --accentColor: #ffffff;
+    --accent-soft: #ecfccb;
+    --sidebar: #071a0d;
+    --sidebar-hover: #84cc16;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="lavender"] {
+    --primary: #7e22ce;
+    --primary-strong: #581c87;
+    --accent: #a855f7;
+    --accentColor: #ffffff;
+    --accent-soft: #f3e8ff;
+    --sidebar: #3b0764;
+    --sidebar-hover: #a855f7;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="copper"] {
+    --primary: #9a3412;
+    --primary-strong: #7c2d12;
+    --accent: #ea580c;
+    --accentColor: #ffffff;
+    --accent-soft: #ffedd5;
+    --sidebar: #431407;
+    --sidebar-hover: #ea580c;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+
+[data-theme="lime"] {
+    --primary: #3f6212;
+    --primary-strong: #365314;
+    --accent: #65a30d;
+    --accentColor: #ffffff;
+    --accent-soft: #ecfccb;
+    --sidebar: #1a2e05;
+    --sidebar-hover: #65a30d;
+    --sidebarColor: #ffffff;
+    --color: #000000;
+    --border: #919191;
+    --page: #ffffff;
+    --headerTable:#f9fafb;
+}
+[data-theme="dark"] {
+  --primary: #9ae6b4;
+  --primary-strong: #1f2937;
+
+  --accent: #22c55e;
+  --accentColor: #ffffff;
+  --accent-soft: #173b28;
+
+  --sidebar: #111827;
+  --sidebar-hover: #22c55e;
+  --sidebarColor: #f3f4f6;
+
+  --color: #f3f4f6;
+  --border: #252525;
+  --page: #0f172a;
+  --headerTable:#1f2937;
+}
+[data-theme="dark-forest"] {
+    --primary: #8ee6b0;
+    --primary-strong: #102a21;
+
+    --accent: #21c875;
+    --accentColor: #07150f;
+    --accent-soft: #153b2b;
+
+    --sidebar: #0b1713;
+    --sidebar-hover: #21c875;
+    --sidebarColor: #e8fff1;
+
+    --color: #e8fff1;
+    --border: #2e5142;
+    --page: #101b17;
+    --headerTable:#07150f;
+}
+
+
+/* =========================================================
+   DARK 02 - DARK OCEAN
+========================================================= */
+
+[data-theme="dark-ocean"] {
+    --primary: #8bdcff;
+    --primary-strong: #0b2433;
+
+    --accent: #16b8e8;
+    --accentColor: #061820;
+    --accent-soft: #123f52;
+
+    --sidebar: #081923;
+    --sidebar-hover: #16b8e8;
+    --sidebarColor: #e8faff;
+
+    --color: #e8faff;
+    --border: #2c5363;
+    --page: #0e202b;
+    --headerTable:#081923;
+}
+
+
+/* =========================================================
+   DARK 03 - DARK VIOLET
+========================================================= */
+
+[data-theme="dark-violet"] {
+    --primary: #d8b4fe;
+    --primary-strong: #2a1748;
+
+    --accent: #a855f7;
+    --accentColor: #ffffff;
+    --accent-soft: #3a2161;
+
+    --sidebar: #171024;
+    --sidebar-hover: #a855f7;
+    --sidebarColor: #f7edff;
+
+    --color: #f7edff;
+    --border: #523871;
+    --page: #211532;
+    --headerTable:#171024;
+}
+
+
+/* =========================================================
+   DARK 04 - DARK GRAPHITE
+========================================================= */
+
+[data-theme="dark-graphite"] {
+    --primary: #f1f5f9;
+    --primary-strong: #1e293b;
+
+    --accent: #94a3b8;
+    --accentColor: #111827;
+    --accent-soft: #334155;
+
+    --sidebar: #111827;
+    --sidebar-hover: #94a3b8;
+    --sidebarColor: #f8fafc;
+
+    --color: #f8fafc;
+    --border: #475569;
+    --page: #1e293b;
+    --headerTable:#111827;
+}
+
+
+/* =========================================================
+   DARK 05 - DARK AMBER
+========================================================= */
+
+[data-theme="dark-amber"] {
+    --primary: #fcd34d;
+    --primary-strong: #422006;
+
+    --accent: #f59e0b;
+    --accentColor: #241000;
+    --accent-soft: #5b3508;
+
+    --sidebar: #211508;
+    --sidebar-hover: #f59e0b;
+    --sidebarColor: #fff7df;
+
+    --color: #fff7df;
+    --border: #79551e;
+    --page: #2b1d0d;
+    --headerTable:#211508;
+}

@@ -152,7 +152,7 @@ font-weight:bold;
                         padding:20px;
                     ">
                         <b>Pickup</b><br>
-                        ${formDateHours(new Date(folio.Hrs), 'America/Mazatlan')})}
+                        ${formDateHours(new Date(folio.hrs), 'America/Mazatlan')}
                     </td>
 
                 </tr>
@@ -472,7 +472,7 @@ font-weight:bold;
                         padding:20px;
                     ">
                         <b>Pickup</b><br>
-                        ${formDateHours(new Date(folio.Hrs), 'America/Mazatlan')})}
+                        ${formDateHours(new Date(folio.hrs), 'America/Mazatlan')}
                     </td>
 
                 </tr>
@@ -840,7 +840,7 @@ font-weight:bold;
                         padding:20px;
                     ">
                         <b>Pickup</b><br>
-                        ${formDateHours(new Date(folio.Hrs), 'America/Mazatlan')})}
+                        ${formDateHours(new Date(folio.hrs), 'America/Mazatlan')}
                     </td>
 
                 </tr>
@@ -1160,7 +1160,7 @@ font-weight:bold;
                         padding:20px;
                     ">
                         <b>Pickup</b><br>
-                        ${formDateHours(new Date(folio.Hrs), 'America/Mazatlan')})}
+                        ${formDateHours(new Date(folio.hrs), 'America/Mazatlan')}
                     </td>
 
                 </tr>
@@ -1480,7 +1480,7 @@ font-weight:bold;
                         padding:20px;
                     ">
                         <b>Pickup</b><br>
-                        ${formDateHours(new Date(folio.Hrs), 'America/Mazatlan')})}
+                        ${formDateHours(new Date(folio.hrs), 'America/Mazatlan')}
                     </td>
 
                 </tr>
@@ -1801,7 +1801,7 @@ font-weight:bold;
                         padding:20px;
                     ">
                         <b>Pickup</b><br>
-                        ${formDateHours(new Date(folio.Hrs), 'America/Mazatlan')})}
+                        ${formDateHours(new Date(folio.hrs), 'America/Mazatlan')}
                     </td>
 
                 </tr>
@@ -2122,7 +2122,7 @@ font-weight:bold;
                         padding:20px;
                     ">
                         <b>Pickup</b><br>
-                        ${formDateHours(new Date(folio.Hrs), 'America/Mazatlan')})}
+                        ${formDateHours(new Date(folio.hrs), 'America/Mazatlan')}
                     </td>
 
                 </tr>
@@ -2443,7 +2443,7 @@ font-weight:bold;
                         padding:20px;
                     ">
                         <b>Pickup</b><br>
-                        ${formDateHours(new Date(folio.Hrs), 'America/Mazatlan')})}
+                        ${formDateHours(new Date(folio.hrs), 'America/Mazatlan')}
                     </td>
 
                 </tr>

@@ -1,4 +1,4 @@
-import { faBox } from '@fortawesome/free-solid-svg-icons'
+import {  type IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { Link } from 'react-router-dom'
@@ -7,7 +7,7 @@ type CardReportProp = {
     description: string,
     bg: string,
     url: string,
-    icon: any
+    icon: IconDefinition
 }
 export const CardReport = ({ title, description, bg, url, icon }: CardReportProp) => {
     return (

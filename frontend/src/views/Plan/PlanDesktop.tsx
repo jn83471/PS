@@ -19,10 +19,10 @@ type PlanDesktopProp = {
     DownloadFile, fecha, setValue, setFecha,
     modal, setModal, modalAddToEdit, setModalAddToEdit, setSelectPlan
     data,
-    HandleDeletePlan, handleSubmit, HandleSubmitCreateSuppliers, file, handleFile, selectPlan, refetch, lines,setFile
+    HandleDeletePlan, handleSubmit, HandleSubmitCreateSuppliers, file, handleFile, selectPlan, refetch, lines, setFile
 }
 export const PlanDesktop = ({ DownloadFile, fecha, setValue, setFecha, modal, setModal, modalAddToEdit, setModalAddToEdit, setSelectPlan, data, HandleDeletePlan,
-    handleSubmit, HandleSubmitCreateSuppliers, file, handleFile, selectPlan, refetch, lines,setFile
+    handleSubmit, HandleSubmitCreateSuppliers, file, handleFile, selectPlan, refetch, lines, setFile
 }: PlanDesktopProp) => {
     const [isLargeScreen, setIsLargeScreen] = useState(
         window.innerWidth >= 1660
@@ -187,7 +187,7 @@ export const PlanDesktop = ({ DownloadFile, fecha, setValue, setFecha, modal, se
             { length: 31 },
             (_, i) => Number(x[`d${i + 1}`] || 0)
         ).filter(value => value > 0).length > 0 && plan == 1)
-            || plan == 0 
+            || plan == 0
             || (Array.from(
                 { length: 31 },
                 (_, i) => Number(x[`d${i + 1}`] || 0)
@@ -210,32 +210,32 @@ export const PlanDesktop = ({ DownloadFile, fecha, setValue, setFecha, modal, se
         <>
             <div className="flex-1 min-w-0 sm:p-4">
 
-                <div className='bg-white border border-gray-400 rounded-xl py-5 px-2 w-full min-h-[75vh] relative'>
-                    <div className="flex flex-col lg:flex-row border-b border-gray-200 items-center py-2 lg:py-0">
-                        <div className="flex-1 flex flex-row items-center py-2">
+                <div className='bg-[var(--page)] border border-[var(--border)] rounded-xl py-5 px-2 w-full min-h-[75vh] relative'>
+                    <div className="flex flex-col lg:flex-row border-b border-[var(--border)] items-center py-2 lg:py-0">
+                        <div className="flex-1 flex flex-row items-center py-2 text-[var(--color)]">
                             <div className="flex-1">
                                 <div className="text-3xl font-bold">
                                     Plan de producción
                                 </div>
-                                <div className="text-gray-400 text-sm">
+                                <div className=" text-sm">
                                     Consulta y seguimiento de la producción
                                 </div>
                             </div>
                         </div>
                         <div>
-                            <button className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-semibold text-white"
+                            <button className="bg-[var(--accent)] text-[var(--accentColor)] px-4 py-2 rounded-lg font-semibold text-white"
                                 onClick={DownloadFile}>Descargar</button>
-                            <button className="mt-2 sm:mt-0 mx-2 bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-semibold text-white"
+                            <button className="bg-[var(--accent)] text-[var(--accentColor)] mt-2 sm:mt-0 mx-2  px-4 py-2 rounded-lg font-semibold text-white"
                                 onClick={() => {
                                     setModal(true)
                                     setFile(null)
-                                    setValue("plan",undefined)
-                                    }}>Subir</button>
-                            <button className="mt-2 sm:mt-0 mx-2 bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-semibold text-white"
+                                    setValue("plan", undefined)
+                                }}>Subir</button>
+                            <button className="bg-[var(--accent)] text-[var(--accentColor)] mt-2 sm:mt-0 mx-2  px-4 py-2 rounded-lg font-semibold text-white"
                                 onClick={() => {
                                     setModalAddToEdit(true)
                                     setSelectPlan(null)
-                                    
+
                                 }}>Nuevo</button>
                         </div>
                     </div>
@@ -370,10 +370,10 @@ export const PlanDesktop = ({ DownloadFile, fecha, setValue, setFecha, modal, se
                         </div>
 
                         <div className="py-2 sm:py-0 text-right w-full md:w-[6rem]">
-                            <button onClick={() => setView("Table")} className={`${view === "Table" ? "bg-purple-500 text-white" : ""} p-2 rounded-l-lg  border border-gray-200`}>
+                            <button onClick={() => setView("Table")} className={`${view === "Table" ? "bg-[var(--accent)] text-[var(--accentColor)]" : "text-[var(--color)] "} p-2 rounded-l-lg  border border-[var(--border)]`}>
                                 <FontAwesomeIcon icon={faTable} />
                             </button>
-                            <button onClick={() => setView("Cards")} className={`${view === "Cards" ? "bg-purple-500 text-white" : ""} p-2 rounded-r-lg  border border-gray-200`}>
+                            <button onClick={() => setView("Cards")} className={`${view === "Cards" ? "bg-[var(--accent)] text-[var(--accentColor)]" : "text-[var(--color)] "} p-2 rounded-r-lg  border border-[var(--border)]`}>
                                 <FontAwesomeIcon icon={faBoxes} />
                             </button>
                         </div>

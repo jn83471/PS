@@ -9,11 +9,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { AgGridReact } from "ag-grid-react";
 import type { ColDef } from "ag-grid-community";
-import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+import { ModuleRegistry, AllCommunityModule, themeQuartz } from 'ag-grid-community';
 
 //import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import { useRef, useState } from 'react';
+import { readThemePreference } from '../../settings/themes';
+import { useOutletContext } from 'react-router-dom';
 
 
 type ReactTableProp = {
@@ -43,6 +45,45 @@ export const ReactTable = ({ data, columns, text, title, setId, setModal, rowspa
     ]);
     const [search, setSearch] = useState('');
     const gridRef = useRef<AgGridReact>(null);
+
+
+
+    const themeConfigurations = themeQuartz
+        .withParams({
+            accentColor: "#15BDE8",
+            backgroundColor: "#0C0C0D",
+            borderColor: "#ffffff00",
+            borderRadius: 20,
+            browserColorScheme: "dark",
+            cellHorizontalPaddingScale: 1,
+            chromeBackgroundColor: {
+                ref: "backgroundColor"
+            },
+            columnBorder: false,
+            fontFamily: {
+                googleFont: "Roboto"
+            },
+            fontSize: 16,
+            foregroundColor: "#BBBEC9",
+            headerBackgroundColor: "#182226",
+            headerFontWeight: 500,
+            headerTextColor: "#FFFFFF",
+            headerVerticalPaddingScale: 0.9,
+            iconSize: 20,
+            rowBorder: false,
+            rowVerticalPaddingScale: 1.2,
+            sidePanelBorder: false,
+            spacing: 8,
+            wrapperBorder: false,
+            wrapperBorderRadius: 0,
+            dataBackgroundColor:"var(--page)",
+            textColor:"var(--color)",
+        });
+
+
+
+
+
     return (
         <>
             <div className="flex flex-wrap gap-2 items-center justify-end py-2">
@@ -95,7 +136,7 @@ export const ReactTable = ({ data, columns, text, title, setId, setModal, rowspa
                     paginationPageSize={100}
                     animateRows={true}
                     defaultColDef={defaultColDef}
-
+                    theme={themeConfigurations}
                 />
             </div>
         </>

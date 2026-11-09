@@ -19,7 +19,7 @@ export const PlantCardSystem = ({ data, names, fecha, lines, setPersonName }: Pl
                 <div className="max-h-[650px] overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 overflow-x-hidden">
                     {
                         lines?.map(element => (
-                            <button onClick={() => setPersonName([element])} className="min-h-24 p-2 border border-gray-200 rounded-lg flex flex-col items-center justify-center text-3xl font-bold cursor-pointer relative overflow-hidden shadow max-h-24
+                            <button onClick={() => setPersonName([element])} className="min-h-24 p-2 border border-[var(--border)] rounded-lg flex flex-col items-center justify-center text-3xl font-bold cursor-pointer relative overflow-hidden shadow max-h-24
                         hover:scale-105 duration-100 ease-in">
                                 <div className="bg-white w-full">
                                     <div className="text-sm font-normal">

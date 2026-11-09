@@ -116,7 +116,7 @@ export const ClientTable = () => {
   return (
     <>
       <div className="flex-1 min-w-0 sm:p-4">
-        <div className='bg-white border border-gray-400 rounded-xl py-5 px-2 w-full min-h-[75vh]'>
+        <div className='bg-[var(--page)] border border-[var(--border)] rounded-xl py-5 px-2 w-full min-h-[75vh]'>
           <MauiTable key={"Client table"} rowspaning={false} size={14} header={true} setId={setId} title={t("Layout.Customers")} data={filteredRows} setModal={setModal} columns={columns} text={"Nueva cliente"} />
         </div>
       </div>
