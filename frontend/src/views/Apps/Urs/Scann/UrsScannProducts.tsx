@@ -43,7 +43,6 @@ export const UrsScannProducts = () => {
     const { mutate, isPending } = useMutation({
         mutationFn: CreateUrsRequestScann,
         onError: (error) => {
-            console.log(error.message)
             toast.error(error.message)
             setValue("Box", "",)
         },
@@ -83,7 +82,6 @@ export const UrsScannProducts = () => {
             }
 
         }
-        console.log(procesos);
         LoadData()
     }, [data])
 
@@ -291,6 +289,12 @@ export const UrsScannProducts = () => {
                                         </div>
                                         <div className="font-bold">
                                             {elements?.Codes?.name}
+                                        </div>
+                                        <div className="text-gray-600 text-sm">
+                                            Planta
+                                        </div>
+                                        <div className="font-bold">
+                                            {elements?.Plant?.name??' -'}
                                         </div>
                                         <div className="text-gray-600 text-sm">
                                             SEWS Part Number

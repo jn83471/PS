@@ -4,7 +4,6 @@ import type { UrsChangeHrs, UrsVerificateFolio, UrsVerificateFolioCpLocal, UrsVe
 
 export async function UrsGetPriority() {
     try {
-        //console.log(formData)
         const url = `/apps/urs/priority`
         const { data } = await api.get(url)
         return data
@@ -20,7 +19,6 @@ export async function UrsGetPriority() {
 
 export async function UrsGetFolios() {
     try {
-        //console.log(formData)
         const url = `/apps/urs/folios`
         const { data } = await api.get(url)
         return data
@@ -34,7 +32,6 @@ export async function UrsGetFolios() {
 
 export async function UrsGetFolioById(id: number) {
     try {
-        //console.log(formData)
         const url = `/apps/urs/folios/${id}`
         const { data } = await api.get(url)
         return data
@@ -48,10 +45,8 @@ export async function UrsGetFolioById(id: number) {
 
 export async function CreateUrsRequestFolio(formData: UsrGenerateFolio) {
     try {
-        //console.log(formData)
         const url = `/apps/urs/folios`
         const { data } = await api.post(url, formData)
-        console.log(data)
         return data
     }
     catch (error) {
@@ -67,7 +62,6 @@ type FirstVerifyprop = {
 }
 export async function FirstVerify({ formData, idFolio }: FirstVerifyprop) {
     try {
-        //console.log(formData)
         const url = `/apps/urs/folios/${idFolio}/Verify`
         const { data } = await api.post(url, {
             Verify: formData.Verify
@@ -75,7 +69,6 @@ export async function FirstVerify({ formData, idFolio }: FirstVerifyprop) {
         return data
     }
     catch (error) {
-        console.log(error)
         if (isAxiosError(error) && error.response) {
             throw new Error(error.response.data.error)
         }
@@ -88,7 +81,6 @@ type SecondVerifyprop = {
 }
 export async function SecondVerify({ formData, idFolio }: SecondVerifyprop) {
     try {
-        //console.log(formData)
         const url = `/apps/urs/folios/${idFolio}/Verify`
         const { data } = await api.post(url, {
             Verify: formData.Verify,
@@ -97,7 +89,6 @@ export async function SecondVerify({ formData, idFolio }: SecondVerifyprop) {
         return data
     }
     catch (error) {
-        console.log(error)
         if (isAxiosError(error) && error.response) {
             throw new Error(error.response.data.error)
         }
@@ -111,13 +102,11 @@ type UrsChangePickUpProp = {
 
 export async function UrsChangePickUp({ formData, idFolio }: UrsChangePickUpProp) {
     try {
-        //console.log(formData)
         const url = `/apps/urs/folios/${idFolio}/ChangePickUp`
         const { data } = await api.post(url,formData)
         return data
     }
     catch (error) {
-        console.log(error)
         if (isAxiosError(error) && error.response) {
             throw new Error(error.response.data.error)
         }
@@ -139,7 +128,6 @@ export async function ThirdVerify({ formData, idFolio }: ThirdVerifyprop) {
         formData.files.forEach((file) => {
             formD.append("files", file);
         });
-        //console.log(formData)
         const url = `/apps/urs/folios/${idFolio}/Verify`
         const { data } = await api.post(url, formD,
             {
@@ -150,7 +138,6 @@ export async function ThirdVerify({ formData, idFolio }: ThirdVerifyprop) {
         return data
     }
     catch (error) {
-        console.log(error)
         if (isAxiosError(error) && error.response) {
             throw new Error(error.response.data.error)
         }
@@ -163,13 +150,11 @@ type UrsCancelFolioProp = {
 }
 export async function ursCancelFolio({ idFolio }: UrsCancelFolioProp) {
     try {
-        //console.log(formData)
         const url = `/apps/urs/folios/${idFolio}`
         const { data } = await api.delete(url)
         return data
     }
     catch (error) {
-        console.log(error)
         if (isAxiosError(error) && error.response) {
             throw new Error(error.response.data.error)
         }
@@ -178,7 +163,6 @@ export async function ursCancelFolio({ idFolio }: UrsCancelFolioProp) {
 
 export async function VerificateUrsRequest({ formData, id }: UrsVerificateFolio) {
     try {
-        //console.log(formData)
         const url = `/apps/urs/request/${id}`
         const { data } = await api.post(url, formData)
         return data

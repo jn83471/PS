@@ -7,8 +7,9 @@ import { UrsCardComponent } from '../UrsCardComponent'
 import { UrsTables } from '../UrsTables'
 import { UrsModalAddProduct } from '../UrsModalAddProduct'
 import { formatFolio } from '../../../../Utils/Urs'
+import { UrsModalEditProduct } from '../UrsModalEditProduct'
 type UrsAddProductsDesktopProp={
-    id,data,TimeZone,Requests,column,HandleCancelFolio,HandleVeryfyFolio,modal,setModal,refetch
+    id,data,TimeZone,Requests,column,HandleCancelFolio,HandleVeryfyFolio,modal,setModal,refetch,detailsId,setDetailsId
 }
 const columns = [
         "MFG",
@@ -20,7 +21,7 @@ const columns = [
         "Method",
 
     ]
-export const UrsAddProductsDesktop = ({id,data,TimeZone,Requests,column,HandleCancelFolio,HandleVeryfyFolio,modal,setModal,refetch }) => {
+export const UrsAddProductsDesktop = ({id,data,TimeZone,Requests,column,HandleCancelFolio,HandleVeryfyFolio,modal,setModal,refetch,detailsId,setDetailsId }) => {
 
     return (
         <>
@@ -147,7 +148,8 @@ export const UrsAddProductsDesktop = ({id,data,TimeZone,Requests,column,HandleCa
 
                 </div>
             </div>
-            {modal && <UrsModalAddProduct refresh={refetch} requestrefresh={Requests.refetch} requests={Requests?.data} folioId={id} setModal={setModal} modal={modal} />}
+            {(modal && detailsId.id==0) && <UrsModalAddProduct refresh={refetch} requestrefresh={Requests.refetch} requests={Requests?.data} folioId={id} setModal={setModal} modal={modal} />}
+            {(detailsId.id!=0) && <UrsModalEditProduct setDetailsId={setDetailsId} detailsId={detailsId} refresh={refetch} requestrefresh={Requests.refetch} requests={Requests?.data} folioId={id} setModal={setModal} modal={modal} />}
         </>
     )
 }

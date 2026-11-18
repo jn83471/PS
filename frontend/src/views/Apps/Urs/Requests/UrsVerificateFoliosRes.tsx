@@ -47,7 +47,6 @@ export const UrsVerificateFoliosRes = () => {
     const dt: UrsVerificateFolio = {
       Verify: 5
     }
-    console.log(dt)
 
     mutate({ formData: dt, idFolio: id })
   }

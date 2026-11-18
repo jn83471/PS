@@ -11,6 +11,10 @@ import { UrsAddProductsDesktop } from "../../../../components/Apps/Urs/UrsAddPro
 import { isMobile, isTabletOnly } from "../../../../Utils/Media"
 import { UrsAddProductsMobile } from "../../../../components/Apps/Urs/UrsAddProducts/UrsAddProductsMobile"
 import { CreateUrsProductColumns } from "../../../../Utils/Urs/CreateUrsColumns"
+import type { GridColDef } from "@mui/x-data-grid"
+import { Button } from "@mui/material"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faEdit } from "@fortawesome/free-solid-svg-icons"
 
 export const UrsAddProducts = () => {
     const User = useAuthWithApps()
@@ -20,6 +24,7 @@ export const UrsAddProducts = () => {
     const { id } = useParams()
 
     const TimeZone = GetTimeZone(User?.data?.TimeZone)
+    const [detailsId,setDetailsId]=useState({id:0})
 
 
     const { data, isError, isLoading, error, refetch } = useQuery({
@@ -34,12 +39,10 @@ export const UrsAddProducts = () => {
         retry: false
     })
 
-    console.log(Requests?.data)
 
     const { mutate } = useMutation({
         mutationFn: FirstVerify,
         onError: (error) => {
-            console.log(error.message)
             toast.error(error.message)
         },
         onSuccess: (data) => {
@@ -51,7 +54,6 @@ export const UrsAddProducts = () => {
     const FolioActions = useMutation({
         mutationFn: ursCancelFolio,
         onError: (error) => {
-            console.log(error.message)
             toast.error(error.message)
         },
         onSuccess: (data) => {
@@ -64,7 +66,6 @@ export const UrsAddProducts = () => {
         const dt: UrsVerificateFolio = {
             Verify: 1,
         }
-        console.log(dt)
 
         mutate({ formData: dt, idFolio: id })
     }
@@ -72,7 +73,6 @@ export const UrsAddProducts = () => {
         const dt: UrsVerificateFolio = {
             Verify: 1,
         }
-        console.log(dt)
 
         FolioActions.mutate({ idFolio: id })
     }
@@ -80,7 +80,6 @@ export const UrsAddProducts = () => {
 
     useEffect(() => {
         const loadData = async () => {
-            console.log(data?.id)
             //await setPlant(data[0].id.toString());
             //console.log(plant)
             if (data?.Process == 99) {
@@ -94,7 +93,7 @@ export const UrsAddProducts = () => {
 
     const column = useMemo(
         () => {
-            /*const column: GridColDef = {
+            const column: GridColDef = {
                 field: 'acciones',
                 headerName: 'Ver',
                 width: 70,
@@ -127,26 +126,25 @@ export const UrsAddProducts = () => {
                                 width: "100%"
                             }}
                         >
-                            <FontAwesomeIcon icon={faEye} className='pr-1' />
+                            <FontAwesomeIcon icon={faEdit} className='pr-1' />
                         </Button>
                     </>
                 ),
-            }*/
+            }
             const cols = CreateUrsProductColumns(
                 TimeZone,
-                null
+                column
             )
-            console.log(cols);
             return cols
         }, [TimeZone, data]);
 
     return (
 
         (isMobile && !isTabletOnly) ?
-            <UrsAddProductsMobile id={id} data={data} TimeZone={TimeZone} Requests={Requests}
+            <UrsAddProductsMobile id={id} data={data} TimeZone={TimeZone} Requests={Requests} detailsId={detailsId} setDetailsId={setDetailsId}
                 HandleCancelFolio={HandleCancelFolio} HandleVeryfyFolio={HandleVeryfyFolio} modal={modal} setModal={setModal} refetch={refetch} />
             :
-            <UrsAddProductsDesktop id={id} data={data} TimeZone={TimeZone} Requests={Requests} column={column}
+            <UrsAddProductsDesktop id={id} data={data} TimeZone={TimeZone} Requests={Requests} column={column} detailsId={detailsId} setDetailsId={setDetailsId}
                 HandleCancelFolio={HandleCancelFolio} HandleVeryfyFolio={HandleVeryfyFolio} modal={modal} setModal={setModal} refetch={refetch} />
 
 

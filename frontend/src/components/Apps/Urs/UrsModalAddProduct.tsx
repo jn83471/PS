@@ -17,6 +17,7 @@ import { CreateUrsRequest } from "../../../api/Apps/Urs/UrsRequestApi"
 import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom"
 import { useEffect } from "react"
+import { GetPlants } from "../../../api/PlantsApi"
 
 type UrsModalAddProductprop = {
     modal: boolean,
@@ -76,7 +77,6 @@ export const UrsModalAddProduct = ({ setModal, modal, folioId, refresh, requestr
     const { mutate } = useMutation({
         mutationFn: CreateUrsRequest,
         onError: (error) => {
-            console.log(error.message)
             toast.error(error.message)
         },
         onSuccess: (data) => {
@@ -90,7 +90,6 @@ export const UrsModalAddProduct = ({ setModal, modal, folioId, refresh, requestr
     })
 
     const options = PartNumbers?.data?.map(e => ({ label: e.sews_part_no }))
-    console.log(options)
     const mfgRows = requests.length > 0 ? data?.codes?.filter(x => x.id == requests[0].CodeId) : data?.codes
 
 
@@ -190,6 +189,24 @@ export const UrsModalAddProduct = ({ setModal, modal, folioId, refresh, requestr
 
                             </Select>
                         </FormControl>
+
+                        <div>
+                            <label className="text-sm text-gray-300">Planta:</label>
+                            <select className="w-full outline-none rounded  p-2 mt-2 mb-3 border border-gray-200 in:border-blue-500
+                                                focus:outline-none
+                                            focus:border-blue-500
+                                            hover:border-blue-500
+                                            active:border-blue-500" {...register("PlantId", {
+                                required: "El numero de estacionamientos es obligatorio"
+                            })}>
+                                {data?.plants?.map((m) => (
+                                    <option value={m.id}>{m.name}</option>
+                                ))}
+
+
+                            </select>
+
+                        </div>
                         <FormControl sx={{
                             marginTop: "15px",
                             width: "100%"
@@ -291,7 +308,6 @@ export const UrsModalAddProduct = ({ setModal, modal, folioId, refresh, requestr
                                 renderInput={(params) => <TextField {...params} label="Numero de parte" />}
                                 //value={data?.find(x => x.id === PartNumber) || null}
                                 onChange={(e, value) => {
-                                    console.log(value)
                                     setValue("PartNumber", value.label, {
                                         shouldValidate: true,
                                         shouldDirty: true,

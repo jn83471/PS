@@ -35,7 +35,6 @@ export const UrsVerificateFoliosEmb = () => {
   const { mutate } = useMutation({
     mutationFn: FirstVerify,
     onError: (error) => {
-      console.log(error.message)
       toast.error(error.message)
     },
     onSuccess: (data) => {
@@ -49,7 +48,6 @@ export const UrsVerificateFoliosEmb = () => {
     const dt: UrsVerificateSendFolio = {
       Verify: 4,
     }
-    console.log(dt)
 
     mutate({ formData: dt, idFolio: id })
   }

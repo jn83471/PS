@@ -1,4 +1,5 @@
 import { Codes } from "../Codes";
+import { Plants } from "../Plants";
 import { Users } from "../Users";
 import { PriorityHasProcess } from "./PriorityHasProcess";
 import { UrsFolioPictures } from "./UrsFolioPictures";
@@ -19,6 +20,7 @@ UrsRequestsFolio.belongsTo(Users, {foreignKey: "ClosedUserId", as: "ClosedUser" 
 UrsRequestsFolio.belongsTo(Users, {foreignKey: "SMTSLastVerificationUser", as: "SMTSLastVerificationU" });
 
 UrsRequests.belongsTo(UrsRequestsFolio,{foreignKey:"UrsRequestsFolioId",as:"UrsRequestsFolio"})
+UrsRequests.belongsTo(Plants,{foreignKey:"PlantId",as:"Plant"})
 
 UrsRequestsFolio.hasMany(UrsRequests, {
   foreignKey: "UrsRequestsFolioId",

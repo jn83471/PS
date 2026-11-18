@@ -16,6 +16,7 @@ router.param("ursFolioId",validateUrsRequestFolioId)
 router.get("/:ursFolioId",autenticateWithApps,UrsRequestController.Index)
 router.get("/detail/:ursFolioDetailId",autenticateWithApps,UrsRequestFolioController.Deteail)
 router.post("/:ursFolioId",autenticateWithApps,UrsRequestController.Create)
+router.put("/:ursFolioId/:UrsRequestId",autenticateWithApps,UrsRequestController.Update)
 router.delete("/:ursFolioId/:ursRequestId",autenticateWithApps,UrsRequestController.Cancel)
 router.put("/:ursFolioId/:ursRequestId/ProposedDate",autenticateWithApps,UrsRequestController.ProposedDate)
 

@@ -10,6 +10,7 @@ import { Plants } from "../../../Models/Index";
 import { Smhcas } from "../../../Models/SMHCAS";
 import { UrsPriority, UrsRequests, UrsRequestsFolio } from "../../../Models/URS/UrsIndex";
 import { io } from "../../../server";
+import { UrsRequestScannHistory } from "../../../Models/URS/UrsRequestScannHistory";
 
 export class UrsRequestController {
     static Index: any = async (req: Request, res: Response) => {
@@ -31,6 +32,10 @@ export class UrsRequestController {
                     {
                         model: UrsPriority,
                         as: "UrsPriority"
+                    },
+                    {
+                        model:Plants,
+                        as:"Plant"
                     }
                 ]
             })
@@ -50,9 +55,13 @@ export class UrsRequestController {
                 const error = new Error('El folio ya ha sido cancelado.')
                 return res.status(401).json({ error: error.message })
             }
-            const { CodesId, PartNumber, CustomerPartNumber, Customer, Qty, motive, UrsPriorityId } = req.body
+            const { CodesId, PartNumber, CustomerPartNumber, Customer, Qty, motive, UrsPriorityId,PlantId } = req.body
 
             //const validateRequest=await UrsRequests.findOne
+                        if(req.UrsRequestsFolio.Verify>=2){
+                const error = new Error('Se ha aprobado la solicitud por parte de cpLocal no se pueden incluir productos nuevos.')
+                return res.status(401).json({ error: error.message })
+            }
 
             const UrsRequestData = await UrsRequests.create({
                 UrsRequestsFolioId: ursFolioId,
@@ -63,10 +72,69 @@ export class UrsRequestController {
                 Qty,
                 Reason: motive,
                 Process: 0,
-                UrsPriorityId
+                UrsPriorityId,
+                PlantId
             })
 
             req.UrsRequestsFolio.Qty += parseInt(Qty)
+            await UrsRequestsFolio.update({
+                Qty: req.UrsRequestsFolio.Qty
+            }, {
+                where: {
+                    id: ursFolioId
+                }
+            })
+
+            return res.send(ursFolioId)
+        } catch (error) {
+            const errors = new Error('Hubo algun problema en la solicitud.')
+            return res.status(401).json({ error: errors.message })
+        }
+
+    }
+    static Update: any = async (req: Request, res: Response) => {
+        try {
+            const { ursFolioId, UrsRequestId } = req.params
+
+            if (req.UrsRequestsFolio.Process == 99) {
+                const error = new Error('El folio ya ha sido cancelado.')
+                return res.status(401).json({ error: error.message })
+            }
+            const { CodesId, PartNumber, CustomerPartNumber, Customer, Qty, motive, UrsPriorityId,PlantId } = req.body
+
+            const validateRequest=await UrsRequests.findOne({
+                where: {
+                    id: UrsRequestId
+                
+                }
+            })
+            if(!validateRequest){
+                const error = new Error('Solicitud no encontrada.')
+                return res.status(401).json({ error: error.message })
+            }
+            if(req.UrsRequestsFolio.Verify>=2){
+                const error = new Error('Se ha aprobado la solicitud por parte de cpLocal no puede ser editada.')
+                return res.status(401).json({ error: error.message })
+            }
+            const UrsRequestData = await UrsRequests.update({
+                UrsRequestsFolioId: ursFolioId,
+                CodeId: CodesId,
+                PartNumber,
+                CustomerPartNumber,
+                Customer,
+                Qty,
+                Reason: motive,
+                Process: 0,
+                UrsPriorityId,
+                PlantId
+            }, {
+                where: {
+                    id: UrsRequestId
+                
+                }
+            })
+
+            req.UrsRequestsFolio.Qty += parseInt(Qty)-validateRequest.Qty
             await UrsRequestsFolio.update({
                 Qty: req.UrsRequestsFolio.Qty
             }, {
@@ -96,13 +164,13 @@ export class UrsRequestController {
                 const error = new Error('La requisición ya ha sido cancelada.')
                 return res.status(401).json({ error: error.message })
             }
-            const validateRequest=await UrsRequests.findAll({
-                where:{
-                    UrsRequestsFolioId:req.UrsRequestsFolio.id,
-                    Process:0
+            const validateRequest = await UrsRequests.findAll({
+                where: {
+                    UrsRequestsFolioId: req.UrsRequestsFolio.id,
+                    Process: 0
                 }
             })
-            if(validateRequest.length<=1){
+            if (validateRequest.length <= 1) {
                 const error = new Error('No se puede cancelar todas ordenes')
                 return res.status(401).json({ error: error.message })
             }
@@ -121,6 +189,19 @@ export class UrsRequestController {
                         id: req.UrsRequestsFolio.id
                     }]
                 })
+            const folios = await UrsRequests.findAll({
+                attributes: ['id'],
+                where: {
+                    id: req.UrsRequestsFolio.id
+                }
+            });
+            await UrsRequestScannHistory.destroy({
+                where: {
+                    UrsRequestsId: {
+                        [Op.in]: folios.map(x => x.id)
+                    }
+                }
+            });
             return res.send("Se ha cancelado la requisición de material.")
         }
         catch (error) {
@@ -142,7 +223,7 @@ export class UrsRequestController {
                 const error = new Error('La requisición ya ha sido cancelada.')
                 return res.status(401).json({ error: error.message })
             }
-            const {ProposedDate}=req.body
+            const { ProposedDate } = req.body
             const dt = await UrsRequests.update({
                 ProposedDate: ProposedDate
             },

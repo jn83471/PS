@@ -94,6 +94,10 @@ export const UrsModalDetails = ({ id, setId, refetch, url, save, files, setFiles
             )
         },
         {
+            field: 'plant', headerName: 'Planta', width: 80, minWidth: 80,
+            valueGetter: (_, row) => row.Plant?.name
+        },
+        {
             field: 'ProposedDate', headerName: 'Fecha propuesta', minWidth: 190, flex: 1
             , valueGetter: (_, row) => formatDateUTC(data.ProposedDate)
         },

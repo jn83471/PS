@@ -15,7 +15,6 @@ export const Production = () => {
         queryFn: ()=>GetProduction(fecha?.format("YYYY-MM-DD")),
         retry: false
     })
-    console.log(fecha?.format("YYYY-MM-DD"))
 
     
     const separateData = (x, prod, machines, day) => {
@@ -38,7 +37,6 @@ export const Production = () => {
 
         const info = []
         plant?.map(x => {
-            console.log(prod.filter(y => y.DAY == 6 && y.SHIFT == 1 && y.line_c == 'MC04'))
 
             const machines = x.Machine.map(x => x.machineCode);
             info.push({
@@ -78,7 +76,6 @@ export const Production = () => {
             })
         })
         setDt(info)
-        console.log(info)
 
     }, [data])
 

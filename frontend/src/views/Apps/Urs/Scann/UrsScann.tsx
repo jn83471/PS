@@ -35,7 +35,7 @@ export const UrsScann = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 ">
         {
           rows?.map(elements => (
-            <Link to={`/urs/scann/${elements.id}`} className="border border-blue-300 rounded-lg p-2 border-l-4 border-l-orange-500
+            <Link to={`/urs/scann/${elements.id}`} key={`card${elements.id}`} className="border border-blue-300 rounded-lg p-2 border-l-4 border-l-orange-500
             hover:scale-105 bg-white">
               <div className="uppercase font-bold text-2xl sm:text-lg">
                 URS{`${elements.id.toString().padStart(10, '0')}`}

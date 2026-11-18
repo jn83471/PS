@@ -88,7 +88,6 @@ export class MachinesController {
             io.to("Machine").emit("newMachine", newmachine)
             return res.send("Se ha generado la maquina")
         } catch (error) {
-            console.log(error.message)
             return res.status(500).send("no se ha podido generar la maquina debido a algun problema")
         }
 
@@ -149,7 +148,6 @@ export class MachinesController {
             io.to("Machine").emit("editMachine", newmachine)
             return res.send("Se ha modificado la maquina")
         } catch (error) {
-            console.log(error.message)
             return res.status(500).send("no se ha podido modificar la maquina debido a algun problema")
         }
     }
@@ -191,7 +189,6 @@ export class MachinesController {
             io.to("Machine").emit("deleteMachine", { id: MachineId })
             return res.send("Se ha eliminado la maquina")
         } catch (error) {
-            console.log(error.message)
             return res.status(500).send("no se ha podido modificar la maquina debido a algun problema")
         }
     }

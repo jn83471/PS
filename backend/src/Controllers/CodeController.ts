@@ -35,7 +35,6 @@ export class CodeController {
             io.to("Codes").emit("newCode", code)
             return res.send("Se ha generado el codigó")
         } catch (error) {
-            console.log(error)
             return res.status(500).send("no se ha podido generar la planta debido a algun problemas")
         }
 

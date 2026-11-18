@@ -10,7 +10,6 @@ process.env.TZ = 'America/Mazatlan';
   try {
     //await sequelize.sync(); // cuando quiera generar las tablas
     await sequelize.authenticate()
-    console.log("Conexión establecida con SQL Server");
     console.log(new Date().toLocaleString('en-US', {
       //timeZone: 'America/Mazatlan' tepic
       timeZone: 'America/Ciudad_Juarez'

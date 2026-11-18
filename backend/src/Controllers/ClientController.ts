@@ -123,7 +123,6 @@ export class ClientController {
             io.to("Client").emit("deleteClient", { id: ClientId })
             return res.send("Se ha eliminado el cliente")
         } catch (error) {
-            console.log(error.message)
             return res.status(500).send("no se ha podido eliminar el cliente debido a algun problema")
         }
     }

@@ -85,19 +85,18 @@ export const UrsRequests = () => {
         TimeZone,
         column
       )
-      console.log(cols);
       return cols
     }, [TimeZone, detailsId.id]);
 
   const stats = useMemo(() => ({
     open:
       data?.filter(
-        x => x.Verify <= 3 && x.Process !== 99
+        x => x.Verify <= 4 && x.Process !== 99
       ).length ?? 0,
 
     closed:
       data?.filter(
-        x => x.Verify === 4 && x.Process !== 99
+        x => x.Verify === 5 && x.Process !== 99
       ).length ?? 0
   }), [data]);
 

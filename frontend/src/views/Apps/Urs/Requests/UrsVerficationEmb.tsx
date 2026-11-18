@@ -96,7 +96,6 @@ export const UrsVerficationEmb = () => {
         TimeZone,
         column
       )
-      console.log(cols);
       return cols
     }, [TimeZone, detailsId.id]);
 
@@ -104,7 +103,6 @@ export const UrsVerficationEmb = () => {
   const { mutate } = useMutation({
     mutationFn: FirstVerify,
     onError: (error) => {
-      console.log(error.message)
       toast.error(error.message)
     },
     onSuccess: (data) => {
@@ -122,7 +120,6 @@ export const UrsVerficationEmb = () => {
     const dt: UrsVerificateFolio = {
       Verify: 4,
     }
-    console.log(dt)
     mutate({ formData: dt, idFolio: detailsId.id })
   }
 
@@ -145,9 +142,9 @@ export const UrsVerficationEmb = () => {
       <section className="flex h-[calc(100vh-120px)] xl:h-[calc(100vh-100px)] ">
         <section className="flex flex-col flex-1 ">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 py-2">
-            <UrsCardComponent qty={data?.filter(x => x.Verify <= 3 && x.Process != 99)?.length} borderl="border-l-purple-600" display="Solicitudes abiertas"
+            <UrsCardComponent qty={data?.filter(x => x.Verify <= 4 && x.Process != 99)?.length} borderl="border-l-purple-600" display="Solicitudes abiertas"
               bg="text-purple-500" circlebg="bg-purple-200" />
-            <UrsCardComponent qty={data?.filter(x => x.Verify == 4 && x.Process != 99)?.length} borderl="border-l-green-600" display="Solicitudes cerradas"
+            <UrsCardComponent qty={data?.filter(x => x.Verify == 5 && x.Process != 99)?.length} borderl="border-l-green-600" display="Solicitudes cerradas"
               bg="text-green-500" circlebg="bg-green-200" />
           </div>
           <div className={`flex-1 w-[calc(100vw-110px)] ${detailsId.id != 0 ? " sm:w-[calc(100vw-250px)] overflow-x-auto " : "sm:w-[calc(100vw-250px)] overflow-x-auto"}`}>

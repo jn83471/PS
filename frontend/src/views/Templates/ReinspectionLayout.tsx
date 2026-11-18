@@ -1,14 +1,13 @@
-import { faBagShopping, faBarcode, faBars, faBoxOpen, faCheckCircle, faEnvelope, faFile, faFileAlt, faFilePdf, faHome, faListNumeric, faPlus, faPowerOff, faSquareCheck, faWarning } from "@fortawesome/free-solid-svg-icons"
+import { faBagShopping, faBars, faBoxOpen, faFile, faFileAlt, faHome, faListNumeric, faPowerOff, faWarning } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link, Navigate, NavLink, Outlet } from "react-router-dom"
 import { useAuthWithApps } from "../../hook/useAuth"
 import { useState } from "react"
-import { hasPermission } from "../../hook/hasPermissionHook";
 import { ToastContainer } from "react-toastify"
 
 
 export const ReinspectionLayout = () => {
-    const { data, isError, isLoading } = useAuthWithApps()
+    const { isError, isLoading } = useAuthWithApps()
     const [showAside, setShowAside] = useState(true)
     if (isError) return (<Navigate to="/" />)
     if (isLoading) return (<></>)

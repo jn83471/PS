@@ -62,26 +62,6 @@ export default function Login() {
               Necesita iniciar session para continuar
             </p>
 
-            {/* Social buttons */}
-            {/*<div className="space-y-3">
-              <button className="w-full flex items-center justify-center gap-3 bg-zinc-800 hover:bg-zinc-700 transition rounded-lg py-2">
-                <FaGoogle />
-                Log in with Google
-              </button>
-
-              <button className="w-full flex items-center justify-center gap-3 bg-zinc-800 hover:bg-zinc-700 transition rounded-lg py-2">
-                <FaApple />
-                Log in with Apple
-              </button>
-            </div>*/}
-
-            {/* Divider */}
-            {/*<div className="flex items-center gap-4 my-6">
-              <span className="flex-1 h-px bg-zinc-700" />
-              <span className="text-xs text-gray-400">OR</span>
-              <span className="flex-1 h-px bg-zinc-700" />
-            </div>*/}
-
             {/* Form */}
             <div className="space-y-4">
               <div>
@@ -106,9 +86,6 @@ export default function Login() {
               <div>
                 <div className="flex justify-between text-sm">
                   <label className="text-gray-300">Password</label>
-                  {/*<a href="#" className="text-purple-400 hover:underline">
-                    Forgot password?
-                  </a>*/}
                 </div>
                 <input
                   type="password"
@@ -134,13 +111,6 @@ export default function Login() {
             </div>
           </form>
 
-          {/* Footer */}
-          {/*<p className="text-sm text-gray-400">
-            Don’t have an account?{" "}
-            <a href="#" className="text-purple-400 hover:underline">
-              Sign up
-            </a>
-          </p>*/}
         </div>
 
         {/* RIGHT SIDE – VISUAL / MARKETING */}

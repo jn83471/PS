@@ -87,6 +87,10 @@ export const CreateUrsProductColumns = (TimeZone: string,
             valueGetter: (_, row) => row.Codes.name
         },
         {
+            field: 'plant', headerName: 'Planta', width: 80, minWidth: 80,
+            valueGetter: (_, row) => row.Plant?.name
+        },
+        {
             field: 'SEWS Part No', headerName: 'SEWS Part No', width: 130, flex: 1
             , valueGetter: (_, row) => row.PartNumber ?? ''
         },

@@ -66,6 +66,8 @@ export const UrsNewRequest = () => {
     const loadData = async () => {
       //await setPlant(data[0].id.toString());
       //console.log(plant)
+      if(data == undefined) return
+      console.log(data)
       setValue("UrsPriorityId", data[0].id, {
         shouldValidate: true,
         shouldDirty: true,

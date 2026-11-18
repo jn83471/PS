@@ -26,7 +26,6 @@ export const UrsVerfication = () => {
   const navigates = useNavigate()
 
   if (!User.isLoading && !hasPermission("URS", User.data, "Request")) return (<Navigate to="/urs" />)
-  console.log(hasPermission("URS", User.data, "Request"))
 
   const progress = ['Solicitado', 'REVISION CPLOCAL', 'REVISION SMTS ', 'EN ESCANEO ', 'EMBARCADA'];
   const porcentaje = 0
@@ -90,7 +89,6 @@ const column = useMemo(
         TimeZone,
         column
       )
-      console.log(cols);
       return cols
     }, [TimeZone, detailsId.id]);
 
@@ -98,7 +96,6 @@ const column = useMemo(
   const { mutate } = useMutation({
     mutationFn: SecondVerify,
     onError: (error) => {
-      console.log(error.message)
       toast.error(error.message)
     },
     onSuccess: (data) => {
@@ -113,7 +110,6 @@ const column = useMemo(
       Verify: 2,
       ProposedDate: fecha.format("YYYY-MM-DD")
     }
-    console.log(dt)
 
     mutate({ formData: dt, idFolio: detailsId.id })
     setDetailsId({

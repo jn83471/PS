@@ -133,6 +133,10 @@ export const UrsChangeHrs = ({ id, setId, refetch, url, save }: UrsModalDetailsP
             renderCell: (params) => params.row.Codes.name
         },
         {
+            field: 'plant', headerName: 'Planta', width: 80, minWidth: 80,
+            valueGetter: (_, row) => row.Plant?.name
+        },
+        {
             field: 'ProposedDate', headerName: 'Fecha propuesta', minWidth: 190, flex: 1
             , valueGetter: (_, row) => formatDateTimeZone(data?.ProposedDate?.substring(0, 10), TimeZone)
 
@@ -363,8 +367,8 @@ export const UrsChangeHrs = ({ id, setId, refetch, url, save }: UrsModalDetailsP
                         </div>
                     </div>
                     <div className="text-right">
-                        {data?.Verify == 2 && <button onClick={HandleCancelFolio} type="button" className="py-2 px-4 bg-red-500 text-white rounded hover:bg-gray-700 mr-2">
-                            <svg data-prefix="fas" data-icon="ban" className="svg-inline--fa fa-ban" role="img" viewBox="0 0 512 512" aria-hidden="true"><path fill="currentColor" d="M367.2 412.5L99.5 144.8c-22.4 31.4-35.5 69.8-35.5 111.2 0 106 86 192 192 192 41.5 0 79.9-13.1 111.2-35.5zm45.3-45.3c22.4-31.4 35.5-69.8 35.5-111.2 0-106-86-192-192-192-41.5 0-79.9 13.1-111.2 35.5L412.5 367.2zM0 256a256 256 0 1 1 512 0 256 256 0 1 1 -512 0z"></path></svg> Cancelar</button>}
+                        <button onClick={HandleCancelFolio} type="button" className="py-2 px-4 bg-red-500 text-white rounded hover:bg-gray-700 mr-2">
+                            <svg data-prefix="fas" data-icon="ban" className="svg-inline--fa fa-ban" role="img" viewBox="0 0 512 512" aria-hidden="true"><path fill="currentColor" d="M367.2 412.5L99.5 144.8c-22.4 31.4-35.5 69.8-35.5 111.2 0 106 86 192 192 192 41.5 0 79.9-13.1 111.2-35.5zm45.3-45.3c22.4-31.4 35.5-69.8 35.5-111.2 0-106-86-192-192-192-41.5 0-79.9 13.1-111.2 35.5L412.5 367.2zM0 256a256 256 0 1 1 512 0 256 256 0 1 1 -512 0z"></path></svg> Cancelar</button>
                         <button onClick={save} type="button" className="py-2 px-4 bg-red-500 text-white rounded hover:bg-red-700 mr-2">
                             <FontAwesomeIcon icon={faCheckCircle} />
                             Guardar

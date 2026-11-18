@@ -27,7 +27,12 @@ export class UrsCatalogController {
                 }
                 ]
             })
-            return res.json({ permision: req.UserHasPermisions, codes, priority })
+            const plants=await Plants.findAll({
+                where: {
+                    status: true,
+                }
+            })
+            return res.json({ permision: req.UserHasPermisions, codes, priority,plants })
         } catch (error) {
 
         }

@@ -1,10 +1,11 @@
-import { faBoxOpen, faEnvelope, faFaceSmile, faHome, faList, faPowerOff, faSeedling, faSquareCheck } from "@fortawesome/free-solid-svg-icons"
+import { faBoxOpen, faEnvelope, faHome, faPowerOff, faSquareCheck } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link, Navigate, NavLink, Outlet } from "react-router-dom"
 import { useAuth } from "../../hook/useAuth"
 export const FeatureLayouts = () => {
-  const { data, isError, isLoading } = useAuth()
+    const { isError, isLoading } = useAuth()
     if (isError) return (<Navigate to="/" />)
+    if (isLoading) return (<></>)
     return (
         <div className="flex h-screen flex-row">
             <div className="flex m-2">
@@ -24,15 +25,15 @@ export const FeatureLayouts = () => {
                         </div>
                     </div>
                     <div className="p-2 flex-1">
-                        <NavLink to={'/urs'} className={({isActive })=> (isActive ?"bg-purple-200/10 border-l-purple-700 border-l-2 ":"" )+"my-2 text-white  w-full block p-2 rounded-r-xl"}>
+                        <NavLink to={'/urs'} className={({ isActive }) => (isActive ? "bg-purple-200/10 border-l-purple-700 border-l-2 " : "") + "my-2 text-white  w-full block p-2 rounded-r-xl"}>
                             <FontAwesomeIcon icon={faHome} />
                             <span className="pl-2 hidden sm:inline">Inicio</span>
                         </NavLink>
-                         <NavLink to={'/urs/request'} className={({isActive })=> (isActive ?"bg-purple-200/10 border-l-purple-700 border-l-2 ":"" )+"my-2 text-white   w-full block p-2 rounded-r-xl"}>
+                        <NavLink to={'/urs/request'} className={({ isActive }) => (isActive ? "bg-purple-200/10 border-l-purple-700 border-l-2 " : "") + "my-2 text-white   w-full block p-2 rounded-r-xl"}>
                             <FontAwesomeIcon icon={faEnvelope} />
                             <span className="pl-2 hidden sm:inline">Solicitudes</span>
                         </NavLink>
-                        <NavLink to={'/urs/verifications'} className={({isActive })=> (isActive ?"bg-purple-200/10 border-l-purple-700 border-l-2 ":"" )+"my-2 text-white   w-full block p-2 rounded-r-xl"}>
+                        <NavLink to={'/urs/verifications'} className={({ isActive }) => (isActive ? "bg-purple-200/10 border-l-purple-700 border-l-2 " : "") + "my-2 text-white   w-full block p-2 rounded-r-xl"}>
                             <FontAwesomeIcon icon={faSquareCheck} />
                             <span className="pl-2 hidden sm:inline">Verificaciones</span>
                         </NavLink>

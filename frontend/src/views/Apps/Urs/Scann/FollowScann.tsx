@@ -40,7 +40,7 @@ export const FollowScann = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 ">
           {
             rows?.filter(x => x.LastProcessDay == null).map(elements => (
-              <Link to={`/urs/FollowScann/${elements.id}`} className="border border-blue-300 rounded-lg p-2 border-l-4 border-l-orange-500
+              <Link to={`/urs/FollowScann/${elements.id}`} key={`cards${elements.id}`} className="border border-blue-300 rounded-lg p-2 border-l-4 border-l-orange-500
             hover:scale-105 bg-white">
                 <div className="flex flex-row items-center">
                   <div className="uppercase font-bold text-2xl sm:text-lg flex-1">
@@ -126,7 +126,7 @@ export const FollowScann = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 ">
           {
             rows?.filter(x => x.LastProcessDay != null).map(elements => (
-              <Link to={`/urs/FollowScann/${elements.id}`} className="border border-blue-300 rounded-lg p-2 border-l-4 border-l-orange-500
+              <Link to={`/urs/FollowScann/${elements.id}`} key={`cardsComplete${elements.id}`} className="border border-blue-300 rounded-lg p-2 border-l-4 border-l-orange-500
             hover:scale-105 bg-white">
                 <div className="flex flex-row items-center">
                   <div className="uppercase font-bold text-2xl sm:text-lg flex-1">

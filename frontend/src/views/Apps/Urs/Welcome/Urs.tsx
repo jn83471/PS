@@ -62,7 +62,6 @@ export const Urs = () => {
                 TimeZone,
                 column
             )
-            console.log(cols);
             return cols
         }, [TimeZone]);
 

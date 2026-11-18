@@ -16,7 +16,8 @@ export class UrsRequests extends Model {
     declare Process: string;
     declare UrsPriorityId: number;
     declare Codes?:Codes;
-    declare UrsRequestScannHistory?: UrsRequestScannHistory[]
+    declare UrsRequestScannHistory?: UrsRequestScannHistory[];
+    declare PlantId: number
 
 }
 
@@ -74,6 +75,10 @@ UrsRequests.init(
             type: DataTypes.INTEGER,
             allowNull: false
         },
+        PlantId:{
+            type: DataTypes.INTEGER,
+            allowNull: true
+        }
     },
     {
         sequelize,

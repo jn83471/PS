@@ -32,7 +32,8 @@ export const MachinesTable = () => {
 
     const [modal, setModal] = useState(false)
 
-    const { data, isError, isLoading, error } = useQuery({
+    const { data
+     } = useQuery({
         queryKey: ['Machine'],
         queryFn: GetMachines,
         retry: false
@@ -62,7 +63,6 @@ export const MachinesTable = () => {
         retry: false
     })
     const handleEdit = (row) => {
-        console.log(row)
         setSelected(row)
         setId(row.id)
         setModal(true)

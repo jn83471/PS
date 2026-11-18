@@ -23,7 +23,6 @@ export const UrsDetailsFolio = ({ detailsId, setDetailsId, TimeZone, data, setSe
     }
     
     const porcentaje =  detailsId?.Verify/(progress.length-1)*100 
-    console.log(porcentaje)
     return (
         <div className={`w-[400px] flex justify-center ${detailsId.id != 0 ? " fixed " : " hidden "} bg-gray-500/75 w-screen top-0 left-0 overflow-x-auto lg:bg-transparent lg:static lg:w-[400px] h-screen lg:h-auto`}>
             <div className="border relative flex flex-col flex-1 m-5 md:m-2 gap-1 py-4 px-7 bg-white max-w-[90vw] w-[400px] max-h-[900px] lg:max-h-[80vh] min-h-max flex-1 border-gray-200 rounded-2xl shadow shadow-gray-300/75">

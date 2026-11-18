@@ -5,11 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { UrsCardComponent } from "../UrsCardComponent"
 import { UrsModalAddProduct } from "../UrsModalAddProduct"
 import { useState } from "react"
+import { UrsModalEditProduct } from "../UrsModalEditProduct"
 
 type UrsAddProductsMobileProp = {
-    id, data, TimeZone, Requests, modal, setModal, refetch,HandleCancelFolio,HandleVeryfyFolio
+    id, data, TimeZone, Requests, modal, setModal, refetch,HandleCancelFolio,HandleVeryfyFolio,detailsId,setDetailsId
 }
-export const UrsAddProductsMobile = ({ id, data, TimeZone, Requests, modal, setModal, refetch,HandleCancelFolio,HandleVeryfyFolio }: UrsAddProductsMobileProp) => {
+export const UrsAddProductsMobile = ({ id, data, TimeZone, Requests, modal, setModal, refetch,HandleCancelFolio,HandleVeryfyFolio,detailsId,setDetailsId }: UrsAddProductsMobileProp) => {
     const [showId, setShowId] = useState(-1)
     return (
         <main className="h-screen flex flex-col">
@@ -183,7 +184,8 @@ export const UrsAddProductsMobile = ({ id, data, TimeZone, Requests, modal, setM
 
             </section>
 
-            {modal && <UrsModalAddProduct refresh={refetch} requestrefresh={Requests.refetch} requests={Requests?.data} folioId={id} setModal={setModal} modal={modal} />}
+            {(modal && detailsId.id==0) && <UrsModalAddProduct refresh={refetch} requestrefresh={Requests.refetch} requests={Requests?.data} folioId={id} setModal={setModal} modal={modal} />}
+            {(detailsId.id!=0) && <UrsModalEditProduct setDetailsId={setDetailsId} detailsId={detailsId} refresh={refetch} requestrefresh={Requests.refetch} requests={Requests?.data} folioId={id} setModal={setModal} modal={modal} />}
 
         </main>
 

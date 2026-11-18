@@ -61,12 +61,10 @@ export const UrsVerificateFolio = () => {
         retry: false
     })
 
-    console.log(Requests?.data)
 
     const { mutate } = useMutation({
         mutationFn: SecondVerify,
         onError: (error) => {
-            console.log(error.message)
             toast.error(error.message)
         },
         onSuccess: (data) => {
@@ -78,7 +76,6 @@ export const UrsVerificateFolio = () => {
     const FolioActions = useMutation({
         mutationFn: ursCancelFolio,
         onError: (error) => {
-            console.log(error.message)
             toast.error(error.message)
         },
         onSuccess: (data) => {
@@ -89,7 +86,6 @@ export const UrsVerificateFolio = () => {
     const UpdateRequestDate = useMutation({
         mutationFn: UpdateProposedDateUrsRequest,
         onError: (error) => {
-            console.log(error.message)
             toast.error(error.message)
         },
         onSuccess: (data) => {
@@ -101,7 +97,6 @@ export const UrsVerificateFolio = () => {
     const CancelRequest = useMutation({
         mutationFn: CancelUrsRequest,
         onError: (error) => {
-            console.log(error.message)
             toast.error(error.message)
         },
         onSuccess: (data) => {
@@ -116,7 +111,6 @@ export const UrsVerificateFolio = () => {
             Verify: 2,
             ProposedDate: fecha.format("YYYY-MM-DD")
         }
-        console.log(dt)
 
         mutate({ formData: dt, idFolio: id })
     }
@@ -124,7 +118,6 @@ export const UrsVerificateFolio = () => {
         const dt: UrsVerificateFolio = {
             Verify: 1,
         }
-        console.log(dt)
 
         FolioActions.mutate({ idFolio: id })
     }
@@ -154,9 +147,7 @@ export const UrsVerificateFolio = () => {
 
     useEffect(() => {
         const loadData = async () => {
-            console.log(data.id)
             //await setPlant(data[0].id.toString());
-            //console.log(plant)
             if (data?.Process == 99) {
                 Navigates('/urs/verifications')
             }
@@ -171,6 +162,10 @@ export const UrsVerificateFolio = () => {
             renderCell: (params) => params.row.Codes.name
         },
         {
+            field: 'plant', headerName: 'Planta', width: 80, minWidth: 80,
+            valueGetter: (_, row) => row.Plant?.name
+        },
+        {
             field: 'ProposedDate', headerName: 'Fecha propuesta', minWidth: 190, flex: 1
             , valueGetter: (_, row) => row.PartNumber ?? ''
             , renderCell: (params) => (
@@ -181,8 +176,6 @@ export const UrsVerificateFolio = () => {
                     yearsOrder="desc"
                     value={dayjs((params.row.ProposedDate ?? data.ProposedDate).substring(0, 10))}
                     onChange={async (newValue) => {
-                        console.log(newValue)
-                        console.log(newValue.format("YYYY-MM-DD"))
                         handleChangeDatePropocedProduct(params.row.id, newValue.format("YYYY-MM-DD"))
                         params.row.ProposedDate = newValue.format("YYYY-MM-DD")
                     }}

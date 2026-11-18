@@ -27,10 +27,6 @@ const TdDay = ({ value }) => {
 
 export const GnrProduction = () => {
     const { dt,fecha,setFecha,refetch  } = useOutletContext();
-    console.log(dt)
-      
-
-
     const [expanded, setExpanded] = useState({})
 
     const dayColumns = Array.from({ length: 31 }, (_, i) => {
@@ -109,7 +105,6 @@ export const GnrProduction = () => {
 
         return [taRow, tbRow, tcRow, ttRow];
     });
-    console.log(filteredRows)
     return (
         <div className="flex-1 min-w-0 sm:p-4">
 

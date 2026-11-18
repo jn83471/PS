@@ -7,11 +7,12 @@ export const UsrRequestProductFormSchema = z.object({
     Customer:z.string(),
     UrsPriorityId:z.number(),
     Qty:z.number(),
-    ProposedDate: z.string()
+    ProposedDate: z.string(),
+    PlantId: z.number()
 })
 
 export type UsrRequestProduct = z.infer<typeof UsrRequestProductFormSchema>
 
-export type CreateUsrRequestProduct = Pick<UsrRequestProduct, 'CodesId'|'PartNumber'>
+export type CreateUsrRequestProduct = Pick<UsrRequestProduct, 'CodesId'|'PartNumber'|'PlantId'>
 
 export type UpdateUrsRequestProduct = Pick<UsrRequestProduct, 'ProposedDate'>

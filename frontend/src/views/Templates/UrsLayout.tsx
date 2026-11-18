@@ -1,11 +1,10 @@
-import { faBarcode, faBars, faBoxOpen, faCheckCircle, faEnvelope, faHome, faImage, faPictureInPicture, faPlus, faPowerOff, faSquareCheck, faTree } from "@fortawesome/free-solid-svg-icons"
+import { faBarcode, faBars, faBoxOpen, faCheckCircle, faEnvelope, faHome, faImage, faPlus, faPowerOff, faSquareCheck, faTree } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link, Navigate, NavLink, Outlet, useLocation } from "react-router-dom"
 import { useAuthWithApps } from "../../hook/useAuth"
-import { useEffect, useState, useTransition } from "react"
+import { useEffect, useState } from "react"
 import { hasPermission } from "../../hook/hasPermissionHook";
 import { ToastContainer } from "react-toastify"
-import { SocketProvider } from "../../Providers/SocketProvider"
 import { useTranslation } from "react-i18next"
 import i18n from "../../i18n/Index"
 
@@ -22,7 +21,6 @@ export const UrsLayout = () => {
 
     useEffect(() => {
         if (typeof i18n.changeLanguage === "function") {
-            console.log("paso")
             if (isLoading) {
                 i18n.changeLanguage("es");
             }
@@ -43,7 +41,6 @@ export const UrsLayout = () => {
     }, [i18n, data]);
 
     if (!isLoading && isError) {
-        console.log("regresa")
         return <Navigate to="/" replace />;
     }
     if (isLoading) return (<></>)

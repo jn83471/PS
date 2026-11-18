@@ -96,7 +96,6 @@ export const UrsVerificatePictures = () => {
         TimeZone,
         column
       )
-      console.log(cols);
       return cols
     }, [TimeZone, detailsId.id]);
 
@@ -104,7 +103,6 @@ export const UrsVerificatePictures = () => {
   const { mutate } = useMutation({
     mutationFn: ThirdVerify,
     onError: (error) => {
-      console.log(error.message)
       toast.error(error.message)
     },
     onSuccess: (data) => {
@@ -128,7 +126,6 @@ export const UrsVerificatePictures = () => {
       Verify: 3,
       files:files
     }
-    console.log(dt)
 
     mutate({ formData: dt, idFolio: detailsId.id })
   }

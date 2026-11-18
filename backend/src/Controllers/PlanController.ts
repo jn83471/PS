@@ -35,8 +35,7 @@ export class PlanController {
             dt.getMonth() + 1,
             1
         );
-        console.log(dt)
-        console.log(inicioSiguienteMes)
+
 
         let machines = []
         if (req.User.PlantId == null) {
@@ -168,7 +167,6 @@ export class PlanController {
                     continue
                 }
 
-                console.log("DESIGN: ",resultado[i]["col7"].toString().trim().toUpperCase())
                 if (pl.find(x => x.machine == resultado[i]["col0"] &&
                     x.Shift == resultado[i]["col4"].toString().trim()[0].toUpperCase() && x.PartNumber == resultado[i]["col5"].trim().toUpperCase() &&
                     x.Customer == resultado[i]["col6"].trim().toUpperCase() && x.LevenDesign == resultado[i]["col7"].toString().trim().toUpperCase() && x.Shortpart == resultado[i]["col8"].trim().toUpperCase()) == null
@@ -305,10 +303,6 @@ export class PlanController {
                         upd.d30 = resultado[i]["col39"] == "" || resultado[i]["col39"] == null ? 0 : resultado[i]["col39"].toString().split(".")[0]
                         upd.d31 = resultado[i]["col40"] == "" || resultado[i]["col40"] == null ? 0 : resultado[i]["col40"].toString().split(".")[0]
 
-                        //if (upd.id == 1) {
-                            //console.log("modificar", upd.id)
-                            //console.log(upd)
-                        //}
                         const data = await Plans.update(upd.dataValues, {
                             where: [
                                 {
@@ -337,7 +331,6 @@ export class PlanController {
             });
         }
         catch (error) {
-            console.log(error.message)
             //const error = new Error('La maquina no fue encontrada')
             return res.status(401).json({ error: error.message })
         }
@@ -377,16 +370,12 @@ export class PlanController {
                     ShortPart: Shortpart
                 }
             })
-            console.log("modificar")
-            console.log(update)
         }
         else {
             const create = await Smhcas.create({
                 ShortPart: Shortpart,
                 Kmh: Kmh
             })
-            console.log("crear")
-            console.log(create)
         }
 
 
@@ -424,7 +413,6 @@ export class PlanController {
                 d19, d20, d21, d22, d23, d24, d25, d26, d27, d28, d29, d30, d31,
                 createdAt: insert
             })
-            console.log(create)
         }
         else {
             const create = await Plans.update({
@@ -487,8 +475,6 @@ export class PlanController {
                 ShortPart: Shortpart
             }
         })
-        console.log("modificar")
-        console.log(update)
 
 
         const plan = await Plans.findOne({
@@ -555,7 +541,6 @@ export class PlanController {
 
         const dt = formatDateUTCDate(fecha ?? '2025-04-01')
         dt.setDate(0)
-        console.log("fecha", dt)
 
         const inicioSiguienteMes = new Date(
             dt.getFullYear(),
@@ -847,8 +832,6 @@ export class PlanController {
             }
 			group by line_c,SUBSTRING(prodlbl_no,5,4) 
         `;
-        console.log("hors")
-        console.log(hours)
         const dt = {
             START: "",
             END: "",

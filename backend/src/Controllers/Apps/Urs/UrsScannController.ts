@@ -12,6 +12,7 @@ import { io } from "../../../server";
 import { UrsRequestsFolio } from "../../../Models/URS/UrsRequestsFolio";
 import { UrsSendNewRequestVerification32, UrsSendNewRequestVerification4 } from "../../../Messages/Urs/UrsNewRequest";
 import { EmailsToSend } from "../../../Models/EmailsToSend";
+import { Plants } from "../../../Models/Plants";
 
 export class UrsScannController {
     static ScannHistory: any = async (req: Request, res: Response) => {
@@ -40,6 +41,10 @@ export class UrsScannController {
                     {
                         model: UrsRequestScannHistory,
                         as: "UrsRequestScannHistory"
+                    },
+                    {
+                        model:Plants,
+                        as:"Plant"
                     }
                 ]
             })

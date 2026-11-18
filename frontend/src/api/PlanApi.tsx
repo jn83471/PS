@@ -4,7 +4,6 @@ import type { PlanCreateForm, UploadPlanSchemaForm } from "../types/PlanForms"
 
 export async function GetPlans(fecha: string) {
     try {
-        //console.log(formData)
         const url = `/plan`
         const { data } = await api.get(url, {
             params: {
@@ -12,11 +11,9 @@ export async function GetPlans(fecha: string) {
             }
 
         })
-        console.log(data)
         return data
     }
     catch (error) {
-        console.log("paso")
         if (isAxiosError(error) && error.response) {
             throw new Error(error.response.data.error)
         }
@@ -25,14 +22,11 @@ export async function GetPlans(fecha: string) {
 
 export async function GetPartNumberMachine(machineId) {
     try {
-        //console.log(formData)
         const url = `/plan/PartNumberMachine/${machineId}`
         const { data } = await api.get(url,)
-        console.log(data)
         return data
     }
     catch (error) {
-        console.log("paso")
         if (isAxiosError(error) && error.response) {
             throw new Error(error.response.data.error)
         }
@@ -41,7 +35,6 @@ export async function GetPartNumberMachine(machineId) {
 
 export async function GetPlanView(fecha: string, shift: number) {
     try {
-        //console.log(formData)
         const url = `/plan/planview`
         const { data } = await api.get(url, {
             params: {
@@ -50,11 +43,9 @@ export async function GetPlanView(fecha: string, shift: number) {
             }
 
         })
-        console.log(data)
         return data
     }
     catch (error) {
-        console.log("paso")
         if (isAxiosError(error) && error.response) {
             throw new Error(error.response.data.error)
         }
@@ -63,13 +54,11 @@ export async function GetPlanView(fecha: string, shift: number) {
 
 export async function CreatePlan(formData: UploadPlanSchemaForm) {
     try {
-        //console.log(formData)
         const formDatas = new FormData();
         formDatas.append("Plan", formData.plan);
         formDatas.append("fecha", formData.fecha);
         const url = `/plan`
         const { data } = await api.post(url, formDatas)
-        console.log(data)
         return data
     }
     catch (error) {
@@ -82,10 +71,8 @@ export async function CreatePlan(formData: UploadPlanSchemaForm) {
 
 export async function DeletePlan(id: number) {
     try {
-        //console.log(formData)
         const url = `/plan/${id}`
         const { data } = await api.delete(url)
-        console.log(data)
         return data
     }
     catch (error) {
@@ -98,14 +85,11 @@ export async function DeletePlan(id: number) {
 
 export async function CreatePlanManual(formData: PlanCreateForm) {
     try {
-        //console.log(formData)
         const url = `/plan/Create`
         const { data } = await api.post(url, formData)
-        console.log(data)
         return data
     }
     catch (error) {
-        console.log("paso")
         if (isAxiosError(error) && error.response) {
             throw new Error(error.response.data.error)
         }
@@ -119,14 +103,11 @@ type UpdateClientProp = {
 
 export async function UpdatePlanManual({ formData, id }: UpdateClientProp) {
     try {
-        //console.log(formData)
         const url = `/plan/Edit/${id}`
         const { data } = await api.put(url, formData)
-        console.log(data)
         return data
     }
     catch (error) {
-        console.log("paso")
         if (isAxiosError(error) && error.response) {
             throw new Error(error.response.data.error)
         }

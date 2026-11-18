@@ -58,12 +58,10 @@ export const UrsVerificateFolioSMTS = () => {
         retry: false
     })
 
-    console.log(Requests?.data)
 
     const { mutate } = useMutation({
         mutationFn: SecondVerify,
         onError: (error) => {
-            console.log(error.message)
             toast.error(error.message)
         },
         onSuccess: (data) => {
@@ -75,7 +73,6 @@ export const UrsVerificateFolioSMTS = () => {
     const FolioActions = useMutation({
         mutationFn: ursCancelFolio,
         onError: (error) => {
-            console.log(error.message)
             toast.error(error.message)
         },
         onSuccess: (data) => {
@@ -86,7 +83,6 @@ export const UrsVerificateFolioSMTS = () => {
     const UpdateRequestDate = useMutation({
         mutationFn: UpdateProposedDateUrsRequest,
         onError: (error) => {
-            console.log(error.message)
             toast.error(error.message)
         },
         onSuccess: (data) => {
@@ -97,7 +93,6 @@ export const UrsVerificateFolioSMTS = () => {
     const CancelRequest = useMutation({
         mutationFn: CancelUrsRequest,
         onError: (error) => {
-            console.log(error.message)
             toast.error(error.message)
         },
         onSuccess: (data) => {
@@ -111,7 +106,6 @@ export const UrsVerificateFolioSMTS = () => {
         const dt: UrsVerificateFolio = {
             Verify: 3,
         }
-        console.log(dt)
 
         mutate({ formData: dt, idFolio: id })
     }
@@ -119,7 +113,6 @@ export const UrsVerificateFolioSMTS = () => {
         const dt: UrsVerificateFolio = {
             Verify: 1,
         }
-        console.log(dt)
 
         FolioActions.mutate({ idFolio: id })
     }
@@ -149,9 +142,7 @@ export const UrsVerificateFolioSMTS = () => {
 
     useEffect(() => {
         const loadData = async () => {
-            console.log(data.id)
             //await setPlant(data[0].id.toString());
-            //console.log(plant)
             if (data?.Process == 99) {
                 Navigates('/urs/verifications')
             }
@@ -170,6 +161,10 @@ export const UrsVerificateFolioSMTS = () => {
                     {params.row.Codes.name}
                 </>
             )
+        },
+        {
+            field: 'plant', headerName: 'Planta', width: 80, minWidth: 80,
+            valueGetter: (_, row) => row.Plant?.name
         },
         {
             field: 'ProposedDate', headerName: 'Fecha propuesta', minWidth: 190, flex: 1
